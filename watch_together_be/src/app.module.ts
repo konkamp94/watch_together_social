@@ -14,7 +14,6 @@ const envFilePath = `config/.${ENV}.env`;
     UserModule,
     ConfigModule.forRoot({ isGlobal: true, envFilePath: [envFilePath] }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
