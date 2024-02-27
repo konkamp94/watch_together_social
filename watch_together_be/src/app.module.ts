@@ -5,13 +5,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { Logger } from '@nestjs/common';
+import { AuthenticationModule } from './authentication/authentication.module';
 
 const ENV = process.env.NODE_ENV || 'development';
 const envFilePath = `config/.${ENV}.env`;
 
 @Module({
   imports: [
-    UserModule,
     ConfigModule.forRoot({ isGlobal: true, envFilePath: [envFilePath] }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -26,6 +26,8 @@ const envFilePath = `config/.${ENV}.env`;
         synchronize: true,
       }),
     }),
+    UserModule,
+    AuthenticationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
