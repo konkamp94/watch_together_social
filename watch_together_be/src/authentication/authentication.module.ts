@@ -3,9 +3,9 @@ import { AuthenticationController } from './authentication.controller';
 import { AuthenticationService } from './authentication.service';
 import { UserModule } from 'src/user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/user/user.entity';
+import { User } from 'src/user/entities/user.entity';
 import { HttpModule } from '@nestjs/axios';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 
 @Module({
@@ -24,6 +24,7 @@ import { ConfigService } from '@nestjs/config';
     inject: [ConfigService],
   })],
   controllers: [AuthenticationController],
-  providers: [AuthenticationService]
+  providers: [AuthenticationService],
+  exports: [JwtModule]
 })
 export class AuthenticationModule { }
