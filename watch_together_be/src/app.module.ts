@@ -7,6 +7,8 @@ import { UserModule } from './user/user.module';
 import { Logger } from '@nestjs/common';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { SocialModule } from './social/social.module';
+import { HttpModule } from '@nestjs/axios';
+import { User } from './user/entities/user.entity';
 
 const ENV = process.env.NODE_ENV || 'development';
 const envFilePath = `config/.${ENV}.env`;
@@ -14,6 +16,7 @@ const envFilePath = `config/.${ENV}.env`;
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, envFilePath: [envFilePath] }),
+    HttpModule,
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
@@ -27,6 +30,7 @@ const envFilePath = `config/.${ENV}.env`;
         synchronize: true,
       }),
     }),
+    TypeOrmModule.forFeature([User]),
     UserModule,
     AuthenticationModule,
     SocialModule,

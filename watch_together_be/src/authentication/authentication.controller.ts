@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/comm
 import { AuthenticationService } from './authentication.service';
 import { UserService } from 'src/user/user.service';
 import { AuthGuard } from './guards/auth.guard';
+import { RequestWithUser } from 'src/app.interface';
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -33,7 +34,7 @@ export class AuthenticationController {
 
     @UseGuards(AuthGuard)
     @Get('/logout')
-    async logout(@Req() request: Request) {
+    async logout(@Req() request: RequestWithUser) {
         const user = request['user'];
         await this.authService.logout(user);
         return {}

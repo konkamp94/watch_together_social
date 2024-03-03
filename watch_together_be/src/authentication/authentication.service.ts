@@ -87,7 +87,7 @@ export class AuthenticationService {
     }
 
     private generateAccessToken(user: User): string {
-        return this.jwtService.sign({ userId: user.id, username: user.username, name: user.name });
+        return this.jwtService.sign({ userId: user.id, username: user.username, name: user.name, tmdbId: user.tmdbId });
     }
 
     private generateRefreshToken(): string {
