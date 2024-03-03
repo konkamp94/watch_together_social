@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { Logger } from '@nestjs/common';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { SocialModule } from './social/social.module';
 
 const ENV = process.env.NODE_ENV || 'development';
 const envFilePath = `config/.${ENV}.env`;
@@ -28,6 +29,7 @@ const envFilePath = `config/.${ENV}.env`;
     }),
     UserModule,
     AuthenticationModule,
+    SocialModule,
   ],
   controllers: [AppController],
   providers: [AppService],

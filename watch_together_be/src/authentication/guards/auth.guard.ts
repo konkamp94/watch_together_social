@@ -10,13 +10,13 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
-import { User } from 'src/user/user.entity';
+import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-    constructor(private jwtService: JwtService, private configService: ConfigService,
-        @InjectRepository(User) private userRepository: Repository<User>) { }
+    constructor(protected jwtService: JwtService, protected configService: ConfigService,
+        @InjectRepository(User) protected userRepository: Repository<User>) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
@@ -38,6 +38,8 @@ export class AuthGuard implements CanActivate {
                 throw new UnauthorizedException('User not found in the database');
             }
         } catch (error) {
+            Logger.warn(this.jwtService.verifyAsync(token, { secret: this.configService.get<string>('JWT_SECRET') }))
+            Logger.error(error, 'AuthGuard');
             throw new UnauthorizedException('Invalid token');
         }
         return true;
