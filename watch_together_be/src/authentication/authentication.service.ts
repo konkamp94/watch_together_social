@@ -56,7 +56,7 @@ export class AuthenticationService {
                 { headers: this.createTmdbHeaders() }).pipe(map(response => response.data)));
             return {
                 requestToken: response.request_token,
-                redirectUrl: `${permissionUrl}${response.request_token}?redirect_to=${this.configService.get('FRONTEND_URL')}`
+                redirectUrl: `${permissionUrl}${response.request_token}?redirect_to=${this.configService.get('FRONTEND_URL')}/login-or-sign-up-action`
             }
         } catch (error) {
             Logger.error(error.response.data.status_message, 'getTmdbRequestToken');
