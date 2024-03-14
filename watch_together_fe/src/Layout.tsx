@@ -6,7 +6,7 @@ import RightBar from "./components/right-bar/RightBar"
 const Layout = () => {
     return (
         <>
-            <NavBar></NavBar>
+            <NavBar/>
             <div style={{display: 'flex', justifyContent: 'space-between'}}>
                 <LeftBar/>
                 <Outlet></Outlet>

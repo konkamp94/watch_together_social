@@ -36,8 +36,8 @@ const LoginOrSignUpRedirect = () => {
         }
     }, [approved, signUpOrLogin, navigate])
 
-    return (<Box display="flex" justifyContent="center">
-            {isLoading ? <CircularProgress /> : null}
+    return (<Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+            {isLoading ? <CircularProgress size='6rem' /> : null}
         </Box>)
 
 }
