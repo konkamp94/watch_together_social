@@ -5,7 +5,7 @@ import { AxiosError } from "axios";
 
 
 const useApiErrorHandling = (): [string | null, (error: AxiosError) => void] => {
-    const [error, setError] = useState<string | null>(null)
+    const [errorMessage, setErrorMessage] = useState<string | null>(null)
     const { logout } = useAuth()
     const navigate = useNavigate()
 
@@ -15,15 +15,16 @@ const useApiErrorHandling = (): [string | null, (error: AxiosError) => void] => 
             logout()
             navigate('/login')
         } else if (error?.response?.status === 500) {
-            setError('Something went wrong, please try again later')
+            setErrorMessage('Something went wrong, please try again later')
         } else {
+            console.log(error)
             console.log(error?.response?.data)
             // error.response ? setError(error?.response?.data?.message || 'Unknown error occurred')
             //     : setError('Check your internet connection')
         }
     }
 
-    return [error, handleApiError]
+    return [errorMessage, handleApiError]
 }
 
 export default useApiErrorHandling;

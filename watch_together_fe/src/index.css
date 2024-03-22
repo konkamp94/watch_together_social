@@ -1,3 +1,14 @@
 body {
     margin: 0;
+    padding: 0;
+}
+
+.grid-container-custom {
+    margin-top: 0!important;
+    width: 100%!important;
+    margin-left: 0!important;
+}
+
+.grid-item-custom {
+    padding-left: 0!important;
 }

@@ -3,8 +3,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Login  from './pages/Login/Login'
 import ProtectedRoute from './components/ProtectedRoute'
 import Layout from './Layout'
-import Feed from './components/feed/Feed';
 import LoginOrSignUpRedirect from './pages/LoginOrSignUpRedirect/LoginOrSignUpRedirect'
+import Home from './pages/Home/Home'
 
 function App() {
 
@@ -17,7 +17,7 @@ function App() {
           <Route element={<ProtectedRoute>
                             <Layout/>
                           </ProtectedRoute>}>
-              <Route path='/main-content' element={<Feed/>}></Route>
+              <Route path='/home' element={<Home />}></Route>
           </Route>
         </Routes>
       </BrowserRouter>

@@ -36,6 +36,7 @@ export class MovieController {
 
     }
 
+    // returns a random page of recommended movies for a given movieId
     @UseGuards(AuthGuard)
     @Get('recommended-movies')
     async getRecommendedMovies(@Req() request: RequestWithUser, @Query() query) {
@@ -49,6 +50,12 @@ export class MovieController {
             uri: `/movie/${randomMovieId}/recommendations`,
             method: 'GET'
         }
+
+        const tmdbResponse = await this.sharedService.tmdbProxy(user, tmdbProxyBody);
+        const randomPage = await this.sharedService.getRandomPageFromTmdbResponse(tmdbResponse);
+
+        // new response with random page
+        tmdbProxyBody.uri = `${tmdbProxyBody.uri}?page=${randomPage}`;
         return await this.sharedService.tmdbProxy(user, tmdbProxyBody);
 
     }

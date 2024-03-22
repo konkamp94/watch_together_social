@@ -1,62 +1,30 @@
 import * as React from 'react';
-import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
+import BottomNavigation from '@mui/material/BottomNavigation';
+import BottomNavigationAction from '@mui/material/BottomNavigationAction';
+import HomeIcon from '@mui/icons-material/Home';
+import WeekendIcon from '@mui/icons-material/Weekend';
+import MovieIcon from '@mui/icons-material/Movie';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import './NavBar.css'
+import { useNavigate } from 'react-router-dom';
 
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(3),
-    width: 'auto',
-  },
-}));
+type ActiveButton = {value: number, id: string}
 
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
-    },
-  },
-}));
-
-export default function PrimarySearchAppBar() {
+export default function NavBar() {
+  const [activeButton, setActiveButton] = React.useState<null | ActiveButton>({value: 0, id: 'home-button'});
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -134,7 +102,7 @@ export default function PrimarySearchAppBar() {
           aria-label="show 17 new notifications"
           color="inherit"
         >
-          <Badge badgeContent={17} color="error">
+          <Badge badgeContent={17} color="secondary">
             <NotificationsIcon />
           </Badge>
         </IconButton>
@@ -159,33 +127,53 @@ export default function PrimarySearchAppBar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
           <Typography
             variant="h6"
             noWrap
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' } }}
           >
-            MUI
+            Watch Together
           </Typography>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </Search>
-          <Box sx={{ flexGrow: 1 }} />
+          <Box sx={{ flexGrow: 1 }}>
+            <BottomNavigation
+              sx={{ backgroundColor: 'primary.main'}}
+              showLabels
+              value={activeButton?.value ? activeButton.value : null}
+              onChange={(event, newValue) => {
+                setActiveButton({value: newValue, id: event.currentTarget.id});
+
+              }}
+            >
+              <BottomNavigationAction 
+                id="home-button" 
+                className={activeButton?.id === 'home-button' ? 'navbar-active-button' : ''} 
+                label="Home" 
+                icon={<HomeIcon />} 
+                onClick={() => navigate('/home')}/> 
+              <BottomNavigationAction 
+                id="rooms-button" 
+                className={activeButton?.id === 'rooms-button' ? 'navbar-active-button' : ''}
+                label="Watch Movies" 
+                icon={<WeekendIcon />}
+                onClick={() => navigate('/rooms')} 
+              />
+              <BottomNavigationAction 
+                id="favorite-button" 
+                className={activeButton?.id === 'favorite-button' ? 'navbar-active-button' : ''} 
+                label="Favorites" 
+                icon={<FavoriteIcon />}
+                onClick={() => navigate('/favorites')}
+              />
+              <BottomNavigationAction 
+                id="watchlist-button" 
+                className={activeButton?.id === 'watchlist-button' ? 'navbar-active-button' : ''} 
+                label="Watchlist" 
+                icon={<MovieIcon />} 
+                onClick={() => navigate('/favorites')}
+              />
+            </BottomNavigation>
+          </Box>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton size="large" aria-label="show 4 new mails" color="inherit">
               <Badge badgeContent={4} color="error">
