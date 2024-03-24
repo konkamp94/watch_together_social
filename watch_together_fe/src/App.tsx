@@ -5,6 +5,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Layout from './Layout'
 import LoginOrSignUpRedirect from './pages/LoginOrSignUpRedirect/LoginOrSignUpRedirect'
 import Home from './pages/Home/Home'
+import Favorites from './pages/Favorites/Favorites'
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
                             <Layout/>
                           </ProtectedRoute>}>
               <Route path='/home' element={<Home />}></Route>
+              <Route path='/favorites' element={<Favorites/>}></Route>
           </Route>
         </Routes>
       </BrowserRouter>

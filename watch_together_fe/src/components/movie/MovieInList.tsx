@@ -1,4 +1,4 @@
-import { MovieWithAccountState } from "../../services/api.interfaces";
+import { MovieWithAccountState, Movie } from "../../services/api.interfaces";
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
@@ -15,9 +15,18 @@ import useAddOrRemoveFavorite from "../../hooks/api/useAddToFavorite";
 import { useState } from "react";
 import { CircularProgress } from "@mui/material";
 
-const MovieInList = ({movie}: {movie: MovieWithAccountState}) => {
-    // assume it's not favorite by default, this should be fetched from the backend
-    const [isFavorite, setIsFavorite] = useState(movie.state.favorite);
+const MovieInList = ({movie, isFavoriteMode = false}: {movie: MovieWithAccountState | Movie, isFavoriteMode: boolean}) => {
+    const [isFavorite, setIsFavorite] = useState(() => {
+      if(isFavoriteMode) { return true }
+      if('state' in movie) { 
+        try {
+        return movie.state.favorite 
+        } catch(e) { console.log(e)}
+      }
+      
+      // error for dev only
+      // throw new Error('If you are not in favorite mode MovieInList component needs a movie with account state') 
+    });
     const { addOrRemoveFavorite, isLoading } = useAddOrRemoveFavorite(() => setIsFavorite(!isFavorite));
 
     const titleSpan = <span style={{position: 'absolute', top: 0, padding: '8px', left: 0, fontSize: '1rem'}}>{movie.title}</span>
@@ -51,7 +60,7 @@ const MovieInList = ({movie}: {movie: MovieWithAccountState}) => {
           </Grid>
         </CardContent>
         <CardActions disableSpacing>
-          <IconButton aria-label="add to favorites" onClick={() => { addOrRemoveFavorite({movieId: movie.id, isFavorite}) }}>
+          <IconButton aria-label="add to favorites" onClick={() => { addOrRemoveFavorite({movieId: movie.id, isFavorite: !isFavorite}) }}>
             {!isLoading ?
             <FavoriteIcon 
                sx={isFavorite ? {color: 'secondary.light' } : null}/> :

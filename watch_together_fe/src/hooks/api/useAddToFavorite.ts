@@ -24,8 +24,7 @@ const useAddOrRemoveFavorite = (onSuccess: (() => void) | null = null) => {
 
     const { mutate, isLoading } = useMutation(addOrRemoveFavorite, {
         onSuccess: () => {
-            queryClient.invalidateQueries('favorites');
-            queryClient.invalidateQueries('recommended-movies-account-states')
+            queryClient.refetchQueries(['recommended-movies-account-states'])
             if (onSuccess) { onSuccess() }
         },
         onError: (error: AxiosError) => {
