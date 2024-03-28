@@ -4,7 +4,7 @@ import { AxiosError } from "axios";
 import tmdbProxyService from "../../services/tmdb-proxy.service";
 import { useAuth } from "../context/useAuth";
 
-const useAddOrRemoveFavorite = (onSuccess: (() => void) | null = null) => {
+const useAddOrRemoveWatchlist = (onSuccess: (() => void) | null = null) => {
     const { user } = useAuth();
     const queryClient = useQueryClient();
     const [errorMessage, handleApiError] = useApiErrorHandling();
@@ -13,16 +13,16 @@ const useAddOrRemoveFavorite = (onSuccess: (() => void) | null = null) => {
         throw new Error('User must be logged in to add to favorites');
     }
 
-    const addOrRemoveFavorite = ({ movieId, isFavorite }: { movieId: number, isFavorite: boolean }) => {
+    const addOrRemoveWatchlist = ({ movieId, isWatchlist }: { movieId: number, isWatchlist: boolean }) => {
         const tmdbProxyBody = {
-            uri: `/account/${user.tmdbId}/favorite`,
+            uri: `/account/${user.tmdbId}/watchlist`,
             method: 'POST',
-            body: { media_type: 'movie', media_id: movieId, favorite: isFavorite }
+            body: { media_type: 'movie', media_id: movieId, watchlist: isWatchlist }
         }
         return tmdbProxyService.accessTmdbApi(tmdbProxyBody);
     }
 
-    const { mutate, isLoading } = useMutation(addOrRemoveFavorite, {
+    const { mutate, isLoading } = useMutation(addOrRemoveWatchlist, {
         onSuccess: () => {
             queryClient.invalidateQueries(['recommended-movies-account-states'])
             if (onSuccess) { onSuccess() }
@@ -33,10 +33,10 @@ const useAddOrRemoveFavorite = (onSuccess: (() => void) | null = null) => {
     });
 
     return {
-        addOrRemoveFavorite: mutate,
+        addOrRemoveWatchlist: mutate,
         errorMessage,
         isLoading
     };
 };
 
-export default useAddOrRemoveFavorite;
+export default useAddOrRemoveWatchlist;

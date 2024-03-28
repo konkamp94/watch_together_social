@@ -26,6 +26,19 @@ export interface MovieWithAccountState extends Movie {
     state: MovieAccountState
 }
 
+export interface MovieWithGenres extends Movie {
+    genres: Genre[]
+}
+
+export interface MovieWithGenresAndState extends MovieWithAccountState {
+    genres: Genre[]
+}
+
+export interface Genre {
+    id: number
+    name: string
+}
+
 export type TmdbProxyBody = {
     uri: string,
     method: string,

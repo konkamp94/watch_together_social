@@ -124,9 +124,9 @@ export default function NavBar() {
   );
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1, position: 'sticky', top:0, zIndex: 10 }} position="sticky">
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar >
           <Typography
             variant="h6"
             noWrap
@@ -170,7 +170,7 @@ export default function NavBar() {
                 className={activeButton?.id === 'watchlist-button' ? 'navbar-active-button' : ''} 
                 label="Watchlist" 
                 icon={<MovieIcon />} 
-                onClick={() => navigate('/favorites')}
+                onClick={() => navigate('/watchlist')}
               />
             </BottomNavigation>
           </Box>

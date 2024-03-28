@@ -1,4 +1,4 @@
-import { MovieWithAccountState, Movie } from "../../services/api.interfaces";
+import { MovieWithGenres, MovieWithGenresAndState } from "../../services/api.interfaces";
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
@@ -7,27 +7,36 @@ import CardActions from '@mui/material/CardActions';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
+import MovieCreationIcon from '@mui/icons-material/MovieCreation';
 import Grid from '@mui/material/Grid';
 import StarIcon from '@mui/icons-material/Star';
 import moment from "moment";
 import useAddOrRemoveFavorite from "../../hooks/api/useAddToFavorite";
+import useAddOrRemoveWatchlist from "../../hooks/api/useAddToWatchlist";
 import { useState } from "react";
 import { CircularProgress } from "@mui/material";
 
-const MovieInList = ({movie, isFavoriteMode = false}: {movie: MovieWithAccountState | Movie, isFavoriteMode: boolean}) => {
+const MovieInList = ({movie, isFavoriteMode = false, isWatchlistMode = false}: {movie: MovieWithGenres | MovieWithGenresAndState, isFavoriteMode: boolean, isWatchlistMode: boolean}) => {
     const [isFavorite, setIsFavorite] = useState(() => {
       if(isFavoriteMode) { return true }
       if('state' in movie) { 
-        try {
         return movie.state.favorite 
-        } catch(e) { console.log(e)}
       }
-      
-      // error for dev only
-      // throw new Error('If you are not in favorite mode MovieInList component needs a movie with account state') 
     });
-    const { addOrRemoveFavorite, isLoading } = useAddOrRemoveFavorite(() => setIsFavorite(!isFavorite));
+    const { addOrRemoveFavorite, isLoading: isLoadingFavorite } = useAddOrRemoveFavorite(() =>  { 
+        setIsFavorite(!isFavorite) 
+    });
+
+    const [isWatchlist, setIsWatchlist] = useState(() => {
+      if(isWatchlistMode) { return true }
+      if('state' in movie) { 
+        return movie.state.watchlist 
+      }
+    });
+
+    const { addOrRemoveWatchlist, isLoading: isLoadingWatchlist } = useAddOrRemoveWatchlist(() =>  { 
+      setIsWatchlist(!isWatchlist) 
+    });
 
     const titleSpan = <span style={{position: 'absolute', top: 0, padding: '8px', left: 0, fontSize: '1rem'}}>{movie.title}</span>
 
@@ -60,16 +69,24 @@ const MovieInList = ({movie, isFavoriteMode = false}: {movie: MovieWithAccountSt
           </Grid>
         </CardContent>
         <CardActions disableSpacing>
-          <IconButton aria-label="add to favorites" onClick={() => { addOrRemoveFavorite({movieId: movie.id, isFavorite: !isFavorite}) }}>
-            {!isLoading ?
-            <FavoriteIcon 
-               sx={isFavorite ? {color: 'secondary.light' } : null}/> :
+          {!isWatchlistMode ?
+            <IconButton aria-label="add to favorites" onClick={() => { addOrRemoveFavorite({movieId: movie.id, isFavorite: !isFavorite}) }}>
+              {!isLoadingFavorite ?
+              <FavoriteIcon 
+                sx={isFavorite ? {color: 'secondary.light' } : null}/> :
+                <CircularProgress size={30}/>
+              }
+            </IconButton>
+          : null}
+          {!isFavoriteMode ?
+          <IconButton aria-label="add to watchlist" onClick={() => { addOrRemoveWatchlist({movieId: movie.id, isWatchlist: !isWatchlist}) }}>
+            {!isLoadingWatchlist ?
+            <MovieCreationIcon 
+               sx={isWatchlist ? {color: 'secondary.light' } : null}/> :
                <CircularProgress size={30}/>
             }
           </IconButton>
-          <IconButton aria-label="share">
-            <ShareIcon />
-          </IconButton>
+          : null}
         </CardActions>
       </Card>
     );

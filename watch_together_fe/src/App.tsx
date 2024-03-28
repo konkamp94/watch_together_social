@@ -6,11 +6,16 @@ import Layout from './Layout'
 import LoginOrSignUpRedirect from './pages/LoginOrSignUpRedirect/LoginOrSignUpRedirect'
 import Home from './pages/Home/Home'
 import Favorites from './pages/Favorites/Favorites'
+import useMetadata from './hooks/context/useMetadata'
+import Watchlist from './pages/Watchlist/Watchlist'
 
 function App() {
+  const { genres } = useMetadata()
 
   return (
     <>
+      {/*Wait for genres metadata to load the app  */}
+      {genres ? 
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login/>}></Route>
@@ -20,9 +25,11 @@ function App() {
                           </ProtectedRoute>}>
               <Route path='/home' element={<Home />}></Route>
               <Route path='/favorites' element={<Favorites/>}></Route>
+              <Route path='/watchlist' element={<Watchlist/>}></Route>
           </Route>
         </Routes>
       </BrowserRouter>
+      : null}
     </>
   )
 }

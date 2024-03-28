@@ -1,5 +1,5 @@
 import ContentHeader from "../../components/content-header/ContentHeader"
-import useGetFavoriteMovies from "../../hooks/api/useGetFavoriteMovies"
+import useGetWatchlistMovies from "../../hooks/api/useGetWatchlistMovies"
 import MovieList from "../../components/movie/MovieList"
 import CustomPagination from "../../components/pagination/CustomPagination"
 import DetailedMovieList from "../../components/movie/DetailedMovieList"
@@ -7,9 +7,9 @@ import useScreenSize from "../../hooks/useSreenSize"
 import useMetadata from "../../hooks/context/useMetadata"
 import { mapMoviesWithGenres } from "../../utils/transform"
 
-const Favorites = () => {
+const Watchlist = () => {
     const { isDesktop, isTablet } = useScreenSize()
-    const { favoriteMovies, isLoadingFavorites, errorMessage, setCurrentPage  } = useGetFavoriteMovies()
+    const { watchlistMovies, isLoadingWatchlist, errorMessage, setCurrentPage  } = useGetWatchlistMovies()
     const { genres } = useMetadata()
 
     const changePage = (page: number) => {
@@ -18,20 +18,20 @@ const Favorites = () => {
 
     return(
         <>  
-            <ContentHeader text='Favorites'/>
+            <ContentHeader text='Watchlist'/>
             {/* TODO create a skeleten for loading in big screens */}
-            {isLoadingFavorites ? <p>Loading...</p> : errorMessage && <p>{errorMessage as string}</p>}
+            {isLoadingWatchlist ? <p>Loading...</p> : errorMessage && <p>{errorMessage as string}</p>}
             {/* Desktop View */}
-            {favoriteMovies && genres && (isDesktop || isTablet) && 
-                <DetailedMovieList movies={mapMoviesWithGenres(favoriteMovies?.data.results, genres)} isFavoriteMode={true}/>}
+            {watchlistMovies && genres && (isDesktop || isTablet) && 
+                <DetailedMovieList movies={mapMoviesWithGenres(watchlistMovies?.data.results, genres)} isWatchlistMode={true}/>}
             {/* Mobile View */}
-            {favoriteMovies && genres && (!isDesktop && !isTablet) 
-                && <MovieList movies={favoriteMovies?.data.results} isFavoriteMode={true}/>}
-            <CustomPagination count={favoriteMovies?.data.total_pages} onChangePage={changePage}
+            {watchlistMovies && genres && (!isDesktop && !isTablet) 
+                && <MovieList movies={watchlistMovies?.data.results} isWatchlistMode={true}/>}
+            <CustomPagination count={watchlistMovies?.data.total_pages} onChangePage={changePage}
                 sx={{ margin: '16px auto 0' }}
             />
         </>
     )
 }
 
-export default Favorites
+export default Watchlist
