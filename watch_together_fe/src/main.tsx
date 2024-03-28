@@ -12,12 +12,14 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 // context providers
 import { AuthProvider } from './context/auth.context.tsx'
 import { ReactQueryDevtools } from 'react-query/devtools'
+import { MetadataProvider } from './context/metadata.context.tsx';
 const theme = createTheme({
   palette: {
     primary: {
       main: '#74709c',
       light: '#a39ecd',
-      dark: '#47456e'
+      dark: '#47456e',
+      contrastText: '#00000099'
     },
     secondary: {
       main: '#9a9b9e',
@@ -34,10 +36,12 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <ThemeProvider theme={theme}>
-          <ReactQueryDevtools initialIsOpen={false} />
-          <App />
-        </ThemeProvider>
+        <MetadataProvider>
+          <ThemeProvider theme={theme}>
+            <ReactQueryDevtools initialIsOpen={false} />
+            <App />
+          </ThemeProvider>
+        </MetadataProvider>
       </AuthProvider>
     </QueryClientProvider>
   </React.StrictMode>,

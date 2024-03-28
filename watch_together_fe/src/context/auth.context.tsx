@@ -1,7 +1,7 @@
 import { createContext, useMemo, useCallback, ReactNode} from "react";
 import useLocalStorage from "../hooks/useLocalStorage";
 import * as jwt_decode from 'jwt-decode'
-import { AuthContextValue } from './interfaces.context'
+import { AuthContextValue, User } from './interfaces.context'
 
 // "as" keyword used to fake typescript context initialization errors
 const initialAuthContextValue= {} as AuthContextValue
@@ -26,8 +26,11 @@ export const AuthProvider = ({ children}: { children: ReactNode}) => {
         removeUser("user")
     }, [removeToken, removeRefreshToken, removeUser])
 
+    const getUser = useCallback((): User | null => {
+        return user ? JSON.parse(user) : null
+    }, [user])
 
-    const value = useMemo(() => ({ token, refreshToken, user, login, logout }), [user, token, refreshToken, login, logout]);
+    const value = useMemo(() => ({ token, refreshToken, user: getUser(), login, logout }), [token, refreshToken, login, logout, getUser]);
     
 
     return (

@@ -5,7 +5,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Friendship } from './entities/friendship.entity';
 import { User } from 'src/user/entities/user.entity';
 import { AuthenticationModule } from 'src/authentication/authentication.module';
-import { JwtService } from '@nestjs/jwt';
 import { BlockedUser } from 'src/user/entities/blocked-user.entity';
 
 @Module({

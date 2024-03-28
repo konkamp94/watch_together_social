@@ -4,11 +4,12 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
-import { Logger } from '@nestjs/common';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { SocialModule } from './social/social.module';
 import { HttpModule } from '@nestjs/axios';
 import { User } from './user/entities/user.entity';
+import { MovieModule } from './movie/movie.module';
+import { SharedModule } from './shared/shared.module';
 
 const ENV = process.env.NODE_ENV || 'development';
 const envFilePath = `config/.${ENV}.env`;
@@ -34,6 +35,8 @@ const envFilePath = `config/.${ENV}.env`;
     UserModule,
     AuthenticationModule,
     SocialModule,
+    MovieModule,
+    SharedModule,
   ],
   controllers: [AppController],
   providers: [AppService],

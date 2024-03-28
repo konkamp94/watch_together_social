@@ -34,4 +34,5 @@ export class SocialController {
     async blockUser(@Body() blockUserDto: BlockUserDto) {
         return this.socialService.blockUser(blockUserDto);
     }
+
 }

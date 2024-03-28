@@ -1,11 +1,12 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post, Req, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuthGuard } from './authentication/guards/auth.guard';
-import { TmdbProxyDto, RequestWithUser } from './app.interface';
+import { TmdbProxyDto, RequestWithUser } from './shared/shared.interface';
+import { SharedService } from './shared/shared.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) { }
+  constructor(private readonly sharedService: SharedService, private readonly appService: AppService) { }
 
   @Get()
   getHello(): string {
@@ -15,6 +16,7 @@ export class AppController {
   @UseGuards(AuthGuard)
   @Post('tmdb-proxy')
   async tmdbProxy(@Req() request: RequestWithUser, @Body() body: TmdbProxyDto) {
-    return await this.appService.tmdbProxy(request['user'], body);
+    return await this.sharedService.tmdbProxy(request.user, body);
   }
+
 }

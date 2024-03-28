@@ -17,15 +17,13 @@ const LoginOrSignUpRedirect = () => {
         navigate('/login')
     }
 
-    console.log(requestToken, approved)
-
     const {isLoading, refetch: signUpOrLogin} = 
                 useQuery('tokens', 
                     () => authenticationService.signUpOrLogin(requestToken as string), 
                     {  
                         onSuccess: (response) => { 
                             authContect.login(response.data.accessToken, response.data.refreshToken) 
-                            navigate('/main-content') 
+                            navigate('/home') 
                         }, 
                        onError: () => navigate('/login'),
                        enabled: false})
