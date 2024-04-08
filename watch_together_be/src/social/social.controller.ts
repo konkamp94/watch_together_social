@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Logger, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/authentication/guards/auth.guard';
 import { PermissionsGuard } from 'src/authentication/guards/permissions.guard';
 import { Friendship } from './entities/friendship.entity';
@@ -9,6 +9,12 @@ import { BlockUserDto, CreateFriendshipDto, UpdateFriendshipStatusDto } from './
 @Controller('social')
 export class SocialController {
     constructor(private socialService: SocialService) { }
+
+    @UseGuards(AuthGuard)
+    @Get('search-friends')
+    async searchFriendByUsernameOrName(@Req() request, @Query() params) {
+        return this.socialService.searchFriendByUsernameOrName(request['user'], params?.search)
+    }
 
     // add friendship
     @UseGuards(PermissionsGuard({ title: SocialPermissionTitle.CAN_CREATE_FRIENDSHIP, subject: Friendship }))

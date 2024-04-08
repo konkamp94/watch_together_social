@@ -20,10 +20,8 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import './NavBar.css'
 import { useNavigate } from 'react-router-dom';
 
-type ActiveButton = {value: number, id: string}
 
-export default function NavBar() {
-  const [activeButton, setActiveButton] = React.useState<null | ActiveButton>({value: 0, id: 'home-button'});
+export default function NavBar({ activeButtonId, setActiveButtonId }: {activeButtonId: string, setActiveButtonId: React.Dispatch<React.SetStateAction<string>> }) {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
@@ -139,35 +137,33 @@ export default function NavBar() {
             <BottomNavigation
               sx={{ backgroundColor: 'primary.main'}}
               showLabels
-              value={activeButton?.value ? activeButton.value : null}
-              onChange={(event, newValue) => {
-                setActiveButton({value: newValue, id: event.currentTarget.id});
-
+              onChange={(event) => {
+                setActiveButtonId(event.currentTarget.id)
               }}
             >
               <BottomNavigationAction 
-                id="home-button" 
-                className={activeButton?.id === 'home-button' ? 'navbar-active-button' : ''} 
+                id="home" 
+                className={activeButtonId === 'home' ? 'active-button' : ''} 
                 label="Home" 
                 icon={<HomeIcon />} 
                 onClick={() => navigate('/home')}/> 
               <BottomNavigationAction 
-                id="rooms-button" 
-                className={activeButton?.id === 'rooms-button' ? 'navbar-active-button' : ''}
+                id="rooms" 
+                className={activeButtonId === 'rooms' ? 'active-button' : ''}
                 label="Watch Movies" 
                 icon={<WeekendIcon />}
                 onClick={() => navigate('/rooms')} 
               />
               <BottomNavigationAction 
-                id="favorite-button" 
-                className={activeButton?.id === 'favorite-button' ? 'navbar-active-button' : ''} 
+                id="favorite" 
+                className={activeButtonId === 'favorite' ? 'active-button' : ''} 
                 label="Favorites" 
                 icon={<FavoriteIcon />}
                 onClick={() => navigate('/favorites')}
               />
               <BottomNavigationAction 
-                id="watchlist-button" 
-                className={activeButton?.id === 'watchlist-button' ? 'navbar-active-button' : ''} 
+                id="watchlist" 
+                className={activeButtonId === 'watchlist' ? 'active-button' : ''} 
                 label="Watchlist" 
                 icon={<MovieIcon />} 
                 onClick={() => navigate('/watchlist')}

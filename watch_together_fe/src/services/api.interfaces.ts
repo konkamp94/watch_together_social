@@ -39,6 +39,19 @@ export interface Genre {
     name: string
 }
 
+export interface OtherUser {
+    id: number
+    username: string
+    name: string
+    friendshipInfo: FriendshipInfo | null
+}
+
+export interface FriendshipInfo {
+    id: number,
+    status: string,
+    isRequesterUser: boolean
+}
+
 export type TmdbProxyBody = {
     uri: string,
     method: string,

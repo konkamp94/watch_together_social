@@ -1,3 +1,8 @@
 .left-bar-container {
-    flex:1
+    flex:1;
+}
+
+.sticky-ul {
+    position: sticky;
+    top: 80px;
 }
