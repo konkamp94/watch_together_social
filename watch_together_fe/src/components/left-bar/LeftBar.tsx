@@ -1,5 +1,6 @@
 import './LeftBar.css'
 import PeopleIcon from '@mui/icons-material/People';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import LocalMoviesIcon from '@mui/icons-material/LocalMovies';
 import ListButton from '../list-button/ListButton';
 import { useNavigate } from 'react-router-dom';
@@ -7,7 +8,8 @@ import { useNavigate } from 'react-router-dom';
 const LeftBar = ({ activeButtonId, setActiveButtonId }: {activeButtonId: string, setActiveButtonId: React.Dispatch<React.SetStateAction<string>> }) => {
     const navigate = useNavigate()
     const buttonsConfig = [{id: 'find-movies', label: 'Find Movies', icon: <LocalMoviesIcon/>, navigatePath: '/find-movies'},
-                           {id: 'find-friends', label: 'Find Friends', icon: <PeopleIcon/>, navigatePath: '/find-friends'}]
+                           {id: 'find-friends', label: 'Find Friends', icon: <PeopleIcon/>, navigatePath: '/find-friends'},
+                           {id: 'friend-requests', label: 'Friend Requests', icon: <PersonAddIcon/>, navigatePath: '/friend-requests'}]
 
     return (
     

@@ -9,6 +9,7 @@ import Favorites from './pages/Favorites/Favorites'
 import useMetadata from './hooks/context/useMetadata'
 import Watchlist from './pages/Watchlist/Watchlist'
 import FindFriends from './pages/FindFriends/FindFriends'
+import FriendRequests from './pages/FriendRequests/FriendRequests'
 
 function App() {
   const { genres } = useMetadata()
@@ -29,6 +30,7 @@ function App() {
               <Route path='/watchlist' element={<Watchlist/>}></Route>
               <Route path='/find-movies' element={<h1>Movies</h1>}></Route>
               <Route path='/find-friends' element={<FindFriends/>}></Route>
+              <Route path='/friend-requests' element={<FriendRequests/>}></Route>
           </Route>
         </Routes>
       </BrowserRouter>
