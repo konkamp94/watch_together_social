@@ -31,7 +31,7 @@ const DetailedMovieInList = ({movie, isFavoriteMode = false, isWatchlistMode = f
     });
     
     return (
-            <Box sx={{ backgroundColor: 'primary.light', marginTop: '16px', padding: '16px', display: 'flex', maxHeight: '300px', textAlign: 'justify'}}>
+            <Box sx={{ backgroundColor: 'primary.main', marginTop: '16px', padding: '16px', display: 'flex', maxHeight: '300px', textAlign: 'justify'}}>
                 <img style={{maxWidth: '300px', maxHeight: '300px', marginRight: '16px'}} src={`${import.meta.env.VITE_TMDB_BASE_IMAGE_URL}/w300${movie.poster_path}`} />
                 <Box style={{overflow: 'hidden'}}>
                     <Grid container spacing={2} className='grid-container-custom'>

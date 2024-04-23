@@ -14,10 +14,10 @@ export class Friendship {
     receiverUserId: number;
 
     @ManyToOne(() => User, user => user.friendshipsRequested)
-    requesterUser: number;
+    requesterUser: User;
 
     @ManyToOne(() => User, user => user.friendshipsReceived)
-    receiverUser: number;
+    receiverUser: User;
 
     @Column()
     status: FriendshipStatus;

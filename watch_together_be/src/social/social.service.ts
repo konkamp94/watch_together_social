@@ -1,7 +1,7 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Friendship } from './entities/friendship.entity';
-import { Repository } from 'typeorm';
+import { Like, Not, Repository } from 'typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { FriendshipStatus } from './social.enum';
 import { BlockUserDto, CreateFriendshipDto, UpdateFriendshipStatusDto } from './social.interface';
@@ -10,6 +10,57 @@ import { BlockedUser } from 'src/user/entities/blocked-user.entity';
 export class SocialService {
     constructor(@InjectRepository(Friendship) private friendshipRepository: Repository<Friendship>,
         @InjectRepository(User) private userRepository: Repository<User>, @InjectRepository(BlockedUser) private blockedUserRepository: Repository<BlockedUser>) { }
+
+    async searchFriendByUsernameOrName(user: User, keyword: string) {
+        const otherUsers = await this.userRepository.find({
+            select: ['id', 'name', 'username'],
+            where: [{ username: Like(`%${keyword}%`), id: Not(user.id) },
+            { name: Like(`%${keyword}%`), id: Not(user.id) }]
+        })
+
+        const otherUsersWithFriendshipStatus = await Promise.all(otherUsers.map(async (otherUser) => {
+            otherUser['friendshipInfo'] = await this.getFriendshipState(user.id, otherUser.id)
+            return otherUser
+        }))
+
+        return otherUsersWithFriendshipStatus
+    }
+
+    private async getFriendshipState(userId: number, friendId: number): Promise<{ id: number, status: string; isRequesterUser: boolean; }> {
+        const friendship = await this.friendshipRepository
+            .findOne(
+                {
+                    where: [{ requesterUserId: userId, receiverUserId: friendId },
+                    { requesterUserId: friendId, receiverUserId: userId }]
+                }
+            )
+        if (!friendship) { return null }
+
+        return { id: friendship.id, status: friendship.status, isRequesterUser: friendship.requesterUserId === userId }
+    }
+
+    async getFriendRequests(user: User) {
+        const friendships = await this.friendshipRepository
+            .createQueryBuilder('friendship')
+            .select(['friendship.id', 'friendship.status', 'requesterUser.id', 'requesterUser.name', 'requesterUser.username'])
+            .where('friendship.receiverUserId = :userId', { userId: user.id })
+            .andWhere('friendship.status = :friendshipStatus', { friendshipStatus: FriendshipStatus.PENDING })
+            .innerJoin('friendship.requesterUser', 'requesterUser')
+            .getMany()
+
+        return friendships.map(friendship => {
+            return {
+                id: friendship.requesterUser.id,
+                ['name']: friendship.requesterUser.name,
+                username: friendship.requesterUser.username,
+                friendshipInfo: {
+                    id: friendship.id,
+                    status: friendship.status,
+                    isRequesterUser: false
+                }
+            }
+        })
+    }
 
     async createFriendship(createFriendshipDto: CreateFriendshipDto) {
 
@@ -20,8 +71,19 @@ export class SocialService {
 
         if (user.id === receiverUser.id) { throw new HttpException('Requester user id is the same with receiver user id', 400); }
 
-        const existedFriendship = await this.friendshipRepository.findOne({ where: { requesterUserId: user.id, receiverUserId: receiverUser.id } });
+        const existedFriendship = await this.friendshipRepository.findOne(
+            {
+                where: [
+                    { requesterUserId: user.id, receiverUserId: receiverUser.id },
+                    { requesterUserId: receiverUser.id, receiverUserId: user.id }
+                ]
+            });
         if (existedFriendship && existedFriendship.status !== FriendshipStatus.REJECTED) { throw new HttpException('Friendship already exists', 400); }
+
+        //status rejected
+        if (existedFriendship && existedFriendship.status === FriendshipStatus.REJECTED) {
+            await this.friendshipRepository.remove(existedFriendship)
+        }
 
         const friendship = new Friendship();
         friendship.requesterUserId = user.id;

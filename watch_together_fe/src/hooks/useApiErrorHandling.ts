@@ -4,8 +4,8 @@ import { useState } from "react";
 import { AxiosError } from "axios";
 
 
-const useApiErrorHandling = (): [string | null, (error: AxiosError) => void] => {
-    const [errorMessage, setErrorMessage] = useState<string | null>(null)
+const useApiErrorHandling = (): [{ message: string, status: number } | null, (error: AxiosError) => void] => {
+    const [error, setError] = useState<{ message: string, status: number } | null>(null)
     const { logout } = useAuth()
     const navigate = useNavigate()
 
@@ -15,7 +15,7 @@ const useApiErrorHandling = (): [string | null, (error: AxiosError) => void] => 
             logout()
             navigate('/login')
         } else if (error?.response?.status === 500) {
-            setErrorMessage('Something went wrong, please try again later')
+            setError({ message: 'Something went wrong, please try again later', status: error.response.status })
         } else {
             console.log(error)
             console.log(error?.response?.data)
@@ -24,7 +24,7 @@ const useApiErrorHandling = (): [string | null, (error: AxiosError) => void] => 
         }
     }
 
-    return [errorMessage, handleApiError]
+    return [error, handleApiError]
 }
 
 export default useApiErrorHandling;

@@ -7,7 +7,7 @@ import { useState } from "react"
 
 const useGetWatchlistMovies = (page: number = 1) => {
     const { user } = useAuth()
-    const [errorMessage, handleApiError] = useApiErrorHandling()
+    const [error, handleApiError] = useApiErrorHandling()
     const [currentPage, setCurrentPage] = useState(page)
 
     if (!user) {
@@ -26,7 +26,7 @@ const useGetWatchlistMovies = (page: number = 1) => {
             refetchOnWindowFocus: false
         })
 
-    return { watchlistMovies, isLoadingWatchlist, getWatchlist, errorMessage, currentPage, setCurrentPage }
+    return { watchlistMovies, isLoadingWatchlist, getWatchlist, error, currentPage, setCurrentPage }
 }
 
 export default useGetWatchlistMovies

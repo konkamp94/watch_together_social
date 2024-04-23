@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios"
-import axiosInstance from "./axios.config"
+import { axiosInstance, createAuthHeaders } from "./axios.config"
 class MovieService {
 
     static instance: MovieService | null = null;
@@ -13,11 +13,11 @@ class MovieService {
     };
 
     getRandomMovieId = async (from: string = 'popular'): Promise<AxiosResponse> => {
-        return await axiosInstance.get(`/movie/random-movie-id?from=${from}`)
+        return await axiosInstance.get(`/movie/random-movie-id?from=${from}`, { headers: createAuthHeaders() })
     }
 
     getRecommendedMovies = async (movieId: number): Promise<AxiosResponse> => {
-        return await axiosInstance.get(`/movie/recommended-movies/?movieId=${movieId}/`)
+        return await axiosInstance.get(`/movie/recommended-movies/?movieId=${movieId}/`, { headers: createAuthHeaders() })
     }
 }
 

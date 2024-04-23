@@ -41,11 +41,11 @@ const MovieInList = ({movie, isFavoriteMode = false, isWatchlistMode = false}: {
     const titleSpan = <span style={{position: 'absolute', top: 0, padding: '8px', left: 0, fontSize: '1rem'}}>{movie.title}</span>
 
     return (
-      <Card sx={{ maxWidth: '100%', backgroundColor: 'primary.light', minHeight: '100%'}} elevation={5}>
+      <Card sx={{ maxWidth: '100%', backgroundColor: 'primary.main', minHeight: '100%'}} elevation={5}>
         <CardMedia
           component="img"
           height="100%"
-          image={`${import.meta.env.VITE_TMDB_BASE_IMAGE_URL}/w300${movie.poster_path}`}
+          image={`${import.meta.env.VITE_TMDB_BASE_IMAGE_URL}w300${movie.poster_path}`}
           alt="movie image"
         />
         <CardHeader

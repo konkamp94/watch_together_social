@@ -12,3 +12,9 @@ body {
 .grid-item-custom {
     padding-left: 0!important;
 }
+
+.active-button {
+    background-color: #a39ecd!important;
+    color: white !important;
+    border-radius: 12px !important;
+}

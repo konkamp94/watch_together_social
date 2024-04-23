@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import axiosInstance from "./axios.config";
+import { axiosInstance, createAuthHeaders } from "./axios.config";
 import { TmdbProxyBody } from './api.interfaces'
 
 class TmdbProxyService {
@@ -24,8 +24,7 @@ class TmdbProxyService {
         if (headers) {
             proxyBody = { ...proxyBody, headers }
         }
-        console.log(proxyBody)
-        return await axiosInstance.post('tmdb-proxy', proxyBody)
+        return await axiosInstance.post('tmdb-proxy', proxyBody, { headers: createAuthHeaders() })
     }
 
 }
