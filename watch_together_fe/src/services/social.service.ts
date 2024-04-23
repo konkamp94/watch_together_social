@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios"
-import axiosInstance from "./axios.config"
+import { axiosInstance, createAuthHeaders } from "./axios.config"
 class SocialService {
 
     static instance: SocialService | null = null;
@@ -13,7 +13,11 @@ class SocialService {
     };
 
     searchFriends = async (keyword: string): Promise<AxiosResponse> => {
-        return await axiosInstance.get(`/social/search-friends?search=${keyword}`)
+        return await axiosInstance.get(`/social/search-friends?search=${keyword}`, { headers: createAuthHeaders() })
+    }
+
+    getFriendRequests = async (): Promise<AxiosResponse> => {
+        return await axiosInstance.get(`/social/friend-requests`, { headers: createAuthHeaders() })
     }
 
     addFriend = async ({ otherUserId, userId }: { otherUserId: number, userId: number }): Promise<AxiosResponse> => {
@@ -23,13 +27,13 @@ class SocialService {
             receiverUserId: otherUserId
         }
 
-        return await axiosInstance.post('/social/friendship', body)
+        return await axiosInstance.post('/social/friendship', body, { headers: createAuthHeaders() })
     }
 
     acceptOrRejectFriend = async ({ friendshipId, status }: { friendshipId: number, status: string }) => {
         const body = { status }
 
-        return await axiosInstance.patch(`/social/friendship/${friendshipId}/status`, body)
+        return await axiosInstance.patch(`/social/friendship/${friendshipId}/status`, body, { headers: createAuthHeaders() })
     }
 }
 
