@@ -7,7 +7,7 @@ import { useState } from "react"
 
 const useSearchOtherUsersByUsernameOrName = () => {
     const { user } = useAuth()
-    const [errorMessage, handleApiError] = useApiErrorHandling()
+    const [error, handleApiError] = useApiErrorHandling()
     const [searchKeyword, setSearchKeyword] = useState("")
 
     if (!user) {
@@ -20,7 +20,7 @@ const useSearchOtherUsersByUsernameOrName = () => {
         enabled: !!searchKeyword
     })
 
-    return { otherUsers, isLoadingOtherUsers, errorMessage, refetchSearchOtherUsersByUsernameOrName, searchKeyword, setSearchKeyword }
+    return { otherUsers, isLoadingOtherUsers, error, refetchSearchOtherUsersByUsernameOrName, searchKeyword, setSearchKeyword }
 }
 
 export default useSearchOtherUsersByUsernameOrName

@@ -7,7 +7,7 @@ import { useState } from "react"
 
 const useGetFavoriteMovies = (page: number = 1) => {
     const { user } = useAuth()
-    const [errorMessage, handleApiError] = useApiErrorHandling()
+    const [error, handleApiError] = useApiErrorHandling()
     const [currentPage, setCurrentPage] = useState(page)
 
     if (!user) {
@@ -26,7 +26,7 @@ const useGetFavoriteMovies = (page: number = 1) => {
             refetchOnWindowFocus: false
         })
 
-    return { favoriteMovies, isLoadingFavorites, getFavorites, errorMessage, currentPage, setCurrentPage }
+    return { favoriteMovies, isLoadingFavorites, getFavorites, error, currentPage, setCurrentPage }
 }
 
 export default useGetFavoriteMovies

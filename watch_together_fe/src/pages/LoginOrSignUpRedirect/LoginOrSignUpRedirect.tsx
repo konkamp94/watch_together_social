@@ -7,8 +7,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from "@mui/material/Box"
 
 const LoginOrSignUpRedirect = () => {
-    const navigate = useNavigate();
-    const authContect = useAuth();
+    const navigate = useNavigate()
+    const authContext = useAuth();
     const [params] = useSearchParams();
     const requestToken = params.get('request_token')
     const approved = params.get('approved')
@@ -22,8 +22,8 @@ const LoginOrSignUpRedirect = () => {
                     () => authenticationService.signUpOrLogin(requestToken as string), 
                     {  
                         onSuccess: (response) => { 
-                            authContect.login(response.data.accessToken, response.data.refreshToken) 
-                            navigate('/home') 
+                            authContext.login(response.data.accessToken, response.data.refreshToken) 
+                            navigate('/home')
                         }, 
                        onError: () => navigate('/login'),
                        enabled: false})

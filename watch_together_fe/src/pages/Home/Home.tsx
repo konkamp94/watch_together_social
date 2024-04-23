@@ -5,13 +5,13 @@ import useGetRandomRecommendedMovies from '../../hooks/api/useGetRandomRecommend
 
 const Home = () => {
 
-    const { recommendedMoviesWithState, errorMessage, isLoading, isFetching, isRefetchingAccountStates } = useGetRandomRecommendedMovies()
+    const { recommendedMoviesWithState, error, isLoading, isFetching, isRefetchingAccountStates } = useGetRandomRecommendedMovies()
 
     return (
         <>
             <ContentHeader text='Recommended Movies'/>
             {isLoading || (isFetching && !isRefetchingAccountStates)? <MovieListSkeleton mockMovieCount={4}/>
-                : errorMessage && <p>{errorMessage as string}</p>}
+                : error && <p>{error.message}</p>}
             {recommendedMoviesWithState && !isLoading && (!isFetching || isRefetchingAccountStates) &&
                 <MovieList movies={recommendedMoviesWithState}/>}
         </>

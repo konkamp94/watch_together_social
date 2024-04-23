@@ -9,7 +9,7 @@ import { useLayoutEffect, useState } from 'react';
 import useLocalStorage from "../useLocalStorage";
 
 const useGetRandomRecommendedMovies = (recommendBy: string = 'popular', count: number = 4) => {
-    const [errorMessage, handleApiError] = useApiErrorHandling()
+    const [error, handleApiError] = useApiErrorHandling()
 
     const [storedRecommendedMovies, saveRecommendedMovies] = useLocalStorage('recommendedMovies')
     const [recommendedMovies, setRecommendedMovies] =
@@ -81,7 +81,7 @@ const useGetRandomRecommendedMovies = (recommendBy: string = 'popular', count: n
     const isLoading = isLoadingRecommendedMovies || isLoadingAccountStates
     const isFetching = isFetchingRecommendedMovies || isFetchingAccountStates
 
-    return { recommendedMoviesWithState, errorMessage, isLoading, isFetching, isRefetchingAccountStates }
+    return { recommendedMoviesWithState, error, isLoading, isFetching, isRefetchingAccountStates }
 }
 
 export default useGetRandomRecommendedMovies;

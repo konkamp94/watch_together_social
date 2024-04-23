@@ -8,7 +8,7 @@ import { useAuth } from "../context/useAuth";
 const useAddFriend = (onSuccess: ((friendshipInfo: FriendshipInfo) => void) | null = null) => {
     // const queryClient = useQueryClient();
     const { user } = useAuth()
-    const [errorMessage, handleApiError] = useApiErrorHandling();
+    const [error, handleApiError] = useApiErrorHandling();
 
     const { mutate, isLoading } = useMutation(socialService.addFriend, {
         onSuccess: (response) => {
@@ -27,7 +27,7 @@ const useAddFriend = (onSuccess: ((friendshipInfo: FriendshipInfo) => void) | nu
 
     return {
         addFriend: mutate,
-        errorMessageAddFriend: errorMessage,
+        errorAddFriend: error,
         isLoadingAddFriend: isLoading,
     };
 };

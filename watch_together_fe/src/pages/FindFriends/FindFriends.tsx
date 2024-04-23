@@ -8,7 +8,7 @@ const FindFriends = () => {
     const { isDesktop, isTablet } = useScreenSize()
     const { otherUsers, 
             isLoadingOtherUsers, 
-            errorMessage, 
+            error, 
             searchKeyword,
             setSearchKeyword } = useSearchOtherUsersByUsernameOrName()
 
@@ -23,7 +23,7 @@ const FindFriends = () => {
                             searchAction={search} 
                             initialValue={searchKeyword}/>
                 {isLoadingOtherUsers ? <p>Loading...</p> : null}
-                {errorMessage && <p>{errorMessage as string}</p>}
+                {error && <p>{error.message}</p>}
                 {!isLoadingOtherUsers && otherUsers &&<OtherUserList otherUsers={otherUsers.data}/>}
             </Box>
         </>

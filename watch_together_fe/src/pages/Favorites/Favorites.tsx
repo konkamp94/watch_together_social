@@ -9,7 +9,7 @@ import { mapMoviesWithGenres } from "../../utils/transform"
 
 const Favorites = () => {
     const { isDesktop, isTablet } = useScreenSize()
-    const { favoriteMovies, isLoadingFavorites, errorMessage, setCurrentPage  } = useGetFavoriteMovies()
+    const { favoriteMovies, isLoadingFavorites, error, setCurrentPage  } = useGetFavoriteMovies()
     const { genres } = useMetadata()
 
     const changePage = (page: number) => {
@@ -20,7 +20,7 @@ const Favorites = () => {
         <>  
             <ContentHeader text='Favorites'/>
             {/* TODO create a skeleten for loading in big screens */}
-            {isLoadingFavorites ? <p>Loading...</p> : errorMessage && <p>{errorMessage as string}</p>}
+            {isLoadingFavorites ? <p>Loading...</p> : error && <p>{error.message}</p>}
             {/* Desktop View */}
             {favoriteMovies && genres && (isDesktop || isTablet) && 
                 <DetailedMovieList movies={mapMoviesWithGenres(favoriteMovies?.data.results, genres)} isFavoriteMode={true}/>}

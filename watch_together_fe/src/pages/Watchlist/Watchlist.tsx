@@ -9,7 +9,7 @@ import { mapMoviesWithGenres } from "../../utils/transform"
 
 const Watchlist = () => {
     const { isDesktop, isTablet } = useScreenSize()
-    const { watchlistMovies, isLoadingWatchlist, errorMessage, setCurrentPage  } = useGetWatchlistMovies()
+    const { watchlistMovies, isLoadingWatchlist, error, setCurrentPage  } = useGetWatchlistMovies()
     const { genres } = useMetadata()
 
     const changePage = (page: number) => {
@@ -20,7 +20,7 @@ const Watchlist = () => {
         <>  
             <ContentHeader text='Watchlist'/>
             {/* TODO create a skeleten for loading in big screens */}
-            {isLoadingWatchlist ? <p>Loading...</p> : errorMessage && <p>{errorMessage as string}</p>}
+            {isLoadingWatchlist ? <p>Loading...</p> : error && <p>{error.message}</p>}
             {/* Desktop View */}
             {watchlistMovies && genres && (isDesktop || isTablet) && 
                 <DetailedMovieList movies={mapMoviesWithGenres(watchlistMovies?.data.results, genres)} isWatchlistMode={true}/>}
