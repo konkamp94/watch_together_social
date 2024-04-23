@@ -1,4 +1,4 @@
-import { HttpException, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Friendship } from './entities/friendship.entity';
 import { Like, Not, Repository } from 'typeorm';
@@ -37,6 +37,29 @@ export class SocialService {
         if (!friendship) { return null }
 
         return { id: friendship.id, status: friendship.status, isRequesterUser: friendship.requesterUserId === userId }
+    }
+
+    async getFriendRequests(user: User) {
+        const friendships = await this.friendshipRepository
+            .createQueryBuilder('friendship')
+            .select(['friendship.id', 'friendship.status', 'requesterUser.id', 'requesterUser.name', 'requesterUser.username'])
+            .where('friendship.receiverUserId = :userId', { userId: user.id })
+            .andWhere('friendship.status = :friendshipStatus', { friendshipStatus: FriendshipStatus.PENDING })
+            .innerJoin('friendship.requesterUser', 'requesterUser')
+            .getMany()
+
+        return friendships.map(friendship => {
+            return {
+                id: friendship.requesterUser.id,
+                ['name']: friendship.requesterUser.name,
+                username: friendship.requesterUser.username,
+                friendshipInfo: {
+                    id: friendship.id,
+                    status: friendship.status,
+                    isRequesterUser: false
+                }
+            }
+        })
     }
 
     async createFriendship(createFriendshipDto: CreateFriendshipDto) {

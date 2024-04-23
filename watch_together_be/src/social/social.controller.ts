@@ -16,6 +16,13 @@ export class SocialController {
         return this.socialService.searchFriendByUsernameOrName(request['user'], params?.search)
     }
 
+    @UseGuards(AuthGuard)
+    @Get('friend-requests')
+    async getFriendRequests(@Req() request) {
+        return this.socialService.getFriendRequests(request['user'])
+    }
+
+
     // add friendship
     @UseGuards(PermissionsGuard({ title: SocialPermissionTitle.CAN_CREATE_FRIENDSHIP, subject: Friendship }))
     @Post('friendship')
