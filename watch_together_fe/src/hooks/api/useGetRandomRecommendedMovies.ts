@@ -5,7 +5,7 @@ import { useQuery } from "react-query";
 import { AxiosError } from "axios";
 import { Movie } from '../../services/api.interfaces'
 import { TmdbProxyBody } from "../../services/api.interfaces";
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useLocalStorage from "../useLocalStorage";
 
 const useGetRandomRecommendedMovies = (recommendBy: string = 'popular', count: number = 4) => {
@@ -23,8 +23,8 @@ const useGetRandomRecommendedMovies = (recommendBy: string = 'popular', count: n
 
     // this runs on the component unmount. I want to enable the query for the movies's state update so I can
     // invalidate query from other components when a movie is added to favorites or watchlist
-    useLayoutEffect(() => {
-        setFetchingStage('recommended-movies-account-states')
+    useEffect(() => {
+        return setFetchingStage('recommended-movies-account-states')
     }, [setFetchingStage])
 
     const { isLoading: isLoadingRecommendedMovies, isFetching: isFetchingRecommendedMovies } = useQuery('recommended-movies',

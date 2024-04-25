@@ -14,11 +14,12 @@ const useSearchOtherUsersByUsernameOrName = () => {
         throw new Error('User must be logged in to search for friends');
     }
 
-    const { data: otherUsers, isLoading: isLoadingOtherUsers, refetch: refetchSearchOtherUsersByUsernameOrName } = useQuery(['search-friends', searchKeyword],
-        () => socialService.searchFriends(searchKeyword), {
-        onError: (error: AxiosError) => handleApiError(error),
-        enabled: !!searchKeyword
-    })
+    const { data: otherUsers, isLoading: isLoadingOtherUsers, refetch: refetchSearchOtherUsersByUsernameOrName }
+        = useQuery(['search-friends', searchKeyword],
+            () => socialService.searchFriends(searchKeyword), {
+            onError: (error: AxiosError) => handleApiError(error),
+            enabled: !!searchKeyword
+        })
 
     return { otherUsers, isLoadingOtherUsers, error, refetchSearchOtherUsersByUsernameOrName, searchKeyword, setSearchKeyword }
 }

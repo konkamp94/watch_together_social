@@ -13,7 +13,7 @@ import StarIcon from '@mui/icons-material/Star';
 import moment from "moment";
 import useAddOrRemoveFavorite from "../../hooks/api/useAddToFavorite";
 import useAddOrRemoveWatchlist from "../../hooks/api/useAddToWatchlist";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
 
 const MovieInList = ({movie, isFavoriteMode = false, isWatchlistMode = false}: {movie: MovieWithGenres | MovieWithGenresAndState, isFavoriteMode: boolean, isWatchlistMode: boolean}) => {
@@ -37,6 +37,21 @@ const MovieInList = ({movie, isFavoriteMode = false, isWatchlistMode = false}: {
     const { addOrRemoveWatchlist, isLoading: isLoadingWatchlist } = useAddOrRemoveWatchlist(() =>  { 
       setIsWatchlist(!isWatchlist) 
     });
+
+    useEffect(() => {
+      setIsFavorite(() => {
+        if(isFavoriteMode) { return true }
+        if('state' in movie) { 
+          return movie.state.favorite 
+        }
+      })
+      setIsWatchlist(() => {
+        if(isWatchlistMode) { return true }
+        if('state' in movie) { 
+          return movie.state.watchlist 
+        }
+      })
+    }, [movie, isFavoriteMode, isWatchlistMode])
 
     const titleSpan = <span style={{position: 'absolute', top: 0, padding: '8px', left: 0, fontSize: '1rem'}}>{movie.title}</span>
 
