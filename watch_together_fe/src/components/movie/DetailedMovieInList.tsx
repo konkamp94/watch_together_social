@@ -3,7 +3,7 @@ import { Box, IconButton, Typography, Grid, CircularProgress, Chip, Stack} from 
 import StarIcon from '@mui/icons-material/Star';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import useAddOrRemoveFavorite from "../../hooks/api/useAddToFavorite";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useAddOrRemoveWatchlist from "../../hooks/api/useAddToWatchlist";
 import { MovieCreation } from "@mui/icons-material";
 
@@ -20,20 +20,35 @@ const DetailedMovieInList = ({movie, isFavoriteMode = false, isWatchlistMode = f
     });
 
     const [isWatchlist, setIsWatchlist] = useState(() => {
-    if(isWatchlistMode) { return true }
-    if('state' in movie) { 
-        return movie.state.watchlist 
-    }
+        if(isWatchlistMode) { return true }
+        if('state' in movie) { 
+            return movie.state.watchlist 
+        }
     });
 
     const { addOrRemoveWatchlist, isLoading: isLoadingWatchlist } = useAddOrRemoveWatchlist(() =>  { 
         setIsWatchlist(!isWatchlist) 
     });
+
+    useEffect(() => {
+        setIsFavorite(() => {
+          if(isFavoriteMode) { return true }
+          if('state' in movie) { 
+            return movie.state.favorite 
+          }
+        })
+        setIsWatchlist(() => {
+          if(isWatchlistMode) { return true }
+          if('state' in movie) { 
+            return movie.state.watchlist 
+          }
+        })
+      }, [movie, isFavoriteMode, isWatchlistMode])
     
     return (
             <Box sx={{ backgroundColor: 'primary.main', marginTop: '16px', padding: '16px', display: 'flex', maxHeight: '300px', textAlign: 'justify'}}>
                 <img style={{maxWidth: '300px', maxHeight: '300px', marginRight: '16px'}} src={`${import.meta.env.VITE_TMDB_BASE_IMAGE_URL}/w300${movie.poster_path}`} />
-                <Box style={{overflow: 'hidden'}}>
+                <Box style={{overflow: 'hidden', width: '100%'}}>
                     <Grid container spacing={2} className='grid-container-custom'>
                         <Grid className='grid-item-custom' xs={9} md={10} lg={11}>
                             <Typography variant="h6" sx={{color: 'primary.contrastText', lineHeight: '0.9', marginBottom: '16px'}}>{movie.title}</Typography>
@@ -70,7 +85,7 @@ const DetailedMovieInList = ({movie, isFavoriteMode = false, isWatchlistMode = f
                     <Typography variant="body2" color="primary.contrastText" style={{marginBottom: '16px'}}>
                         <Stack direction="row" spacing={1}>
                             {movie.genres.map(genre => (
-                                    <Chip key={genre.id} label={genre.name} color="primary" />
+                                    <Chip key={genre.id} label={genre.name} sx={{color: 'primary.dark'}} />
                             ))}
                         </Stack>
                     </Typography>
