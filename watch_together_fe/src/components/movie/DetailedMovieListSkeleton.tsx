@@ -10,7 +10,7 @@ const DetailedMovieListSkeleton = ({ mockMovieCount = 4 }: {mockMovieCount: numb
                             <Skeleton variant="rectangular" height={300}/>
                         </Grid>
                         <Grid item className='grid-item-custom' xs={9} sx={{padding: '4px'}}>
-                                    <Skeleton variant="rectangular" height={50} sx={{marginBottom: '12px'}}/>
+                                    <Skeleton variant="rectangular" height={38} sx={{marginBottom: '12px'}}/>
                                     <Skeleton variant="rectangular" height={250}/>
                         </Grid>
                      </>
@@ -22,7 +22,7 @@ const DetailedMovieListSkeleton = ({ mockMovieCount = 4 }: {mockMovieCount: numb
     }
 
     return (
-        <Grid container spacing={2} className='grid-container-custom'>
+        <Grid container spacing={2} className='grid-container-custom' sx={{paddingTop: '4px'}}>
             { generateMockMoviesItems().map((mockMovieItem) => mockMovieItem) }
         </Grid>
     )
