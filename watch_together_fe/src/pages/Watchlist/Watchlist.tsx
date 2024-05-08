@@ -8,11 +8,14 @@ import useMetadata from "../../hooks/context/useMetadata"
 import { mapMoviesWithGenres } from "../../utils/transform"
 import DetailedMovieListSkeleton from "../../components/movie/DetailedMovieListSkeleton"
 import MovieListSkeleton from "../../components/movie/MovieListSkeleton"
+import { useEffect } from "react"
 
 const Watchlist = () => {
     const { isDesktop, isTablet } = useScreenSize()
     const { watchlistMovies, isLoadingWatchlist, error, currentPage, setCurrentPage  } = useGetWatchlistMovies()
     const { genres } = useMetadata()
+    
+    useEffect(() => window.scroll(0, 0), [currentPage])
 
     const changePage = (page: number) => {
        setCurrentPage(page)

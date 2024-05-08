@@ -23,6 +23,8 @@ const FindMovies = () => {
         refetchSearchMovies()
     }, [currentPage, refetchSearchMovies, searchParams])
     
+    useEffect(() => window.scrollTo(0,0), [currentPage])
+
     const search = useCallback((searchKeyword: string) => {
         setSearchParams((searchParams) => ( { ...searchParams, keyword: searchKeyword }))
         setCurrentPage(1)
