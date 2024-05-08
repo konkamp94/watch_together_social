@@ -11,6 +11,7 @@ import Watchlist from './pages/Watchlist/Watchlist'
 import FindFriends from './pages/FindFriends/FindFriends'
 import FriendRequests from './pages/FriendRequests/FriendRequests'
 import FindMovies from './pages/FindMovies/FindMovies'
+import Movie from './pages/Movie/Movie'
 
 function App() {
   const { genres } = useMetadata()
@@ -32,6 +33,7 @@ function App() {
               <Route path='/find-movies' element={<FindMovies/>}></Route>
               <Route path='/find-friends' element={<FindFriends/>}></Route>
               <Route path='/friend-requests' element={<FriendRequests/>}></Route>
+              <Route path='/movie/:movieId' element={<Movie/>}></Route>
           </Route>
         </Routes>
       </BrowserRouter>

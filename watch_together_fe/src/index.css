@@ -18,3 +18,7 @@ body {
     color: white !important;
     border-radius: 12px !important;
 }
+
+.link-hover:hover {
+    text-decoration: underline;
+}

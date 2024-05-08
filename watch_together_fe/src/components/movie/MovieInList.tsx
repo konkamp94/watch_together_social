@@ -15,9 +15,12 @@ import useAddOrRemoveFavorite from "../../hooks/api/useAddToFavorite";
 import useAddOrRemoveWatchlist from "../../hooks/api/useAddToWatchlist";
 import { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import moviePhoto from '../../assets/movie-thumbnail.jpg'
 
 const MovieInList = ({movie, isFavoriteMode = false, isWatchlistMode = false}: {movie: MovieWithGenres | MovieWithGenresAndState, isFavoriteMode: boolean, isWatchlistMode: boolean}) => {
-    const [isFavorite, setIsFavorite] = useState(() => {
+  const navigate = useNavigate()  
+  const [isFavorite, setIsFavorite] = useState(() => {
       if(isFavoriteMode) { return true }
       if('state' in movie) { 
         return movie.state.favorite 
@@ -53,14 +56,18 @@ const MovieInList = ({movie, isFavoriteMode = false, isWatchlistMode = false}: {
       })
     }, [movie, isFavoriteMode, isWatchlistMode])
 
-    const titleSpan = <span style={{position: 'absolute', top: 0, padding: '8px', left: 0, fontSize: '1rem'}}>{movie.title}</span>
+    const titleSpan = <span onClick={() => navigate(`/movie/${movie.id}`)} 
+                            className="link-hover"
+                            style={{ cursor: 'pointer', position: 'absolute', top: 0, padding: '8px', left: 0, fontSize: '1rem' }}>
+                              {movie.title}
+                      </span>
 
     return (
       <Card sx={{ maxWidth: '100%', backgroundColor: 'primary.main', minHeight: '100%'}} elevation={5}>
         <CardMedia
           component="img"
-          height="100%"
-          image={`${import.meta.env.VITE_TMDB_BASE_IMAGE_URL}w300${movie.poster_path}`}
+          sx={{height:'300px'}}
+          image={movie.poster_path ? `${import.meta.env.VITE_TMDB_BASE_IMAGE_URL}/w342${movie.poster_path}` : moviePhoto}
           alt="movie image"
         />
         <CardHeader
