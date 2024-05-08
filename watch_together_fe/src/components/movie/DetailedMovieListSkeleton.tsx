@@ -10,7 +10,7 @@ const DetailedMovieListSkeleton = ({ mockMovieCount = 4 }: {mockMovieCount: numb
                             <Skeleton variant="rectangular" height={300}/>
                         </Grid>
                         <Grid item className='grid-item-custom' xs={9} sx={{padding: '4px'}}>
-                                    <Skeleton variant="rectangular" height={38} sx={{marginBottom: '12px'}}/>
+                                    <Skeleton variant="rectangular" height={50} sx={{marginBottom: '12px'}}/>
                                     <Skeleton variant="rectangular" height={250}/>
                         </Grid>
                      </>
