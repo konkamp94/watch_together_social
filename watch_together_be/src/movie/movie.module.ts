@@ -4,7 +4,6 @@ import { MovieService } from './movie.service';
 import { AuthenticationModule } from 'src/authentication/authentication.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
-import { AppModule } from 'src/app.module';
 import { SharedModule } from 'src/shared/shared.module';
 
 @Module({

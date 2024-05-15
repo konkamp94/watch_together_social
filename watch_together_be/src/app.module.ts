@@ -10,6 +10,7 @@ import { HttpModule } from '@nestjs/axios';
 import { User } from './user/entities/user.entity';
 import { MovieModule } from './movie/movie.module';
 import { SharedModule } from './shared/shared.module';
+import { GatewayModule } from './gateway/gateway.module';
 
 const ENV = process.env.NODE_ENV || 'development';
 const envFilePath = `config/.${ENV}.env`;
@@ -37,6 +38,7 @@ const envFilePath = `config/.${ENV}.env`;
     SocialModule,
     MovieModule,
     SharedModule,
+    GatewayModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Friendship } from 'src/social/entities/friendship.entity';
 import { BlockedUser } from './blocked-user.entity';
-
+import { Notification } from '../../social/entities/notification.entity';
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
@@ -22,6 +22,9 @@ export class User {
 
     @Column({ nullable: true, default: null })
     refreshToken: string;
+
+    @OneToMany(() => Notification, notification => notification.user)
+    notifications: Notification[];
 
     @OneToMany(() => Friendship, friendship => friendship.requesterUser)
     friendshipsRequested: Friendship[];

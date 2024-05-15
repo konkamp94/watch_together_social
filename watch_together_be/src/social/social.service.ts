@@ -1,15 +1,19 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Friendship } from './entities/friendship.entity';
-import { Like, Not, Repository } from 'typeorm';
+import { In, Like, Not, Repository } from 'typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { FriendshipStatus } from './social.enum';
 import { BlockUserDto, CreateFriendshipDto, UpdateFriendshipStatusDto } from './social.interface';
 import { BlockedUser } from 'src/user/entities/blocked-user.entity';
+import { NotificationType } from 'src/user/user.interface';
+import { Notification } from './entities/notification.entity';
 @Injectable()
 export class SocialService {
     constructor(@InjectRepository(Friendship) private friendshipRepository: Repository<Friendship>,
-        @InjectRepository(User) private userRepository: Repository<User>, @InjectRepository(BlockedUser) private blockedUserRepository: Repository<BlockedUser>) { }
+        @InjectRepository(User) private userRepository: Repository<User>,
+        @InjectRepository(BlockedUser) private blockedUserRepository: Repository<BlockedUser>,
+        @InjectRepository(Notification) private notificationRepository: Repository<Notification>) { }
 
     async searchFriendByUsernameOrName(user: User, keyword: string) {
         const otherUsers = await this.userRepository.find({
@@ -60,6 +64,29 @@ export class SocialService {
                 }
             }
         })
+    }
+
+    async getNotifications(user: User) {
+        return this.notificationRepository
+            .createQueryBuilder('notification')
+            .select([
+                'notification.id',
+                'notification.userId',
+                'notification.type',
+                'notification.createdAt',
+                'friendRequest.status',
+                'friendRequest.createdAt',
+                'requesterUser.id',
+                'requesterUser.name',
+                'requesterUser.username'
+            ])
+            .where('notification.userId = :userId', { userId: user.id })
+            .innerJoin('notification.friendRequest', 'friendRequest')
+            .innerJoin('friendRequest.requesterUser', 'requesterUser')
+            .orderBy('notification.createdAt', 'DESC')
+            .take(10)
+            .getMany()
+
     }
 
     async createFriendship(createFriendshipDto: CreateFriendshipDto) {
@@ -124,5 +151,30 @@ export class SocialService {
         blockedUser.blockerUserId = blockerUserId;
         blockedUser.blockedUserId = blockedUserId;
         return this.blockedUserRepository.save(blockedUser);
+    }
+
+    async createNotification(notificationType: NotificationType, notificationRelationship: Friendship) {
+        const notification = new Notification()
+        switch (notificationType) {
+            case 'FRIEND REQUEST':
+                notification.userId = notificationRelationship.receiverUserId
+                notification.type = notificationType
+                notification.friendRequest = notificationRelationship
+        }
+        const notificationData = await this.notificationRepository.save(notification)
+        notificationData.friendRequest = await this.friendshipRepository.createQueryBuilder('friendship')
+            .select([
+                'friendship.id',
+                'friendship.status',
+                'friendship.requesterUserId',
+                'friendship.receiverUserId',
+                'requesterUser.name',
+                'requesterUser.username',
+                'friendship.createdAt', 'friendship.updatedAt'])
+            .where('friendship.id = :friendshipId', { friendshipId: notificationData.friendRequest.id })
+            .innerJoin('friendship.requesterUser', 'requesterUser')
+            .getOne()
+
+        return notificationData
     }
 }
