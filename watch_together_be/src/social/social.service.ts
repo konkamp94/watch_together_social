@@ -73,6 +73,7 @@ export class SocialService {
                 'notification.id',
                 'notification.userId',
                 'notification.type',
+                'notification.seen',
                 'notification.createdAt',
                 'friendRequest.status',
                 'friendRequest.createdAt',

@@ -20,6 +20,10 @@ class SocialService {
         return await axiosInstance.get(`/social/friend-requests`, { headers: createAuthHeaders() })
     }
 
+    getNotifications = async (): Promise<AxiosResponse> => {
+        return await axiosInstance.get(`/social/notifications`, { headers: createAuthHeaders() })
+    }
+
     addFriend = async ({ otherUserId, userId }: { otherUserId: number, userId: number }): Promise<AxiosResponse> => {
 
         const body = {

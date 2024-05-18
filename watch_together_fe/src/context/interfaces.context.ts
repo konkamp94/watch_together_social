@@ -19,4 +19,30 @@ export interface MetadataContextValue {
     isLoadingGenres: boolean
 }
 
+
 export type GenresMap = { [id: number]: string }
+
+export interface NotificationsContextValue {
+    notifications: Notification[]
+    unseenNotificationsCount: number
+    isLoadingNotifications: boolean
+}
+
+export interface FriendRequestNotification {
+    id: number,
+    userId: number,
+    type: string,
+    createdAt: string,
+    seen: boolean,
+    friendRequest: {
+        status: string,
+        createdAt: string,
+        requesterUser: {
+            id: number,
+            username: string,
+            name: string
+        }
+    }
+}
+
+export type Notification = FriendRequestNotification

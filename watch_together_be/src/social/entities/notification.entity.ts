@@ -22,6 +22,10 @@ export class Notification {
     @JoinColumn()
     friendRequest: Friendship
 
+    @Column({ default: false })
+    seen: boolean
+
     @CreateDateColumn({ type: 'timestamp' })
     createdAt: Date;
+    notificationData: any;
 }

@@ -19,10 +19,12 @@ import MovieIcon from '@mui/icons-material/Movie';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import './NavBar.css'
 import { useNavigate } from 'react-router-dom';
+import { useNotifications } from '../../hooks/context/useNotifcations';
 
 
 export default function NavBar({ activeButtonId, setActiveButtonId }: {activeButtonId: string, setActiveButtonId: React.Dispatch<React.SetStateAction<string>> }) {
   const navigate = useNavigate();
+  const { notifications, unseenNotificationsCount} = useNotifications()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -100,7 +102,7 @@ export default function NavBar({ activeButtonId, setActiveButtonId }: {activeBut
           aria-label="show 17 new notifications"
           color="inherit"
         >
-          <Badge badgeContent={17} color="secondary">
+          <Badge badgeContent={unseenNotificationsCount} color="secondary">
             <NotificationsIcon />
           </Badge>
         </IconButton>
@@ -181,7 +183,7 @@ export default function NavBar({ activeButtonId, setActiveButtonId }: {activeBut
               aria-label="show 17 new notifications"
               color="inherit"
             >
-              <Badge badgeContent={17} color="error">
+              <Badge badgeContent={unseenNotificationsCount} color="error">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
@@ -213,6 +215,8 @@ export default function NavBar({ activeButtonId, setActiveButtonId }: {activeBut
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
+      <>
+      </>
     </Box>
   );
 }
