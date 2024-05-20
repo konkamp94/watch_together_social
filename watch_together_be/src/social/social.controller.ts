@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Logger, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, Logger, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/authentication/guards/auth.guard';
 import { PermissionsGuard } from 'src/authentication/guards/permissions.guard';
 import { Friendship } from './entities/friendship.entity';
@@ -23,13 +23,6 @@ export class SocialController {
     async getFriendRequests(@Req() request) {
         return await this.socialService.getFriendRequests(request['user'])
     }
-
-    @UseGuards(AuthGuard)
-    @Get('/notifications')
-    async getNotifications(@Req() request) {
-        return await this.socialService.getNotifications(request['user'])
-    }
-
 
     // add friendship
     @UseGuards(PermissionsGuard({ title: SocialPermissionTitle.CAN_CREATE_FRIENDSHIP, subject: Friendship }))
@@ -58,6 +51,22 @@ export class SocialController {
     async blockUser(@Body() blockUserDto: BlockUserDto) {
         return this.socialService.blockUser(blockUserDto);
     }
+
+    @UseGuards(AuthGuard)
+    @Get('/notifications')
+    async getNotifications(@Req() request) {
+        return await this.socialService.getNotifications(request['user'])
+    }
+
+    @UseGuards(AuthGuard)
+    @Get('/notifications/mark-as-seen')
+    async markNotificationsAsSeen(@Req() request, @Query() params) {
+        if (!params.notificationsCount) { throw new HttpException('Pass notificationsCount param', 400) }
+        await this.socialService.markNotificationAsSeen(request['user'], params.notificationsCount)
+        return { message: 'Latest Notifications marked as seen' }
+    }
+
+
 
 
 }

@@ -26,6 +26,7 @@ export interface NotificationsContextValue {
     notifications: Notification[]
     unseenNotificationsCount: number
     isLoadingNotifications: boolean
+    onClickBellIcon: () => void
 }
 
 export interface FriendRequestNotification {

@@ -20,11 +20,13 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import './NavBar.css'
 import { useNavigate } from 'react-router-dom';
 import { useNotifications } from '../../hooks/context/useNotifcations';
+import NotificationSideBar from '../notifications/NotificationSideBar';
 
 
 export default function NavBar({ activeButtonId, setActiveButtonId }: {activeButtonId: string, setActiveButtonId: React.Dispatch<React.SetStateAction<string>> }) {
   const navigate = useNavigate();
-  const { notifications, unseenNotificationsCount} = useNotifications()
+  const { notifications, unseenNotificationsCount, onClickBellIcon } = useNotifications()
+  const [openNotificationSideBar, setOpenNotificationSideBar] = React.useState<boolean>(false)
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -96,7 +98,7 @@ export default function NavBar({ activeButtonId, setActiveButtonId }: {activeBut
         </IconButton>
         <p>Messages</p>
       </MenuItem>
-      <MenuItem>
+      <MenuItem onClick={() => { onClickBellIcon(), setOpenNotificationSideBar(!openNotificationSideBar) }}>
         <IconButton
           size="large"
           aria-label="show 17 new notifications"
@@ -182,9 +184,10 @@ export default function NavBar({ activeButtonId, setActiveButtonId }: {activeBut
               size="large"
               aria-label="show 17 new notifications"
               color="inherit"
+              onClick={() => { onClickBellIcon(), setOpenNotificationSideBar(!openNotificationSideBar)}}
             >
               <Badge badgeContent={unseenNotificationsCount} color="error">
-                <NotificationsIcon />
+                <NotificationsIcon/>
               </Badge>
             </IconButton>
             <IconButton
@@ -215,8 +218,7 @@ export default function NavBar({ activeButtonId, setActiveButtonId }: {activeBut
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
-      <>
-      </>
+      <NotificationSideBar notifications={notifications} open={openNotificationSideBar} setOpen={setOpenNotificationSideBar} />
     </Box>
   );
 }

@@ -90,6 +90,16 @@ export class SocialService {
 
     }
 
+    async markNotificationAsSeen(user: User, notificationsCount: number) {
+        const notifications = await this.notificationRepository
+            .find({ where: { userId: user.id }, take: notificationsCount, order: { createdAt: 'DESC' } });
+
+        notifications.forEach(async (notification) => {
+            notification.seen = true
+            await this.notificationRepository.save(notification)
+        })
+    }
+
     async createFriendship(createFriendshipDto: CreateFriendshipDto) {
 
         const user = await this.userRepository.findOne({ where: { id: createFriendshipDto.requesterUserId } });

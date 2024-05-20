@@ -9,7 +9,7 @@ const useGetNotifications = () => {
     const [error, handleApiError] = useApiErrorHandling()
 
     if (!user) {
-        throw new Error('User must be logged in to get favorites');
+        throw new Error('User must be logged in to get notifications');
     }
 
     const { data: notifications, isLoading: isLoadingNotifications } = useQuery(['notifications'], socialService.getNotifications,

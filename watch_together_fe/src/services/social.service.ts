@@ -39,6 +39,11 @@ class SocialService {
 
         return await axiosInstance.patch(`/social/friendship/${friendshipId}/status`, body, { headers: createAuthHeaders() })
     }
+
+    markNotificationsAsSeen = async (notificationsCount: number) => {
+        return await axiosInstance.get(`/social/notifications/mark-as-seen?notificationsCount=${notificationsCount}`,
+            { headers: createAuthHeaders() })
+    }
 }
 
 export default SocialService.getInstance()
