@@ -20,6 +20,10 @@ class SocialService {
         return await axiosInstance.get(`/social/friend-requests`, { headers: createAuthHeaders() })
     }
 
+    getNotifications = async (): Promise<AxiosResponse> => {
+        return await axiosInstance.get(`/social/notifications`, { headers: createAuthHeaders() })
+    }
+
     addFriend = async ({ otherUserId, userId }: { otherUserId: number, userId: number }): Promise<AxiosResponse> => {
 
         const body = {
@@ -34,6 +38,11 @@ class SocialService {
         const body = { status }
 
         return await axiosInstance.patch(`/social/friendship/${friendshipId}/status`, body, { headers: createAuthHeaders() })
+    }
+
+    markNotificationsAsSeen = async (notificationsCount: number) => {
+        return await axiosInstance.get(`/social/notifications/mark-as-seen?notificationsCount=${notificationsCount}`,
+            { headers: createAuthHeaders() })
     }
 }
 

@@ -1,14 +1,16 @@
-import { Body, Controller, Delete, Get, Logger, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, Logger, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/authentication/guards/auth.guard';
 import { PermissionsGuard } from 'src/authentication/guards/permissions.guard';
 import { Friendship } from './entities/friendship.entity';
 import { GeneralPermissionTitle, SocialPermissionTitle } from 'src/authentication/guards/permission.enum';
 import { SocialService } from './social.service';
 import { BlockUserDto, CreateFriendshipDto, UpdateFriendshipStatusDto } from './social.interface';
+import { NotificationGateway } from 'src/gateway/notification.gateway';
+import { NotificationType } from 'src/user/user.interface';
 
 @Controller('social')
 export class SocialController {
-    constructor(private socialService: SocialService) { }
+    constructor(private socialService: SocialService, private notificationGateway: NotificationGateway) { }
 
     @UseGuards(AuthGuard)
     @Get('search-friends')
@@ -19,15 +21,17 @@ export class SocialController {
     @UseGuards(AuthGuard)
     @Get('friend-requests')
     async getFriendRequests(@Req() request) {
-        return this.socialService.getFriendRequests(request['user'])
+        return await this.socialService.getFriendRequests(request['user'])
     }
-
 
     // add friendship
     @UseGuards(PermissionsGuard({ title: SocialPermissionTitle.CAN_CREATE_FRIENDSHIP, subject: Friendship }))
     @Post('friendship')
     async createFriendship(@Body() createFriendshipDto: CreateFriendshipDto) {
-        return await this.socialService.createFriendship(createFriendshipDto);
+        const friendship = await this.socialService.createFriendship(createFriendshipDto);
+        const notification = await this.socialService.createNotification(NotificationType.FRIEND_REQUEST, friendship)
+        this.notificationGateway.sendNotification(notification)
+        return friendship
     }
 
     @UseGuards(PermissionsGuard({ title: SocialPermissionTitle.CAN_UPDATE_FRIENDSHIP_STATUS, subject: Friendship }))
@@ -47,5 +51,22 @@ export class SocialController {
     async blockUser(@Body() blockUserDto: BlockUserDto) {
         return this.socialService.blockUser(blockUserDto);
     }
+
+    @UseGuards(AuthGuard)
+    @Get('/notifications')
+    async getNotifications(@Req() request) {
+        return await this.socialService.getNotifications(request['user'])
+    }
+
+    @UseGuards(AuthGuard)
+    @Get('/notifications/mark-as-seen')
+    async markNotificationsAsSeen(@Req() request, @Query() params) {
+        if (!params.notificationsCount) { throw new HttpException('Pass notificationsCount param', 400) }
+        await this.socialService.markNotificationAsSeen(request['user'], params.notificationsCount)
+        return { message: 'Latest Notifications marked as seen' }
+    }
+
+
+
 
 }
