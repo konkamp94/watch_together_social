@@ -6,12 +6,13 @@ import useScreenSize from "../../hooks/useSreenSize"
 
 const NotificationSideBar = ({ notifications, open = true, setOpen }: {notifications: Notification[], open: boolean, setOpen: (open: boolean) => void}) => {
     const { isDesktop, isTablet } = useScreenSize()
+    
     return (
         <Drawer open={open} anchor="right" variant="persistent" 
           sx={{
-            '&.MuiDrawer-root .MuiDrawer-paper': { marginTop: '64px', borderWidth: 0, width: isDesktop ? '20%' : isTablet ? '40%' : '100%'  },
+            '&.MuiDrawer-root .MuiDrawer-paper': { marginTop: '64px', borderWidth: 0, width: isDesktop ? '20%' : isTablet ? '40%' : '100%' , backgroundColor: 'primary.main' },
           }}>
-            <List sx={{ height: '100%', width: '100%', bgcolor: 'primary.main' }}>
+            <List sx={{ height: '100%', width: '100%' }}>
             <Typography variant="h6" sx={{paddingLeft: '16px', color: 'primary.contrastText'}}> <NotificationsIcon sx={{position: 'relative', top: '5px'}} />Notifications</Typography>
             {   
                 notifications.map(notification => (
