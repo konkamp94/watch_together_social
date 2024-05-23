@@ -4,13 +4,17 @@ import { PermissionsGuard } from 'src/authentication/guards/permissions.guard';
 import { Friendship } from './entities/friendship.entity';
 import { GeneralPermissionTitle, SocialPermissionTitle } from 'src/authentication/guards/permission.enum';
 import { SocialService } from './social.service';
-import { BlockUserDto, CreateFriendshipDto, UpdateFriendshipStatusDto } from './social.interface';
+import { BlockUserDto, CreateFriendshipDto, CreateWatchRoomDto, UpdateFriendshipStatusDto } from './social.interface';
 import { NotificationGateway } from 'src/gateway/notification.gateway';
 import { NotificationType } from 'src/user/user.interface';
+import { SharedService } from 'src/shared/shared.service';
+import { Notification } from './entities/notification.entity';
 
 @Controller('social')
 export class SocialController {
-    constructor(private socialService: SocialService, private notificationGateway: NotificationGateway) { }
+    constructor(private socialService: SocialService,
+        private notificationGateway: NotificationGateway,
+        private sharedService: SharedService) { }
 
     @UseGuards(AuthGuard)
     @Get('search-friends')
@@ -29,7 +33,7 @@ export class SocialController {
     @Post('friendship')
     async createFriendship(@Body() createFriendshipDto: CreateFriendshipDto) {
         const friendship = await this.socialService.createFriendship(createFriendshipDto);
-        const notification = await this.socialService.createNotification(NotificationType.FRIEND_REQUEST, friendship)
+        const notification = (await this.socialService.createNotification(NotificationType.FRIEND_REQUEST, friendship) as Notification)
         this.notificationGateway.sendNotification(notification)
         return friendship
     }
@@ -64,6 +68,26 @@ export class SocialController {
         if (!params.notificationsCount) { throw new HttpException('Pass notificationsCount param', 400) }
         await this.socialService.markNotificationAsSeen(request['user'], params.notificationsCount)
         return { message: 'Latest Notifications marked as seen' }
+    }
+
+    @UseGuards(AuthGuard)
+    @Post('/watch-room')
+    async createWatchRoom(@Req() request, @Body() createWatchRoomBody: CreateWatchRoomDto) {
+        const user = request['user']
+        const tmdbProxyBody = {
+            uri: `/movie/${createWatchRoomBody.movieId}`,
+            method: 'GET'
+        }
+
+        const tmdbResponse = await this.sharedService.tmdbProxy(user, tmdbProxyBody);
+        createWatchRoomBody['movieTitle'] = tmdbResponse.original_title
+
+        const watchRoom = await this.socialService.createWatchRoom(createWatchRoomBody, user)
+        const notifications = (await this.socialService.createNotification(NotificationType.WATCH_ROOM_INVITE, watchRoom) as Notification[])
+        notifications.forEach(notification => this.notificationGateway.sendNotification(notification))
+
+        return watchRoom
+
     }
 
 

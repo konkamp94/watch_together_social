@@ -1,7 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn, ManyToMany } from 'typeorm';
 import { Friendship } from 'src/social/entities/friendship.entity';
 import { BlockedUser } from './blocked-user.entity';
 import { Notification } from '../../social/entities/notification.entity';
+import { WatchRoom } from 'src/social/entities/watch-room.entity';
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
@@ -31,6 +32,12 @@ export class User {
 
     @OneToMany(() => Friendship, friendship => friendship.receiverUser)
     friendshipsReceived: Friendship[];
+
+    @OneToMany(() => WatchRoom, watchRoom => watchRoom.creatorUser)
+    createdRooms: WatchRoom
+
+    @ManyToMany(() => WatchRoom, watchRoom => watchRoom.invitedUsers)
+    invitedRooms: WatchRoom[]
 
     @OneToMany(() => BlockedUser, blockedUser => blockedUser.blockerUser)
     blockedUsers: BlockedUser[];

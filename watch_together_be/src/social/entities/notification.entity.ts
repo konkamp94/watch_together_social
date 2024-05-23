@@ -2,6 +2,7 @@ import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, Prim
 import { User } from "../../user/entities/user.entity";
 import { NotificationType } from "../../user/user.interface";
 import { Friendship } from "src/social/entities/friendship.entity";
+import { WatchRoom } from "./watch-room.entity";
 
 @Entity()
 export class Notification {
@@ -21,6 +22,10 @@ export class Notification {
     @OneToOne(() => Friendship, { nullable: true })
     @JoinColumn()
     friendRequest: Friendship
+
+    @ManyToOne(() => WatchRoom, { nullable: true })
+    watchRoom: WatchRoom
+
 
     @Column({ default: false })
     seen: boolean
