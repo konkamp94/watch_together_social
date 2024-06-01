@@ -152,11 +152,11 @@ export default function NavBar({ activeButtonId, setActiveButtonId }: {activeBut
                 icon={<HomeIcon />} 
                 onClick={() => navigate('/home')}/> 
               <BottomNavigationAction 
-                id="rooms" 
-                className={activeButtonId === 'rooms' ? 'active-button' : ''}
+                id="watch-movies" 
+                className={activeButtonId === 'watch-movies' ? 'active-button' : ''}
                 label="Watch Movies" 
                 icon={<WeekendIcon />}
-                onClick={() => navigate('/rooms')} 
+                onClick={() => navigate('/watch-movies/create-room')} 
               />
               <BottomNavigationAction 
                 id="favorite" 

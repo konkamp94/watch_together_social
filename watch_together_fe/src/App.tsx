@@ -11,6 +11,7 @@ import FindFriends from './pages/FindFriends/FindFriends'
 import FriendRequests from './pages/FriendRequests/FriendRequests'
 import FindMovies from './pages/FindMovies/FindMovies'
 import Movie from './pages/Movie/Movie'
+import WatchMovies from './pages/WatchMovies/WatchMovies'
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
                               <Layout/>
                             </ProtectedRoute>}>
                 <Route path='/home' element={<Home />}></Route>
+                <Route path='/watch-movies/:tab' element={<WatchMovies/>}></Route>
                 <Route path='/favorites' element={<Favorites/>}></Route>
                 <Route path='/watchlist' element={<Watchlist/>}></Route>
                 <Route path='/find-movies' element={<FindMovies/>}></Route>

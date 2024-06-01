@@ -16,6 +16,19 @@ const Search = styled('div')(({ theme }) => ({
   width: '100%',
 }));
 
+const SearchDark = styled('div')(({ theme }) => ({
+  position: 'relative',
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.primary.dark, 1),
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.primary.light, 1)
+  },
+  color: alpha(theme.palette.primary.contrastText, 1),
+  marginRight: theme.spacing(2),
+  marginLeft: 0,
+  width: '100%',
+}));
+
 const SearchIconWrapper = styled('div')(({ theme }) => ({
   padding: theme.spacing(0, 2),
   height: '100%',
@@ -37,8 +50,8 @@ color: 'inherit',
 },
 }));
 
-const SearchInput = ({ placeholder, initialValue = "", searchAction }: 
-{ placeholder: string, initialValue: string, searchAction: (searchKeyword: string) => void } ) => {
+const SearchInput = ({ placeholder, initialValue = "", searchAction, backgroundColor = 'primary.main' }: 
+{ placeholder: string, initialValue: string, searchAction: (searchKeyword: string) => void, backgroundColor?: string } ) => {
 
     const inputRef = useRef(null)
     const [value, setValue] = useState(initialValue)
@@ -54,7 +67,7 @@ const SearchInput = ({ placeholder, initialValue = "", searchAction }:
     
 
     return (
-      <Search>
+      <Search sx={{ backgroundColor: backgroundColor}}>
         <SearchIconWrapper>
           <SearchIcon sx={{color: 'primary.contrastText'}}/>
         </SearchIconWrapper>
