@@ -2,24 +2,12 @@ import { styled, alpha } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search'
 import { InputBase } from "@mui/material";
 import { useEffect, useRef, useState} from 'react';
+import useLocalStorage from '../../hooks/useLocalStorage';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
   backgroundColor: alpha(theme.palette.primary.main, 1),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.primary.light, 1)
-  },
-  color: alpha(theme.palette.primary.contrastText, 1),
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: '100%',
-}));
-
-const SearchDark = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.primary.dark, 1),
   '&:hover': {
     backgroundColor: alpha(theme.palette.primary.light, 1)
   },
@@ -50,18 +38,23 @@ color: 'inherit',
 },
 }));
 
-const SearchInput = ({ placeholder, initialValue = "", searchAction, backgroundColor = 'primary.main' }: 
-{ placeholder: string, initialValue: string, searchAction: (searchKeyword: string) => void, backgroundColor?: string } ) => {
+const SearchInput = ({ placeholder, searchAction, backgroundColor = 'primary.main', localStorageKey = "" }: 
+{ placeholder: string, searchAction: (searchKeyword: string) => void, backgroundColor?: string, localStorageKey?: string } ) => {
 
     const inputRef = useRef(null)
-    const [value, setValue] = useState(initialValue)
-    
+    const [storedLastSearchKeyword] = useLocalStorage(localStorageKey)
+    const [value, setValue] = useState(storedLastSearchKeyword ? storedLastSearchKeyword : "")
+    const firstRender = useRef(true)
     useEffect(() => {
-      const delayDebounceFn = setTimeout(() => {
-          searchAction(value)
-      }, 500);
-      
-      return () => clearTimeout(delayDebounceFn);
+      if(!firstRender.current) {
+        const delayDebounceFn = setTimeout(() => {
+            searchAction(value)
+        }, 500);
+
+        return () => clearTimeout(delayDebounceFn);
+      } else {
+        firstRender.current = false
+      }
 
     }, [value, searchAction])
     

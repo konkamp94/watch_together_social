@@ -33,7 +33,6 @@ const WatchRoomForm = () => {
     }, [formValue, setSteps])
 
     useEffect(() => {
-        console.log(error)
         if(error) {
             setSnackBar(<CustomSnackBar isOpen={true} message={error.message} closeSnackBar={closeSnackBar}/>)
         }

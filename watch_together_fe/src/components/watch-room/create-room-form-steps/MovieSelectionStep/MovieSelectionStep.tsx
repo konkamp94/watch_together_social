@@ -6,9 +6,12 @@ import { useCallback, useEffect } from "react"
 import CustomPagination from "../../../pagination/CustomPagination"
 import MovieListSkeleton from "../../../movie/MovieListSkeleton"
 import MovieListForm from "./MovieListForm"
+import useLocalStorage from "../../../../hooks/useLocalStorage"
 
-const MovieSelectionStep = ({ selectedMovieId, selectedMovieTitle, formAction }: {selectedMovieId: number | undefined,selectedMovieTitle: string | undefined, formAction?: (movieInfo: {movieId: number, movieTitle: string}) => void}) => {
+const MovieSelectionStep = ({ selectedMovieId, selectedMovieTitle, formAction }: {selectedMovieId: number | undefined,selectedMovieTitle: string | undefined, formAction?: (movieInfo: {movieId: number, movieTitle: string}) => void }) => {
     const { genres } = useMetadata()
+    const [storedLastSearchKeyword, storeLastSearchKeyword] = useLocalStorage("lastSearchKeywordMovieSelection")
+
     const { movies, 
         IsLoadingSearchMovies, refetchSearchMovies, error, 
         currentPage, setCurrentPage, searchParams, setSearchParams } = useSearchMovieByTitle()
@@ -20,9 +23,10 @@ const MovieSelectionStep = ({ selectedMovieId, selectedMovieTitle, formAction }:
     useEffect(() => window.scrollTo(0,0), [currentPage])
 
     const search = useCallback((searchKeyword: string) => {
+        storeLastSearchKeyword(searchKeyword)
         setSearchParams((searchParams) => ( { ...searchParams, keyword: searchKeyword }))
         setCurrentPage(1)
-    }, [setSearchParams, setCurrentPage])
+    }, [setSearchParams, setCurrentPage, storeLastSearchKeyword])
 
     const changePage = (page: number) => {
         setCurrentPage(page)
@@ -40,8 +44,8 @@ const MovieSelectionStep = ({ selectedMovieId, selectedMovieTitle, formAction }:
                 sx={{color: 'primary.contrastText', marginBottom: '8px', fontSize: '16px'}} /> 
             }
             <SearchInput placeholder="Search Movie" 
-                searchAction={search} 
-                initialValue=""
+                searchAction={search}
+                localStorageKey="lastSearchKeywordMovieSelection"
                 backgroundColor="primary.dark"/>
             
             {error && <p>{error.message}</p>}
