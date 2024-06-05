@@ -70,6 +70,24 @@ export class SocialService {
         })
     }
 
+    async getFriends(user: User) {
+        const friendships = await this.friendshipRepository
+            .createQueryBuilder('friendship')
+            .select(['friendship.id', 'friendship.status', 'requesterUser.id', 'requesterUser.name', 'requesterUser.username', 'receiverUser.id', 'receiverUser.name', 'receiverUser.username'])
+            .where('(friendship.receiverUserId = :userId OR friendship.requesterUserId = :userId)', { userId: user.id })
+            // .orWhere('friendship.requesterUserId = :userId', { userId: user.id })
+            .andWhere('friendship.status = :friendshipStatus', { friendshipStatus: FriendshipStatus.ACCEPTED })
+            .innerJoin('friendship.requesterUser', 'requesterUser')
+            .innerJoin('friendship.receiverUser', 'receiverUser')
+            .getMany()
+
+        return friendships.map(friendship => {
+            return friendship.requesterUserId === user.id
+                ? { id: friendship.receiverUser.id, name: friendship.receiverUser.name, username: friendship.receiverUser.username }
+                : { id: friendship.requesterUser.id, name: friendship.requesterUser.name, username: friendship.requesterUser.username }
+        })
+    }
+
     async getNotifications(user: User) {
         return this.notificationRepository
             .createQueryBuilder('notification')

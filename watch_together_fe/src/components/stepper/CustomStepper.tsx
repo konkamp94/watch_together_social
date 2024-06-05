@@ -4,11 +4,9 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import { Tooltip } from '@mui/material';
 
 
-export default function CustomStepper({ steps, stepComponents }: { steps: {stepLabel: string, isCompleted: boolean}[], stepComponents: React.ReactNode[]}) {
+export default function CustomStepper({ steps, stepComponents, formAction }: { steps: {stepLabel: string, isCompleted: boolean}[], stepComponents: React.ReactNode[], formAction: () => void}) {
   const [activeStep, setActiveStep] = React.useState(0);
 
   const handleNext = () => {
@@ -19,15 +17,10 @@ export default function CustomStepper({ steps, stepComponents }: { steps: {stepL
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-
-  const handleReset = () => {
-    setActiveStep(0);
-  };
-
   return (
     <Box sx={{ width: '100%' }}>
       <Stepper activeStep={activeStep}>
-        {steps.map((stepInfo, index) => {
+        {steps.map((stepInfo) => {
           const stepProps: { completed?: boolean } = { completed: stepInfo.isCompleted};
           const labelProps: {
             optional?: React.ReactNode;
@@ -52,18 +45,6 @@ export default function CustomStepper({ steps, stepComponents }: { steps: {stepL
           );
         })}
       </Stepper>
-      {activeStep === steps.length ? (
-        <React.Fragment>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            All steps completed - you&apos;re finished
-          </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-            <Box sx={{ flex: '1 1 auto' }} />
-            <Button onClick={handleReset} 
-                    sx={{backgroundColor: 'primary.dark', '&:hover': { backgroundColor: 'primary.light'}}}>Reset</Button>
-          </Box>
-        </React.Fragment>
-      ) : (
         <React.Fragment>
           {/* <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography> */}
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
@@ -82,18 +63,19 @@ export default function CustomStepper({ steps, stepComponents }: { steps: {stepL
               //         : activeStep === 1 ? 'Invite Friends to continue to the nest step': null} 
               //   arrow
               // >
-                <Button onClick={handleNext} disabled={true} sx={{backgroundColor: 'primary.dark', '&:hover': { backgroundColor: 'primary.light'}}}>
+                <Button disabled={true} sx={{backgroundColor: 'primary.dark', '&:hover': { backgroundColor: 'primary.light'}}}>
                   {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                 </Button> 
               // </Tooltip>
-              : <Button onClick={handleNext} sx={{backgroundColor: 'primary.dark', '&:hover': { backgroundColor: 'primary.light'}}}>
+              : <Button onClick={activeStep === steps.length - 1 ? () => formAction() : handleNext} sx={{backgroundColor: 'primary.dark', '&:hover': { backgroundColor: 'primary.light'}}}>
                   {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                 </Button> 
               }
             </Box>
         </React.Fragment>
-      )}
-      {stepComponents[activeStep]}
+      <Box sx={{padding: '16px'}}>
+        {stepComponents[activeStep]}
+      </Box>
     </Box>
   );
 }

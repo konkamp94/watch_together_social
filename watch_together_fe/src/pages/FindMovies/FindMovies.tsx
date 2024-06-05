@@ -32,7 +32,7 @@ const FindMovies = () => {
 
     const changePage = (page: number) => {
         setCurrentPage(page)
-     }
+    }
     
     // const selectGenre = useCallback((genreIds: string[]) => {
     //     setSearchParams((searchParams) => ( { ...searchParams, genres: genreIds }))

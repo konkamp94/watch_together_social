@@ -9,6 +9,7 @@ import { NotificationGateway } from 'src/gateway/notification.gateway';
 import { NotificationType } from 'src/user/user.interface';
 import { SharedService } from 'src/shared/shared.service';
 import { Notification } from './entities/notification.entity';
+import { request } from 'http';
 
 @Controller('social')
 export class SocialController {
@@ -26,6 +27,12 @@ export class SocialController {
     @Get('friend-requests')
     async getFriendRequests(@Req() request) {
         return await this.socialService.getFriendRequests(request['user'])
+    }
+
+    @UseGuards(AuthGuard)
+    @Get('get-friends')
+    async getFriends(@Req() request) {
+        return await this.socialService.getFriends(request['user'])
     }
 
     // add friendship

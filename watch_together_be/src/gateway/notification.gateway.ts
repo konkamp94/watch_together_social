@@ -61,7 +61,7 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
         const userId = notification.userId.toString()
         const client = this.clients[userId]
         Logger.log(JSON.stringify(notification))
-        Logger.log(client.id)
+        // Logger.log(client.id)
         if (client) {
             client.emit('notifications', JSON.stringify(notification))
         }

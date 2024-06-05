@@ -43,6 +43,8 @@ const MovieSelectionStep = ({ selectedMovieId, selectedMovieTitle, formAction }:
                 searchAction={search} 
                 initialValue=""
                 backgroundColor="primary.dark"/>
+            
+            {error && <p>{error.message}</p>}
             {IsLoadingSearchMovies && <MovieListSkeleton mockMovieCount={4}/>}
             {movies && genres  &&  <MovieListForm movies={movies?.data.results} selectedMovieId={selectedMovieId} formAction={formAction}/>  }
             {movies && genres && <CustomPagination currentPage={currentPage} count={movies?.data.total_pages} onChangePage={changePage} sx={{ margin: '16px auto 0' }}/>}

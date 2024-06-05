@@ -1,5 +1,5 @@
 import { Box } from "@mui/material"
-import OtherUserList from "../../components/friend/OtherUserList"
+import OtherUserList from "../../components/other-user/OtherUserList"
 import SearchInput from "../../components/search-input/SearchInput"
 import useSearchOtherUsersByUsernameOrName from "../../hooks/api/useSearchFriendByUsernameOrName"
 import useScreenSize from "../../hooks/useSreenSize"
