@@ -36,9 +36,10 @@ export const NotificationsProvider = ({ children}: { children: ReactNode}) => {
                 console.log("Socket.IO connection established");
             });
 
-            socket.on("notifications", (newNotification: Notification) => {
+            socket.on("notifications", (newNotification: string) => {
+                const newNotificationJson = JSON.parse(newNotification) as Notification
                 setUnseenNotificationsCount((prevCount) => prevCount + 1)
-                setLiveNotifications((prevNotifications) => [newNotification, ...prevNotifications]);
+                setLiveNotifications((prevNotifications) => [newNotificationJson, ...prevNotifications]);
             });
 
             socket.on("connect_error", (error) => {

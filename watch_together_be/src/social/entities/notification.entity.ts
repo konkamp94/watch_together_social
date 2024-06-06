@@ -19,11 +19,11 @@ export class Notification {
     @Column()
     type: NotificationType
 
-    @OneToOne(() => Friendship, { nullable: true })
+    @OneToOne(() => Friendship, { nullable: true, onDelete: 'CASCADE' })
     @JoinColumn()
     friendRequest: Friendship
 
-    @ManyToOne(() => WatchRoom, { nullable: true })
+    @ManyToOne(() => WatchRoom, { nullable: true, onDelete: 'CASCADE' })
     watchRoom: WatchRoom
 
 
@@ -32,5 +32,4 @@ export class Notification {
 
     @CreateDateColumn({ type: 'timestamp' })
     createdAt: Date;
-    notificationData: any;
 }

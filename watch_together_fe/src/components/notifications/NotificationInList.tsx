@@ -39,6 +39,7 @@ const NotificationInList = ({ notification, setOpen }: {notification: Notificati
             }
             case 'WATCH_ROOM_INVITE': {
                 const watchRoomNotification = notification as WatchRoomNotification
+                
                 return (
                     <ListItem alignItems="flex-start" 
                         onClick={() => {setOpen(false), 
