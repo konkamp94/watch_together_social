@@ -1,17 +1,22 @@
 import { Box, Tab, Tabs } from "@mui/material"
 import CustomTabPanel from "../../components/tabs/CustomTabPanel"
-import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import WatchRoomForm from "../../components/watch-room/WatchRoomForm";
 
 const WatchMovies = () => {
+    const location = useLocation();
     const { tab } = useParams();
     const navigate = useNavigate();
     // hide the 2 tabs in a different url path param
     const [tabValue, setTabValue] = useState(() => tab === 'create-room' ? 0 : tab === 'join-room' ? 1 : 2 );
 
+    useEffect(() => {
+        // This effect runs every time the location changes
+        setTabValue(tab === 'create-room' ? 0 : tab === 'join-room' ? 1 : 2 )
+    }, [location, tab]);
+
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-      setTabValue(newValue);
       if(newValue === 0) {
         navigate(`/watch-movies/create-room`, { replace: true });
       } else if (newValue === 1) {
@@ -30,7 +35,7 @@ const WatchMovies = () => {
             <WatchRoomForm/>
         </CustomTabPanel>
         <CustomTabPanel value={tabValue} index={1}>
-            Item Two
+            <h1>Join ROom Page</h1>
         </CustomTabPanel>
     </>)
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const useLocalStorage = (key: string): [(string | null), ((value: string) => void), ((value: string) => void)] => {
 
@@ -6,6 +6,8 @@ const useLocalStorage = (key: string): [(string | null), ((value: string) => voi
         const item = window.localStorage.getItem(key);
         return item
     });
+
+    useEffect(() => { console.log('localstorage hook') }, [storedValue])
 
     const setValue = (value: string) => {
         window.localStorage.setItem(key, value);

@@ -6,7 +6,7 @@ import useScreenSize from "../../hooks/useSreenSize"
 
 const NotificationSideBar = ({ notifications, open = true, setOpen }: {notifications: Notification[], open: boolean, setOpen: (open: boolean) => void}) => {
     const { isDesktop, isTablet } = useScreenSize()
-    
+    console.log('rerendersidebar', notifications)
     return (
         <Drawer open={open} anchor="right" variant="persistent" 
           sx={{
@@ -17,6 +17,7 @@ const NotificationSideBar = ({ notifications, open = true, setOpen }: {notificat
             {   
                 notifications.map(notification => (
                     <>
+                        {notification.id}
                         <NotificationInList notification={notification} setOpen={setOpen}/>
                         <Divider variant="inset" component="li" />
                     </>

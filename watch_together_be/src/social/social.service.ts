@@ -82,7 +82,7 @@ export class SocialService {
             .getMany()
 
         return friendships.map(friendship => {
-            return friendship.requesterUserId === user.id
+            return friendship.requesterUser.id === user.id
                 ? { id: friendship.receiverUser.id, name: friendship.receiverUser.name, username: friendship.receiverUser.username }
                 : { id: friendship.requesterUser.id, name: friendship.requesterUser.name, username: friendship.requesterUser.username }
         })
@@ -101,11 +101,19 @@ export class SocialService {
                 'friendRequest.createdAt',
                 'requesterUser.id',
                 'requesterUser.name',
-                'requesterUser.username'
+                'requesterUser.username',
+                'watchRoom.code',
+                'watchRoom.movieId',
+                'watchRoom.movieTitle',
+                'creatorUser.id',
+                'creatorUser.username',
+                'creatorUser.name',
             ])
             .where('notification.userId = :userId', { userId: user.id })
-            .innerJoin('notification.friendRequest', 'friendRequest')
-            .innerJoin('friendRequest.requesterUser', 'requesterUser')
+            .leftJoin('notification.friendRequest', 'friendRequest')
+            .leftJoin('friendRequest.requesterUser', 'requesterUser')
+            .leftJoin('notification.watchRoom', 'watchRoom')
+            .leftJoin('watchRoom.creatorUser', 'creatorUser')
             .orderBy('notification.createdAt', 'DESC')
             .take(10)
             .getMany()

@@ -6,11 +6,9 @@ import { useCallback, useEffect } from "react"
 import CustomPagination from "../../../pagination/CustomPagination"
 import MovieListSkeleton from "../../../movie/MovieListSkeleton"
 import MovieListForm from "./MovieListForm"
-import useLocalStorage from "../../../../hooks/useLocalStorage"
 
 const MovieSelectionStep = ({ selectedMovieId, selectedMovieTitle, formAction }: {selectedMovieId: number | undefined,selectedMovieTitle: string | undefined, formAction?: (movieInfo: {movieId: number, movieTitle: string}) => void }) => {
     const { genres } = useMetadata()
-    const [storedLastSearchKeyword, storeLastSearchKeyword] = useLocalStorage("lastSearchKeywordMovieSelection")
 
     const { movies, 
         IsLoadingSearchMovies, refetchSearchMovies, error, 
@@ -23,10 +21,10 @@ const MovieSelectionStep = ({ selectedMovieId, selectedMovieTitle, formAction }:
     useEffect(() => window.scrollTo(0,0), [currentPage])
 
     const search = useCallback((searchKeyword: string) => {
-        storeLastSearchKeyword(searchKeyword)
+        window.localStorage.setItem('lastSearchKeywordMovieSelection', searchKeyword)
         setSearchParams((searchParams) => ( { ...searchParams, keyword: searchKeyword }))
         setCurrentPage(1)
-    }, [setSearchParams, setCurrentPage, storeLastSearchKeyword])
+    }, [setSearchParams, setCurrentPage])
 
     const changePage = (page: number) => {
         setCurrentPage(page)

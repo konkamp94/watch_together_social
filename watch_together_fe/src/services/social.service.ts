@@ -21,7 +21,7 @@ class SocialService {
     }
 
     getFriends = async (): Promise<AxiosResponse> => {
-        return await axiosInstance.get(`/social/friend-requests`, { headers: createAuthHeaders() })
+        return await axiosInstance.get(`/social/get-friends`, { headers: createAuthHeaders() })
     }
 
     getNotifications = async (): Promise<AxiosResponse> => {

@@ -21,7 +21,7 @@ const FindFriends = () => {
             <Box sx={{padding: isDesktop ? '0 192px' : isTablet ? '0 64px' : 0}}>
             <SearchInput placeholder="Type your Friend's Username or Name" 
                             searchAction={search} 
-                            initialValue={searchKeyword}/>
+                            />
                 {isLoadingOtherUsers ? <p>Loading...</p> : null}
                 {error && <p>{error.message}</p>}
                 {!isLoadingOtherUsers && otherUsers &&<OtherUserList otherUsers={otherUsers.data}/>}
