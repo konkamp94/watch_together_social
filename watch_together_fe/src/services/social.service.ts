@@ -49,6 +49,10 @@ class SocialService {
             { headers: createAuthHeaders() })
     }
 
+    getWatchRoomInfo = async (code: string) => {
+        return axiosInstance.get(`/social/watch-room/${code}`, { headers: createAuthHeaders() })
+    }
+
     createWatchRoom = async (createWatchRoomBody: { movieId: number, movieTitle: string, invitedUsersIds: number[] }) => {
         return await axiosInstance.post(`/social/watch-room`, createWatchRoomBody, { headers: createAuthHeaders() })
     }

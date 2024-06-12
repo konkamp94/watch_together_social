@@ -1,3 +1,5 @@
+import { Socket } from "socket.io-client"
+
 export interface User {
     userId: number,
     username: string,
@@ -65,3 +67,27 @@ export interface WatchRoomNotification {
 }
 
 export type Notification = FriendRequestNotification | WatchRoomNotification
+
+export interface WatchRoomContextValue {
+    lastEvent: string,
+    socket: Socket | null,
+    watchRoomInfo: {
+        code: string,
+        movieId: number,
+        movieTitle: string,
+        createdAt: string,
+        creatorUser: {
+            id: number,
+            username: string,
+            name: string
+        },
+        invitedUsers: {
+            id: number,
+            username: string,
+            name: string
+        }[],
+        trailer: any
+    },
+    isLoadingWatchRoomInfo: boolean,
+    error: string | undefined
+}

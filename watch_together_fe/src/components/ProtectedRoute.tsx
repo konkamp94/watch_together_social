@@ -12,7 +12,7 @@ const ProtectedRoute = ({ children }: { children: ReactNode}) => {
     return (<>
         <MetadataProvider>
             <NotificationsProvider>
-                {children}
+                    {children}
             </NotificationsProvider>
         </MetadataProvider>
     </>)
