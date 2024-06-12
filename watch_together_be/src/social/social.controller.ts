@@ -78,6 +78,12 @@ export class SocialController {
     }
 
     @UseGuards(AuthGuard)
+    @Get('/watch-room/:code')
+    async getWatchRoom(@Param('code') code: string) {
+        return await this.socialService.getWatchRoom(code)
+    }
+
+    @UseGuards(AuthGuard)
     @Post('/watch-room')
     async createWatchRoom(@Req() request, @Body() createWatchRoomBody: CreateWatchRoomDto) {
         const user = request['user']

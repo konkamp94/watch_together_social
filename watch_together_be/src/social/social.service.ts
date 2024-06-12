@@ -234,6 +234,24 @@ export class SocialService {
         }
     }
 
+    async getWatchRoom(code: string) {
+        return this.watchRoomRepository.createQueryBuilder('watchRoom')
+            .select(['watchRoom.movieId',
+                'watchRoom.movieTitle',
+                'watchRoom.createdAt',
+                'watchRoom.code',
+                'creatorUser.id',
+                'creatorUser.name',
+                'creatorUser.username',
+                'invitedUsers.id',
+                'invitedUsers.name',
+                'invitedUsers.username'])
+            .where('code = :code', { code })
+            .innerJoin('watchRoom.creatorUser', 'creatorUser')
+            .innerJoin('watchRoom.invitedUsers', 'invitedUsers')
+            .getOne()
+    }
+
     async createWatchRoom(createWatchRoomDto: CreateWatchRoomDto, user: User) {
         let code: string;
         let tries = 0
