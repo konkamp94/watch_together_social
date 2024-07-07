@@ -4,6 +4,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import LocalMoviesIcon from '@mui/icons-material/LocalMovies';
 import ListButton from '../list-button/ListButton';
 import { useNavigate } from 'react-router-dom';
+import { minHeight } from '@mui/system';
 
 const LeftBar = ({ activeButtonId, setActiveButtonId }: {activeButtonId: string, setActiveButtonId: React.Dispatch<React.SetStateAction<string>> }) => {
     const navigate = useNavigate()

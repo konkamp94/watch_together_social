@@ -1,8 +1,6 @@
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -10,82 +8,106 @@ import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
 import Fab from '@mui/material/Fab';
 import SendIcon from '@mui/icons-material/Send';
-import { Box } from '@mui/material';
+import { Socket } from 'socket.io-client';
+import { useEffect, useRef, useState } from 'react';
+import { User } from '../../context/interfaces.context';
 
 
-const Chat = () => {
+const Chat = ({ myUser, users, messages, setMessages, socket }: { 
+    myUser: User
+    users: { id: number, username: string }[], 
+    setMessages:  React.Dispatch<React.SetStateAction<{
+    senderUsername: string;
+    message: string;
+    timestamp: string;}[]>>,
+    messages: {senderUsername: string, message:string, timestamp:string}[], 
+    socket: Socket | null}) => {
+
+  const [textInputValue,setTextInputValue] = useState<string>("")
+  const inboxElement = useRef<null | HTMLDivElement>(null)
+  const isFirstRender = useRef(true)
+
+  useEffect(() => {
+    if(isFirstRender) { isFirstRender.current = false}
+    if(inboxElement.current) {
+        console.log(messages)
+        inboxElement.current.scrollTo({top: inboxElement.current.scrollHeight , behavior: isFirstRender.current ? 'instant' : 'smooth' });
+    }
+  }, [messages])
+
+  const sendMessage = () => {
+    const currentTimestamp = Date.now().toString()
+    socket?.emit('events', {
+        type: 'message',
+        message: textInputValue,
+        senderUsername: myUser.username,
+        currentTimestamp: currentTimestamp,
+    });
+    setMessages(oldMessages => [...oldMessages, { message: textInputValue, senderUsername: myUser.username, timestamp: currentTimestamp }])
+    setTextInputValue("")
+  }
 
   return (
-      <Box sx={{ width: '100%', height: '100%', marginTop: '16px'}}>
+      <Paper sx={{ marginTop: '16px', backgroundColor: 'primary.dark', padding: '8px'}} elevation={12}>
         <Grid container>
-            <Grid item xs={3} sx={{borderRight: '1px solid #e0e0e0'}}>
-                <List>
-                    <ListItem button key="RemySharp">
-                        <ListItemIcon>
-                            <Avatar alt="Remy Sharp" src="https://material-ui.com/static/images/avatar/1.jpg" />
-                        </ListItemIcon>
-                        <ListItemText primary="Remy Sharp">Remy Sharp</ListItemText>
-                        <ListItemText secondary="online" align="right"></ListItemText>
-                    </ListItem>
-                    <ListItem button key="Alice">
-                        <ListItemIcon>
-                            <Avatar alt="Alice" src="https://material-ui.com/static/images/avatar/3.jpg" />
-                        </ListItemIcon>
-                        <ListItemText primary="Alice">Alice</ListItemText>
-                    </ListItem>
-                    <ListItem button key="CindyBaker">
-                        <ListItemIcon>
-                            <Avatar alt="Cindy Baker" src="https://material-ui.com/static/images/avatar/2.jpg" />
-                        </ListItemIcon>
-                        <ListItemText primary="Cindy Baker">Cindy Baker</ListItemText>
-                    </ListItem>
+            <Grid item xs={3} >
+                <List sx={{marginRight: '8px'}}>
+                    {users.map((user) => {
+                        return (
+                            <ListItem key={user.id} sx={{backgroundColor: user.username === myUser.username ? 'primary.main' : 'primary.light', borderRadius: '16px', marginBottom: '8px'}}>
+                                <ListItemIcon>
+                                    <Avatar>{user.username.charAt(0).toUpperCase()}</Avatar>
+                                </ListItemIcon>
+                                <ListItemText>{user.username}</ListItemText>
+                            </ListItem>
+                        )
+                    })}
                 </List>
             </Grid>
             <Grid item xs={9}>
-                <List sx={{ height: '100%',overflowY: 'auto'}}>
-                    <ListItem key="1">
-                        <Grid container>
-                            <Grid item xs={12}>
-                                <ListItemText align="right" primary="Hey man, What's up ?"></ListItemText>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <ListItemText align="right" secondary="09:30"></ListItemText>
-                            </Grid>
-                        </Grid>
-                    </ListItem>
-                    <ListItem key="2">
-                        <Grid container>
-                            <Grid item xs={12}>
-                                <ListItemText align="left" primary="Hey, Iam Good! What about you ?"></ListItemText>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <ListItemText align="left" secondary="09:31"></ListItemText>
+                <List sx={{ height: '100%', maxHeight: '200px', minHeight:'200px',overflowY: 'auto'}} ref={inboxElement as React.RefObject<any>}>
+                    {messages.map((message, index) => (
+                        <Grid container sx={{marginBottom: '16px'}}>
+                            {myUser.username === message.senderUsername ? <Grid item xs={6}></Grid> : null}
+                            <Grid item xs={6}>
+                                <ListItem key={index} sx={{backgroundColor: myUser.username === message.senderUsername ? 
+                                                                'primary.main' : 'primary.light', borderRadius: '8px'}}>
+                                    <Grid container>
+                                        <Grid item xs={12}>
+                                            <ListItemText sx={{overflowWrap: 'break-word'}} primary={message.message}></ListItemText>
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <ListItemText sx={{textAlign: 'right'}} secondary={message.senderUsername}></ListItemText>
+                                        </Grid>
+                                    </Grid>
+                                </ListItem>
                             </Grid>
                         </Grid>
-                    </ListItem>
-                    <ListItem key="3">
-                        <Grid container>
-                            <Grid item xs={12}>
-                                <ListItemText align="right" primary="Cool. i am good, let's catch up!"></ListItemText>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <ListItemText align="right" secondary="10:30"></ListItemText>
-                            </Grid>
-                        </Grid>
-                    </ListItem>
+                    ))}
                 </List>
-                <Divider />
-                <Grid container style={{padding: '20px'}}>
-                    <Grid item xs={11}>
-                        <TextField id="outlined-basic-email" label="Type Something" fullWidth />
-                    </Grid>
-                    <Grid item xs={1}>
-                        <Fab color="primary" aria-label="add"><SendIcon /></Fab>
-                    </Grid>
-                </Grid>
             </Grid>
         </Grid>
-      </Box>
+        <Grid container sx={{marginTop: '16px'}}>
+                    <Grid item xs={3} sx={{padding: 0}}> {/* Offset Column */} </Grid>
+                    <Grid item xs={8} sx={{padding: 0}}>
+                        <TextField
+                            id="message-text"
+                            label="Type Something"
+                            value={textInputValue}
+                            fullWidth
+                            onChange={(event) => setTextInputValue(event.target.value)}
+                            onKeyUp={(event) => {
+                                if (event.code === 'Enter') {
+                                    sendMessage()
+                                }
+                            }}
+                        />
+                    </Grid>
+                    <Grid item xs={1} textAlign="end">
+                        <Fab color="primary" aria-label="add" onClick={() => sendMessage()}><SendIcon /></Fab>
+                    </Grid>
+                </Grid>
+      </Paper>
   );
 }
 

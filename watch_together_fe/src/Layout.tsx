@@ -17,7 +17,7 @@ const Layout = () => {
         {genres && notifications? 
             <>
                 <NavBar activeButtonId={activeButtonId} setActiveButtonId={setActiveButtonId}/>
-                <Box sx={{display: 'flex', justifyContent: 'space-between', backgroundColor: 'primary.dark', minHeight: '100vh'}}>
+                <Box sx={{display: 'flex', justifyContent: 'space-between', backgroundColor: 'primary.dark', minHeight: '93vh'}}>
                     <LeftBar activeButtonId={activeButtonId} setActiveButtonId={setActiveButtonId}/>
                     <Box sx={{flex: 3, padding: '16px'}}>
                         <Outlet/>
