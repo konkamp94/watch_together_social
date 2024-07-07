@@ -94,6 +94,7 @@ const Chat = ({ myUser, users, messages, setMessages, socket }: {
                             id="message-text"
                             label="Type Something"
                             value={textInputValue}
+                            autoComplete='off'
                             fullWidth
                             onChange={(event) => setTextInputValue(event.target.value)}
                             onKeyUp={(event) => {

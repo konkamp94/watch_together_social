@@ -3,6 +3,7 @@ import CustomTabPanel from "../../components/tabs/CustomTabPanel"
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import WatchRoomForm from "../../components/watch-room/WatchRoomForm";
+import JoinRoom from "../JoinRoom/JoinRoom";
 
 const WatchMovies = () => {
     const location = useLocation();
@@ -35,7 +36,7 @@ const WatchMovies = () => {
             <WatchRoomForm/>
         </CustomTabPanel>
         <CustomTabPanel value={tabValue} index={1}>
-            <h1>Join ROom Page</h1>
+            <JoinRoom/>
         </CustomTabPanel>
     </>)
 }

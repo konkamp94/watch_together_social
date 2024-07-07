@@ -43,7 +43,7 @@ const NotificationInList = ({ notification, setOpen }: {notification: Notificati
                 return (
                     <ListItem alignItems="flex-start" 
                         onClick={() => {setOpen(false), 
-                                        navigate(`/watch-movies/join-room`)}}
+                                        navigate(`/watch-movies/join-room?code=${watchRoomNotification.watchRoom.code}`)}}
                         sx={{
                             cursor: 'pointer',
                             '&:hover': {
