@@ -30,9 +30,7 @@ const WatchRoom = () => {
             case('navigation'): 
                 if(lastEvent.action === 'play') {
                     console.log('play from event')
-                    lastEvent.videoTime > 1 ? 
-                        videoRef.current?.seekTo(lastEvent.videoTime) 
-                        : videoRef.current?.seekTo(lastEvent.videoTime, 'fraction')
+                    videoRef.current?.seekTo(lastEvent.videoTime, 'seconds')
                     ignoreNextOnPlayEventRef.current = true
                     setIsPlaying(true)
                 } else if (lastEvent.action === 'pause') {
@@ -61,7 +59,7 @@ const WatchRoom = () => {
                 break;
             case('sync-new-user-response'):
                 if(lastEvent.isPlaying) {
-                    videoRef.current?.seekTo(lastEvent.videoTime > 1 ? lastEvent.videoTime : 1 )
+                    videoRef.current?.seekTo(lastEvent.videoTime, 'seconds')
                     ignoreNextOnPlayEventRef.current = true
                     setIsPlaying(true)
                 }
