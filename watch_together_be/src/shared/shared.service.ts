@@ -30,7 +30,7 @@ export class SharedService {
             const response = await firstValueFrom(this.httpService.request(options).pipe(map(response => response.data)));
             return response;
         } catch (error) {
-            Logger.error(error.errors);
+            Logger.error(error);
             throw new HttpException(error.response.data.status_message, error.response.status);
         }
     }

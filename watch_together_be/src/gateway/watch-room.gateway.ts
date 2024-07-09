@@ -72,7 +72,21 @@ export class WatchRoomGateway implements OnGatewayConnection, OnGatewayDisconnec
             return;
         }
 
+
         if (this.rooms[roomCode]) {
+            // clean the previous instance of the user's socket if exists
+            const connectedRoomUsers = this.rooms[roomCode]
+            this.rooms[roomCode] = connectedRoomUsers.filter((connectedRoomUser) => {
+                if (connectedRoomUser.userId === payload.userId) {
+                    delete this.clients[connectedRoomUser.userId]
+                    delete this.mapClientIdToUserId[connectedRoomUser.client.id]
+                    delete this.mapClientIdToRoomCode[connectedRoomUser.client.id]
+                    return false
+                } else {
+                    return true
+                }
+            })
+            // add new instance to room
             this.rooms[roomCode].push({ client: client, userId: payload.userId })
         } else {
             this.rooms[roomCode] = []
@@ -98,13 +112,42 @@ export class WatchRoomGateway implements OnGatewayConnection, OnGatewayDisconnec
     onEvent(@MessageBody() body, @ConnectedSocket() client: Socket) {
         const roomCode = this.mapClientIdToRoomCode[client.id]
         const connectedRoomUsers = this.rooms[roomCode]
-        connectedRoomUsers.forEach(connectedRoomUser => {
-            if (connectedRoomUser.client !== client) {
-                connectedRoomUser.client.emit('events', JSON.stringify(body))
-            }
-            return body
+        connectedRoomUsers?.forEach(user => {
+            Logger.log('---------------------------')
+            Logger.log('CLIENT_ID', user.client.id)
+            Logger.log('USER_ID', user.userId)
         })
-
+        Logger.log(body)
+        switch (body.type) {
+            case ('sync-new-user-request'):
+                for (let i = 0; i < connectedRoomUsers?.length; i++) {
+                    let user = connectedRoomUsers[i]
+                    if (user.client !== client) {
+                        // Logger.log('send request to another user')
+                        // Logger.log('called user id', user.userId)
+                        user.client.emit('events', JSON.stringify(body));
+                        break;
+                    }
+                }
+                break;
+            case ('sync-new-user-response'):
+                const newUser = connectedRoomUsers?.find((user) => user.userId === body.newUserId)
+                // Logger.log('send response to the new user')
+                // Logger.log('newUser', newUser.userId)
+                if (newUser) {
+                    newUser.client.emit('events', JSON.stringify(body))
+                }
+                break;
+            default:
+                connectedRoomUsers.forEach(connectedRoomUser => {
+                    Logger.log(connectedRoomUser.userId)
+                    if (connectedRoomUser.client !== client) {
+                        Logger.log(connectedRoomUser.userId)
+                        connectedRoomUser.client.emit('events', JSON.stringify(body))
+                    }
+                    return body
+                })
+        }
     }
 
 }
