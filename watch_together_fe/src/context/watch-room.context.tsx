@@ -11,7 +11,7 @@ export const WatchRoomContext = createContext<WatchRoomContextValue>(initialWatc
 const wsBaseUrl = import.meta.env.VITE_WS_BASE_URL_DEV
 
 export const WatchRoomContextProvider = ({children}: {children: ReactNode}) => {
-    const { token } = useAuth()
+    const { token, user } = useAuth()
     const { code } = useParams()
     const [lastEvent, setLastEvent] = useState<any | null>(null)
     const { watchRoomInfo, isLoadingWatchRoomInfo, error} = useGetWatchRoomInfo(code as string)
@@ -24,11 +24,22 @@ export const WatchRoomContextProvider = ({children}: {children: ReactNode}) => {
         
         socket.on("connect", () => {
             console.log("Socket.IO connection established");
+            console.log(socket)
+            socket.emit('events', {  type: 'sync-new-user-request', 
+                                     newUserId: user?.userId, 
+                                     timestamp: Date.now() 
+                                    })
         });
 
         socket.on("events", (event: string) => {
-            console.log(event)
-            setLastEvent(event)
+            const eventJson = JSON.parse(event)
+            if(!lastEvent) {
+                setLastEvent(eventJson)
+                return;
+            }
+            if(lastEvent.timestamp < eventJson.timestamp) {
+                setLastEvent(eventJson)
+            } 
         });
 
         socket.on("connect_error", (error) => {
@@ -43,6 +54,7 @@ export const WatchRoomContextProvider = ({children}: {children: ReactNode}) => {
             socket.disconnect();
         };
     }, [code, token])
+
     return (
         <WatchRoomContext.Provider value={{ lastEvent, watchRoomInfo, isLoadingWatchRoomInfo, error, socket }}>
             {children}

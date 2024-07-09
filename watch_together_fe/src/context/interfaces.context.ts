@@ -69,7 +69,7 @@ export interface WatchRoomNotification {
 export type Notification = FriendRequestNotification | WatchRoomNotification
 
 export interface WatchRoomContextValue {
-    lastEvent: string,
+    lastEvent: any,
     socket: Socket | null,
     watchRoomInfo: {
         code: string,

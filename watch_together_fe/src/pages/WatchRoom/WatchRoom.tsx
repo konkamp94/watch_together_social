@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import ReactPlayer from 'react-player/youtube'
 import { Typography } from "@mui/material";
 import Chat from "../../components/watch-room/Chat";
-import { WatchRoomContextValue } from "../../context/interfaces.context";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import ContentHeader from "../../components/content-header/ContentHeader";
 
@@ -20,33 +19,55 @@ const WatchRoom = () => {
     const ignoreNextOnPauseEventRef = useRef(false) 
 
     useEffect(() => {
-        if(lastEvent) {
-            const lastEventJson = JSON.parse(lastEvent)
-            switch(lastEventJson.type) {
-                case('navigation'): 
-                    if(lastEventJson.action === 'play') {
-                        console.log('play from event')
-                        videoRef.current?.seekTo(lastEventJson.videoTime > 1 ? lastEventJson.videoTime : 1 )
+        if(!lastEvent) {
+            return;
+        }
+
+        console.log('NEW EVENT')
+        console.log(lastEvent)
+
+        switch(lastEvent.type) {
+            case('navigation'): 
+                if(lastEvent.action === 'play') {
+                    console.log('play from event')
+                    lastEvent.videoTime > 1 ? 
+                        videoRef.current?.seekTo(lastEvent.videoTime) 
+                        : videoRef.current?.seekTo(lastEvent.videoTime, 'fraction')
+                    ignoreNextOnPlayEventRef.current = true
+                    setIsPlaying(true)
+                } else if (lastEvent.action === 'pause') {
+                        console.log('paused from event')
+                        ignoreNextOnPauseEventRef.current = true
                         ignoreNextOnPlayEventRef.current = true
-                        setIsPlaying(true)
-                        } else if (lastEventJson.action === 'pause') {
-                            console.log('paused from event')
-                            ignoreNextOnPauseEventRef.current = true
-                            ignoreNextOnPlayEventRef.current = true
-                            setIsPlaying(false)
-                        }
-                        break;
-                    case('message'):
-                        setMessages(oldMessages => {
-                            return ([...oldMessages, 
-                                    {senderUsername: lastEventJson.senderUsername, 
-                                     message: lastEventJson.message, 
-                                     timestamp: lastEventJson.timestamp}])
-                        })
-                    break;
+                        setIsPlaying(false)
                 }
+                break;
+            case('message'):
+                setMessages(oldMessages => {
+                    return ([...oldMessages, 
+                            {senderUsername: lastEvent.senderUsername, 
+                                message: lastEvent.message, 
+                                timestamp: lastEvent.timestamp}])
+                })
+                break;
+            case('sync-new-user-request'):
+                console.log('sync-new-user-request')
+                socket?.emit('events', { type: 'sync-new-user-response', 
+                                            newUserId: lastEvent.newUserId, 
+                                            videoTime: videoRef.current?.getCurrentTime(),
+                                            isPlaying: isPlaying,
+                                            timestamp: Date.now() 
+                            })
+                break;
+            case('sync-new-user-response'):
+                if(lastEvent.isPlaying) {
+                    videoRef.current?.seekTo(lastEvent.videoTime > 1 ? lastEvent.videoTime : 1 )
+                    ignoreNextOnPlayEventRef.current = true
+                    setIsPlaying(true)
+                }
+            break;
             }
-        }, [lastEvent])
+        }, [lastEvent, setIsPlaying, socket])
 
     const mapUsers = useCallback((watchRoomInfo: any) => {
         return [
