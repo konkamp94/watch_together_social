@@ -15,6 +15,7 @@ const useGetFriendRequests = () => {
     const { data: otherUsers, isLoading: isLoadingOtherUsers } = useQuery(['friend-requests'],
         socialService.getFriendRequests, {
         onError: (error: AxiosError) => handleApiError(error),
+        refetchOnWindowFocus: false
     })
 
     return { otherUsers, isLoadingOtherUsers, error }
