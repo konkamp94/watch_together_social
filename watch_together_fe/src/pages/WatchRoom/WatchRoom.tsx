@@ -94,7 +94,7 @@ const WatchRoom = () => {
                                                     if(!ignoreNextOnPlayEventRef.current) {
                                                         console.log('play from action')
                                                         setIsPlaying(true)
-                                                        socket?.emit('events', {type: 'navigation', action: 'play', videoTime: videoRef.current?.getCurrentTime(), currentTimestamp: Date.now()})
+                                                        socket?.emit('events', {type: 'navigation', action: 'play', videoTime: videoRef.current?.getCurrentTime(), timestamp: Date.now()})
                                                     } else {
                                                         ignoreNextOnPlayEventRef.current = false
                                                     }
@@ -104,7 +104,7 @@ const WatchRoom = () => {
                                                     if(!ignoreNextOnPauseEventRef.current) {
                                                         console.log('paused from action')
                                                         setIsPlaying(false)
-                                                        socket?.emit('events', {type: 'navigation', action: 'pause', currentTimestamp: Date.now()})
+                                                        socket?.emit('events', {type: 'navigation', action: 'pause', timestamp: Date.now()})
                                                     } else { 
                                                         ignoreNextOnPauseEventRef.current = false
                                                         ignoreNextOnPlayEventRef.current = false

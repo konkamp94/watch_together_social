@@ -33,13 +33,26 @@ export const WatchRoomContextProvider = ({children}: {children: ReactNode}) => {
 
         socket.on("events", (event: string) => {
             const eventJson = JSON.parse(event)
-            if(!lastEvent) {
-                setLastEvent(eventJson)
-                return;
-            }
-            if(lastEvent.timestamp < eventJson.timestamp) {
-                setLastEvent(eventJson)
-            } 
+            // if(!lastEvent) {
+            //     setLastEvent(eventJson)
+            // }
+            // console.log('timestamp check', lastEvent?.timestamp < eventJson.timestamp)
+            // console.log('lastEvent', lastEvent?.timestamp)
+            // console.log('newEvent', eventJson.timestamp)
+            // if(lastEvent?.timestamp < eventJson.timestamp) {
+            //     setLastEvent(eventJson)
+            // } 
+
+            setLastEvent((oldLastEvent) => {
+                console.log(oldLastEvent)
+                if(!oldLastEvent || (oldLastEvent.timestamp < eventJson.timestamp)) { 
+                    console.log('change state')
+                    return eventJson
+                } else {
+                    console.log('state remains')
+                    return oldLastEvent
+                }
+            })
         });
 
         socket.on("connect_error", (error) => {
@@ -53,7 +66,7 @@ export const WatchRoomContextProvider = ({children}: {children: ReactNode}) => {
         return () => {
             socket.disconnect();
         };
-    }, [code, token])
+    }, [code, token, setLastEvent])
 
     return (
         <WatchRoomContext.Provider value={{ lastEvent, watchRoomInfo, isLoadingWatchRoomInfo, error, socket }}>

@@ -140,8 +140,10 @@ export class WatchRoomGateway implements OnGatewayConnection, OnGatewayDisconnec
                 break;
             default:
                 connectedRoomUsers.forEach(connectedRoomUser => {
+                    Logger.log(connectedRoomUser.client.id)
                     Logger.log(connectedRoomUser.userId)
                     if (connectedRoomUser.client !== client) {
+                        Logger.log(connectedRoomUser.client.id)
                         Logger.log(connectedRoomUser.userId)
                         connectedRoomUser.client.emit('events', JSON.stringify(body))
                     }
