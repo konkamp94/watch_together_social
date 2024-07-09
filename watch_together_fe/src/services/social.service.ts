@@ -20,6 +20,10 @@ class SocialService {
         return await axiosInstance.get(`/social/friend-requests`, { headers: createAuthHeaders() })
     }
 
+    getFriends = async (): Promise<AxiosResponse> => {
+        return await axiosInstance.get(`/social/get-friends`, { headers: createAuthHeaders() })
+    }
+
     getNotifications = async (): Promise<AxiosResponse> => {
         return await axiosInstance.get(`/social/notifications`, { headers: createAuthHeaders() })
     }
@@ -43,6 +47,14 @@ class SocialService {
     markNotificationsAsSeen = async (notificationsCount: number) => {
         return await axiosInstance.get(`/social/notifications/mark-as-seen?notificationsCount=${notificationsCount}`,
             { headers: createAuthHeaders() })
+    }
+
+    getWatchRoomInfo = async (code: string) => {
+        return axiosInstance.get(`/social/watch-room/${code}`, { headers: createAuthHeaders() })
+    }
+
+    createWatchRoom = async (createWatchRoomBody: { movieId: number, movieTitle: string, invitedUsersIds: number[] }) => {
+        return await axiosInstance.post(`/social/watch-room`, createWatchRoomBody, { headers: createAuthHeaders() })
     }
 }
 

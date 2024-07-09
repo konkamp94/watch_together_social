@@ -17,7 +17,7 @@ class MovieService {
     }
 
     getRecommendedMovies = async (movieId: number): Promise<AxiosResponse> => {
-        return await axiosInstance.get(`/movie/recommended-movies/?movieId=${movieId}/`, { headers: createAuthHeaders() })
+        return await axiosInstance.get(`/movie/recommended-movies/?movieId=${movieId}`, { headers: createAuthHeaders() })
     }
 }
 

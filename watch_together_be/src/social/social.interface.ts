@@ -14,3 +14,10 @@ export interface BlockUserDto {
     blockerUserId: number;
     blockedUserId: number;
 }
+
+export interface CreateWatchRoomDto {
+    movieId: number
+    invitedUsersIds: number[]
+    // added after the request
+    movieTitle?: string
+}

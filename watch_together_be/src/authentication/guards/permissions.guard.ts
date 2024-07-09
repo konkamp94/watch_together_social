@@ -69,7 +69,7 @@ export const PermissionsGuard = (permission: Permission): Type<CanActivate> => {
         }
 
         private async canUpdateFriendshipStatus(user: User, request: any): Promise<boolean> {
-            const friendship = await this.getObject(request.body.friendshipId);
+            const friendship = await this.getObject(request.params.id);
             const friendshipStatus = friendship.status;
             const isReceiver = friendship.receiverUserId === user.id;
 

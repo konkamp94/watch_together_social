@@ -5,6 +5,7 @@ import { AxiosRequestConfig } from 'axios';
 import { firstValueFrom, map } from 'rxjs';
 import { User } from '../user/entities/user.entity';
 import { TmdbProxyDto } from './shared.interface';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class SharedService {
@@ -29,7 +30,7 @@ export class SharedService {
             const response = await firstValueFrom(this.httpService.request(options).pipe(map(response => response.data)));
             return response;
         } catch (error) {
-            Logger.error(error.errors);
+            Logger.error(error);
             throw new HttpException(error.response.data.status_message, error.response.status);
         }
     }
@@ -49,5 +50,18 @@ export class SharedService {
     async getRandomIndexFromTmdbResponse(tmdbResponse) {
         const randomIndex = Math.floor(Math.random() * tmdbResponse.results.length);
         return randomIndex;
+    }
+
+    generateRandomCode(length: number): string {
+        const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Excluding ambiguous characters
+        let result = '';
+        const charactersLength = characters.length;
+
+        for (let i = 0; i < length; i++) {
+            const randomByte = crypto.randomBytes(1)[0]; // Generates a single random byte
+            result += characters.charAt(randomByte % charactersLength); // Maps byte to character
+        }
+
+        return result;
     }
 }

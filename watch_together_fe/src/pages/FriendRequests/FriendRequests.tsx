@@ -1,7 +1,7 @@
 import useScreenSize from "../../hooks/useSreenSize"
 import useGetFriendRequests from "../../hooks/api/useGetFriendRequests"
 import { Box } from "@mui/material"
-import OtherUserList from "../../components/friend/OtherUserList"
+import OtherUserList from "../../components/other-user/OtherUserList"
 import ContentHeader from "../../components/content-header/ContentHeader"
 
 const FriendRequests = () => {

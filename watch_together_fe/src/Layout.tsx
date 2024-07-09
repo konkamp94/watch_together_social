@@ -11,20 +11,20 @@ const Layout = () => {
     const [activeButtonId, setActiveButtonId] = useState('home')
     const { genres } = useMetadata()
     const { notifications } = useNotifications()
-
+    
     return (
         <>
         {genres && notifications? 
-            <>  
+            <Box sx={{ minHeight: '100vh', backgroundColor: 'primary.dark'}}>
                 <NavBar activeButtonId={activeButtonId} setActiveButtonId={setActiveButtonId}/>
-                <Box sx={{display: 'flex', justifyContent: 'space-between', backgroundColor: 'primary.dark', minHeight: '100vh'}}>
+                <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
                     <LeftBar activeButtonId={activeButtonId} setActiveButtonId={setActiveButtonId}/>
                     <Box sx={{flex: 3, padding: '16px'}}>
                         <Outlet/>
                     </Box>
                     <RightBar/>
                 </Box>
-            </> 
+            </Box> 
             : null
         }
         </>

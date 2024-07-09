@@ -4,16 +4,20 @@ import { Friendship } from './entities/friendship.entity';
 import { In, Like, Not, Repository } from 'typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { FriendshipStatus } from './social.enum';
-import { BlockUserDto, CreateFriendshipDto, UpdateFriendshipStatusDto } from './social.interface';
+import { BlockUserDto, CreateFriendshipDto, CreateWatchRoomDto, UpdateFriendshipStatusDto } from './social.interface';
 import { BlockedUser } from 'src/user/entities/blocked-user.entity';
 import { NotificationType } from 'src/user/user.interface';
 import { Notification } from './entities/notification.entity';
+import { WatchRoom } from './entities/watch-room.entity';
+import { SharedService } from 'src/shared/shared.service';
 @Injectable()
 export class SocialService {
-    constructor(@InjectRepository(Friendship) private friendshipRepository: Repository<Friendship>,
+    constructor(private sharedService: SharedService,
+        @InjectRepository(Friendship) private friendshipRepository: Repository<Friendship>,
         @InjectRepository(User) private userRepository: Repository<User>,
         @InjectRepository(BlockedUser) private blockedUserRepository: Repository<BlockedUser>,
-        @InjectRepository(Notification) private notificationRepository: Repository<Notification>) { }
+        @InjectRepository(Notification) private notificationRepository: Repository<Notification>,
+        @InjectRepository(WatchRoom) private watchRoomRepository: Repository<WatchRoom>) { }
 
     async searchFriendByUsernameOrName(user: User, keyword: string) {
         const otherUsers = await this.userRepository.find({
@@ -66,6 +70,24 @@ export class SocialService {
         })
     }
 
+    async getFriends(user: User) {
+        const friendships = await this.friendshipRepository
+            .createQueryBuilder('friendship')
+            .select(['friendship.id', 'friendship.status', 'requesterUser.id', 'requesterUser.name', 'requesterUser.username', 'receiverUser.id', 'receiverUser.name', 'receiverUser.username'])
+            .where('(friendship.receiverUserId = :userId OR friendship.requesterUserId = :userId)', { userId: user.id })
+            // .orWhere('friendship.requesterUserId = :userId', { userId: user.id })
+            .andWhere('friendship.status = :friendshipStatus', { friendshipStatus: FriendshipStatus.ACCEPTED })
+            .innerJoin('friendship.requesterUser', 'requesterUser')
+            .innerJoin('friendship.receiverUser', 'receiverUser')
+            .getMany()
+
+        return friendships.map(friendship => {
+            return friendship.requesterUser.id === user.id
+                ? { id: friendship.receiverUser.id, name: friendship.receiverUser.name, username: friendship.receiverUser.username }
+                : { id: friendship.requesterUser.id, name: friendship.requesterUser.name, username: friendship.requesterUser.username }
+        })
+    }
+
     async getNotifications(user: User) {
         return this.notificationRepository
             .createQueryBuilder('notification')
@@ -79,11 +101,19 @@ export class SocialService {
                 'friendRequest.createdAt',
                 'requesterUser.id',
                 'requesterUser.name',
-                'requesterUser.username'
+                'requesterUser.username',
+                'watchRoom.code',
+                'watchRoom.movieId',
+                'watchRoom.movieTitle',
+                'creatorUser.id',
+                'creatorUser.username',
+                'creatorUser.name',
             ])
             .where('notification.userId = :userId', { userId: user.id })
-            .innerJoin('notification.friendRequest', 'friendRequest')
-            .innerJoin('friendRequest.requesterUser', 'requesterUser')
+            .leftJoin('notification.friendRequest', 'friendRequest')
+            .leftJoin('friendRequest.requesterUser', 'requesterUser')
+            .leftJoin('notification.watchRoom', 'watchRoom')
+            .leftJoin('watchRoom.creatorUser', 'creatorUser')
             .orderBy('notification.createdAt', 'DESC')
             .take(10)
             .getMany()
@@ -164,28 +194,84 @@ export class SocialService {
         return this.blockedUserRepository.save(blockedUser);
     }
 
-    async createNotification(notificationType: NotificationType, notificationRelationship: Friendship) {
-        const notification = new Notification()
+    async createNotification(notificationType: NotificationType, notificationRelationship: Friendship | WatchRoom) {
         switch (notificationType) {
-            case 'FRIEND REQUEST':
-                notification.userId = notificationRelationship.receiverUserId
+            case NotificationType.FRIEND_REQUEST:
+                const notification = new Notification()
+                const friendship = notificationRelationship as Friendship
+                notification.userId = friendship.receiverUserId
                 notification.type = notificationType
-                notification.friendRequest = notificationRelationship
-        }
-        const notificationData = await this.notificationRepository.save(notification)
-        notificationData.friendRequest = await this.friendshipRepository.createQueryBuilder('friendship')
-            .select([
-                'friendship.id',
-                'friendship.status',
-                'friendship.requesterUserId',
-                'friendship.receiverUserId',
-                'requesterUser.name',
-                'requesterUser.username',
-                'friendship.createdAt', 'friendship.updatedAt'])
-            .where('friendship.id = :friendshipId', { friendshipId: notificationData.friendRequest.id })
-            .innerJoin('friendship.requesterUser', 'requesterUser')
-            .getOne()
+                notification.friendRequest = friendship
 
-        return notificationData
+                const notificationData = await this.notificationRepository.save(notification)
+                notificationData.friendRequest = await this.friendshipRepository.createQueryBuilder('friendship')
+                    .select([
+                        'friendship.id',
+                        'friendship.status',
+                        'friendship.requesterUserId',
+                        'friendship.receiverUserId',
+                        'requesterUser.name',
+                        'requesterUser.username',
+                        'friendship.createdAt', 'friendship.updatedAt'])
+                    .where('friendship.id = :friendshipId', { friendshipId: notificationData.friendRequest.id })
+                    .innerJoin('friendship.requesterUser', 'requesterUser')
+                    .getOne()
+                return notificationData
+
+            case NotificationType.WATCH_ROOM_INVITE:
+                const watchRoom = notificationRelationship as WatchRoom
+                const notifications = watchRoom.invitedUsers.map(invitedUser => {
+                    const notification = new Notification()
+                    notification.user = invitedUser
+                    notification.type = notificationType
+                    notification.watchRoom = watchRoom
+
+                    return this.notificationRepository.save(notification)
+                })
+                const notificationsData = await Promise.all(notifications)
+                return notificationsData
+
+        }
+    }
+
+    async getWatchRoom(code: string) {
+        return this.watchRoomRepository.createQueryBuilder('watchRoom')
+            .select(['watchRoom.movieId',
+                'watchRoom.movieTitle',
+                'watchRoom.createdAt',
+                'watchRoom.code',
+                'creatorUser.id',
+                'creatorUser.name',
+                'creatorUser.username',
+                'invitedUsers.id',
+                'invitedUsers.name',
+                'invitedUsers.username'])
+            .where('code = :code', { code })
+            .innerJoin('watchRoom.creatorUser', 'creatorUser')
+            .innerJoin('watchRoom.invitedUsers', 'invitedUsers')
+            .getOne()
+    }
+
+    async createWatchRoom(createWatchRoomDto: CreateWatchRoomDto, user: User) {
+        let code: string;
+        let tries = 0
+        let codeExists: boolean;
+        do {
+            code = this.sharedService.generateRandomCode(8)
+            tries++
+            codeExists = await this.watchRoomRepository.exists({ where: { code } })
+        } while (codeExists && tries < 10)
+
+        if (codeExists) {
+            throw new HttpException('We cannot handle new watch rooms right now', 503)
+        }
+
+        const watchRoom = new WatchRoom()
+        watchRoom.code = code
+        watchRoom.creatorUser = user
+        watchRoom.movieId = createWatchRoomDto.movieId
+        watchRoom.movieTitle = createWatchRoomDto.movieTitle
+        watchRoom.invitedUsers = createWatchRoomDto.invitedUsersIds.map(id => ({ id } as User))
+        return await this.watchRoomRepository.save(watchRoom)
     }
 }

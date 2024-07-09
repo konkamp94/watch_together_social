@@ -1,18 +1,16 @@
-import { MovieWithGenres, MovieWithGenresAndState } from "../../services/api.interfaces";
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import StarIcon from '@mui/icons-material/Star';
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
-import moviePhoto from '../../assets/movie-thumbnail.jpg'
-import AddToListButtons from "../action-buttons/AddToListButtons";
+import moviePhoto from '../../../../assets/movie-thumbnail.jpg'
+import { MovieWithGenres, MovieWithGenresAndState } from '../../../../services/api.interfaces';
 
-const MovieInList = ({movie, isFavoriteMode = false, isWatchlistMode = false}: {movie: MovieWithGenres | MovieWithGenresAndState, isFavoriteMode: boolean, isWatchlistMode: boolean}) => {
+const MovieInListForm = ({movie, isSelectedMovie, formAction = () => {}}: {movie: MovieWithGenres | MovieWithGenresAndState, isSelectedMovie: boolean, formAction?: (movieInfo: {movieId: number, movieTitle: string}) => void}) => {
   const navigate = useNavigate()  
 
   const titleSpan = <span onClick={() => navigate(`/movie/${movie.id}`)} 
@@ -22,7 +20,8 @@ const MovieInList = ({movie, isFavoriteMode = false, isWatchlistMode = false}: {
                     </span>
 
     return (
-      <Card sx={{ maxWidth: '100%', backgroundColor: 'primary.main', minHeight: '100%'}} elevation={5}>
+      <Card sx={{ maxWidth: '100%', backgroundColor: !isSelectedMovie ? 'primary.main' : 'primary.dark', minHeight: '100%', cursor: 'pointer'}} elevation={5} 
+            onClick={() => { formAction({movieId: movie.id, movieTitle: movie.title}) }}>
         <CardMedia
           component="img"
           sx={{height:'300px'}}
@@ -49,11 +48,8 @@ const MovieInList = ({movie, isFavoriteMode = false, isWatchlistMode = false}: {
             </Grid>
           </Grid>
         </CardContent>
-        <CardActions disableSpacing>
-            <AddToListButtons movie={movie} isFavoriteMode={isFavoriteMode} isWatchlistMode={isWatchlistMode}/>
-        </CardActions>
       </Card>
     );
 }
 
-export default MovieInList;
+export default MovieInListForm;

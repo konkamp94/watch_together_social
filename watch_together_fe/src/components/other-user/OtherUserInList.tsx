@@ -1,6 +1,6 @@
 import { Avatar, Box, Typography } from "@mui/material"
 import { OtherUser } from "../../services/api.interfaces"
-import FriendshipActionButton from "./FriendshipActionButton"
+import FriendshipActionButton from "../action-buttons/FriendshipActionButton"
 
 const OtherUserInList = ({ otherUser }: { otherUser: OtherUser }) => {
 
@@ -23,11 +23,11 @@ const OtherUserInList = ({ otherUser }: { otherUser: OtherUser }) => {
                     <Avatar>{otherUser.username.charAt(0).toUpperCase()}</Avatar>
                 </Box>
                 <Box flex={3}>
-                        <Typography sx={{fontWeight: 'bold'}} variant="body2">{otherUser.name} Konstantinos Kampourelis</Typography>
+                        <Typography sx={{fontWeight: 'bold'}} variant="body2">{otherUser.name}</Typography>
                         <Typography sx={{fontWeight: 'bold'}} variant="body2">{otherUser.username}</Typography>
                 </Box>
                 <Box flex={1.5}>
-                    <FriendshipActionButton otherUserId={otherUser.id} friendshipInfo={otherUser.friendshipInfo}/>
+                    <FriendshipActionButton otherUserId={otherUser.id} friendshipInfo={otherUser.friendshipInfo}/> 
                 </Box>
             </Box>
         </>

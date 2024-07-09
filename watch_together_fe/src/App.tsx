@@ -11,6 +11,9 @@ import FindFriends from './pages/FindFriends/FindFriends'
 import FriendRequests from './pages/FriendRequests/FriendRequests'
 import FindMovies from './pages/FindMovies/FindMovies'
 import Movie from './pages/Movie/Movie'
+import WatchMovies from './pages/WatchMovies/WatchMovies'
+import WatchRoom from './pages/WatchRoom/WatchRoom'
+import { WatchRoomContextProvider } from './context/watch-room.context'
 
 function App() {
 
@@ -24,12 +27,17 @@ function App() {
                               <Layout/>
                             </ProtectedRoute>}>
                 <Route path='/home' element={<Home />}></Route>
+                <Route path='/watch-movies/:tab' element={<WatchMovies/>}></Route>
                 <Route path='/favorites' element={<Favorites/>}></Route>
                 <Route path='/watchlist' element={<Watchlist/>}></Route>
                 <Route path='/find-movies' element={<FindMovies/>}></Route>
                 <Route path='/find-friends' element={<FindFriends/>}></Route>
                 <Route path='/friend-requests' element={<FriendRequests/>}></Route>
                 <Route path='/movie/:movieId' element={<Movie/>}></Route>
+                <Route path='/watch-room/:code' element={<WatchRoomContextProvider>
+                                                            <WatchRoom/>
+                                                          </WatchRoomContextProvider>}>
+                </Route>
             </Route>
         </Routes>
       </BrowserRouter>

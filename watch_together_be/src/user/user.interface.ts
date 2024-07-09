@@ -1,3 +1,4 @@
 export enum NotificationType {
     FRIEND_REQUEST = 'FRIEND REQUEST',
+    WATCH_ROOM_INVITE = 'WATCH_ROOM_INVITE'
 }

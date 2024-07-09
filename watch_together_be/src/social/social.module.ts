@@ -8,9 +8,11 @@ import { User } from 'src/user/entities/user.entity';
 import { AuthenticationModule } from 'src/authentication/authentication.module';
 import { BlockedUser } from 'src/user/entities/blocked-user.entity';
 import { GatewayModule } from 'src/gateway/gateway.module';
+import { SharedModule } from 'src/shared/shared.module';
+import { WatchRoom } from './entities/watch-room.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Friendship, Notification, User, BlockedUser]), AuthenticationModule, GatewayModule],
+  imports: [TypeOrmModule.forFeature([Friendship, Notification, WatchRoom, User, BlockedUser]), AuthenticationModule, GatewayModule, SharedModule],
   controllers: [SocialController],
   providers: [SocialService]
 })

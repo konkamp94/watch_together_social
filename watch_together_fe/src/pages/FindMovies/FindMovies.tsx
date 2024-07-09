@@ -26,13 +26,14 @@ const FindMovies = () => {
     useEffect(() => window.scrollTo(0,0), [currentPage])
 
     const search = useCallback((searchKeyword: string) => {
+        window.localStorage.setItem('lastSearchKeywordFindMovies', searchKeyword)
         setSearchParams((searchParams) => ( { ...searchParams, keyword: searchKeyword }))
         setCurrentPage(1)
     }, [setSearchParams, setCurrentPage])
 
     const changePage = (page: number) => {
         setCurrentPage(page)
-     }
+    }
     
     // const selectGenre = useCallback((genreIds: string[]) => {
     //     setSearchParams((searchParams) => ( { ...searchParams, genres: genreIds }))
@@ -43,7 +44,7 @@ const FindMovies = () => {
             
             <SearchInput placeholder="Search Movies..." 
                 searchAction={search} 
-                initialValue=""/>
+                localStorageKey="lastSearchKeywordFindMovies"/>
             {/* <MultipleSelectDropdown valuesMap={genres ? genres : {}} onChangeAction={selectGenre}/> */}
                         {/* TODO create a skeleten for loading in big screens */}
             {error && <p>{error.message}</p>}

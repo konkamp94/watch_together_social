@@ -4,6 +4,7 @@ import { JwtService } from "@nestjs/jwt";
 import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Server, Socket } from 'socket.io'
 import { Notification } from "src/social/entities/notification.entity";
+
 @WebSocketGateway({
     namespace: 'notifications',
     cors: { origin: '*' }
@@ -33,8 +34,8 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
                     secret: this.configService.get<string>('JWT_SECRET'),
                 }
             );
-            this.clients[payload.userId] = client
-            this.mapClientIdToUserId[client.id] = payload.userId
+            this.clients[payload.userId.toString()] = client
+            this.mapClientIdToUserId[client.id] = payload.userId.toString()
         } catch (error) {
             Logger.warn(this.jwtService.verifyAsync(authToken, { secret: this.configService.get<string>('JWT_SECRET') }))
             Logger.error(error, 'AuthGuard');
@@ -57,10 +58,10 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
 
     sendNotification(notification: Notification) {
         Logger.log(notification.userId, 'notification user id')
-        const userId = notification.userId
+        const userId = notification.userId.toString()
         const client = this.clients[userId]
         Logger.log(JSON.stringify(notification))
-        Logger.log(client.id)
+        // Logger.log(client.id)
         if (client) {
             client.emit('notifications', JSON.stringify(notification))
         }
