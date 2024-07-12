@@ -48,7 +48,7 @@ const Chat = ({ myUser, users, messages, setMessages, socket }: {
   }
 
   return (
-      <Paper sx={{ marginTop: '16px', backgroundColor: 'primary.dark', padding: '8px'}} elevation={12}>
+      <Paper sx={{ marginTop: '16px', backgroundColor: 'primary.dark', padding: '8px', height: '50%'}} elevation={12}>
         <Grid container>
             <Grid item xs={3} >
                 <List sx={{marginRight: '8px'}}>

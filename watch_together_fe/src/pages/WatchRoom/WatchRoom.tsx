@@ -15,7 +15,8 @@ const WatchRoom = () => {
     const videoRef = useRef<ReactPlayer | null>()
     const [messages, setMessages] = useState<{senderUsername: string, message: string, timestamp: string}[]>([])
     const [user] = useLocalStorage("user");
-    const last = useRef<any>(null)
+    const [internalPlayer, setInternalPlayer] = useState<any>(null)
+    const lastActionAndSource = useRef<{ type: string, action: string } | null>(null)
     const ignoreNextOnPlayEventRef = useRef(false)
     const ignoreNextOnPauseEventRef = useRef(false)
 
@@ -25,33 +26,26 @@ const WatchRoom = () => {
         if(!lastEvent) {
             return;
         }
+        if(!internalPlayer) {
+            return;
+        }
 
         console.log('NEW EVENT')
         console.log(lastEvent)
-        const internalPlayer = videoRef.current?.getInternalPlayer()
-        // console.log(internalPlayer)
         switch(lastEvent.type) {
             case('navigation'): 
                 if(lastEvent.action === 'play') {
                     console.log('new play event logic')
                     videoRef.current?.seekTo(lastEvent.videoTime + (Math.floor((Date.now() - lastEvent.timestamp) / 1000)), 'seconds')
                     ignoreNextOnPlayEventRef.current = true
-                    last.current = { type: 'event', action: 'play'}
+                    lastActionAndSource.current = { type: 'event', action: 'play'}
                     internalPlayer?.playVideo()
-                    // setPlayerState(() => {
-                    //     ignoreNextOnPlayEventRef.current = true
-                    //     return { isPlaying: true, fromEvent: true }
-                    // })
                 } else if (lastEvent.action === 'pause') {
                     console.log('new pause event logic')
                     videoRef.current?.seekTo(lastEvent.videoTime, 'seconds')
                     ignoreNextOnPauseEventRef.current = true
-                    last.current = { type: 'event', action: 'pause'}
+                    lastActionAndSource.current = { type: 'event', action: 'pause'}
                     internalPlayer?.pauseVideo()
-                    // setPlayerState(() => {
-                    //     ignoreNextOnPauseEventRef.current = true
-                    //     return { isPlaying: false, fromEvent: true }
-                    // })
                 }
                 break;
             case('message'):
@@ -78,7 +72,7 @@ const WatchRoom = () => {
                 }
                 break;
             }
-        }, [lastEvent, socket])
+        }, [lastEvent, socket, internalPlayer])
 
     const mapUsers = useCallback((watchRoomInfo: any) => {
         return [
@@ -91,22 +85,23 @@ const WatchRoom = () => {
         if(event.data !== 1 && event.data !== 2 && event.data !== 3) { return }
         console.log(event.data)
         if(event.data === 3) {
-            console.log(last.current)
+            console.log(lastActionAndSource.current)
         }
-        if(event.data === 3 && last.current.type === 'user' && last.current.action === 'play') {
+        // fix the buffering state problem
+        if(event.data === 3 && lastActionAndSource.current?.type === 'user' && lastActionAndSource.current.action === 'play') {
             ignoreNextOnPlayEventRef.current = false
-        } else if(event.data === 3 && last.current.type === 'user' && last.current.action === 'pause') {
+        } else if(event.data === 3 && lastActionAndSource.current?.type === 'user' && lastActionAndSource.current.action === 'pause') {
             ignoreNextOnPauseEventRef.current = false
-        } else if(event.data === 3 && last.current.type === 'event' && last.current.action === 'play') {
+        } else if(event.data === 3 && lastActionAndSource.current?.type === 'event' && lastActionAndSource.current.action === 'play') {
             ignoreNextOnPlayEventRef.current = true
-        } else if(event.data === 3 && last.current.type === 'event' && last.current.action === 'pause') {
+        } else if(event.data === 3 && lastActionAndSource.current?.type === 'event' && lastActionAndSource.current.action === 'pause') {
             ignoreNextOnPauseEventRef.current = true
         }
         //playing
         if(event.data === 1 && !ignoreNextOnPlayEventRef.current) {
             ignoreNextOnPauseEventRef.current = false
             console.log('play from action')
-            last.current = { type: 'user', action: 'play'}
+            lastActionAndSource.current = { type: 'user', action: 'play'}
             socket?.emit('events', {type: 'navigation', action: 'play', videoTime: (videoRef.current?.getCurrentTime()), timestamp: Date.now()})
         } else if(event.data === 1){
             console.log('play from event')
@@ -117,7 +112,7 @@ const WatchRoom = () => {
         if(event.data === 2 && !ignoreNextOnPauseEventRef.current) {
             ignoreNextOnPlayEventRef.current = false
             console.log('paused from action')
-            last.current = { type: 'user', action: 'pause'}
+            lastActionAndSource.current = { type: 'user', action: 'pause'}
             socket?.emit('events', {type: 'navigation', action: 'pause', videoTime: videoRef.current?.getCurrentTime(), timestamp: Date.now()})
         } else if(event.data === 2){
             console.log('paused from event')
@@ -145,8 +140,8 @@ const WatchRoom = () => {
                                         const internalPlayer = videoRef.current?.getInternalPlayer()
                                         internalPlayer?.addEventListener("onStateChange", (event) => {
                                             handleStateChange(event, Date.now())
-                                            // _debounce((event) => handleStateChange(event), 1000)
                                         })
+                                        setInternalPlayer(videoRef.current?.getInternalPlayer())
                                     }}
                                     // playing={playerState.isPlaying}
                                     // onPlay={() => { 

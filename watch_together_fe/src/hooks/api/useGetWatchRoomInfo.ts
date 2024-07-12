@@ -28,12 +28,13 @@ const useGetWatchRoomInfo = (code: string) => {
             //TODO handle error
             onError: (error: AxiosError) => { handleApiError(error) },
             refetchOnWindowFocus: false,
+            staleTime: Infinity,
             select: (response) => {
                 const trailer = response.movieVideos.data.results.find(
                     (video) => {
-                        console.log(video.official && video.type === 'Trailer' && video.site === 'YouTube')
-                        console.log(video.type === 'Trailer' && video.site === 'YouTube')
-                        console.log(video.site === 'YouTube')
+                        // console.log(video.official && video.type === 'Trailer' && video.site === 'YouTube')
+                        // console.log(video.type === 'Trailer' && video.site === 'YouTube')
+                        // console.log(video.site === 'YouTube')
                         return (video.official && video.type === 'Trailer' && video.site === 'YouTube') ||
                             (video.type === 'Trailer' && video.site === 'YouTube') ||
                             (video.site === 'YouTube')
