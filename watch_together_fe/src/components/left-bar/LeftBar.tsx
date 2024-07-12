@@ -19,6 +19,7 @@ const LeftBar = ({ activeButtonId, setActiveButtonId }: {activeButtonId: string,
                 {
                     buttonsConfig.map(buttonConfig => {
                         return <ListButton 
+                                key={buttonConfig.id}
                                 isActive={activeButtonId === buttonConfig.id}
                                 label={buttonConfig.label} 
                                 icon={buttonConfig.icon}

@@ -35,7 +35,6 @@ export const WatchRoomContextProvider = ({children}: {children: ReactNode}) => {
             setLastEvent((oldLastEvent) => {
                 if(eventJson.type === 'message') { return eventJson }
                 if(!oldLastEvent) { return eventJson }
-                if(oldLastEvent.type === 'message') { return eventJson }
                 if(oldLastEvent.timestamp < eventJson.timestamp) { 
                     return ({ ...eventJson, timeDifference: (eventJson.timestamp - oldLastEvent.timestamp) }) 
                 }

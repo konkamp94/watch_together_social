@@ -1,16 +1,32 @@
-import { Outlet } from "react-router-dom"
+import { Outlet, useLocation } from "react-router-dom"
 import LeftBar from "./components/left-bar/LeftBar"
 import NavBar from "./components/nav-bar/NavBar"
 import RightBar from "./components/right-bar/RightBar"
 import { Box } from "@mui/material"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import useMetadata from './hooks/context/useMetadata'
 import { useNotifications } from "./hooks/context/useNotifcations"
 
 const Layout = () => {
+    const location = useLocation()
     const [activeButtonId, setActiveButtonId] = useState('home')
     const { genres } = useMetadata()
     const { notifications } = useNotifications()
+
+    useEffect(() => {
+        const mapRouteNameToActiveButtonId: { [key: string]: string } = {
+            '/home': 'home',
+            '/favorites': 'favorite',
+            '/watchlist': 'watchlist',
+            '/watch-movies/create-room': 'watch-movies',
+            '/watch-movies/join-room': 'watch-movies',
+            '/find-movies': 'find-movies',
+            '/find-friends': 'find-friends',
+            '/friend-requests': 'friend-requests'
+        }
+        const pathName = location.pathname as string
+        setActiveButtonId(mapRouteNameToActiveButtonId[pathName] ?? '')
+    }, [location, setActiveButtonId])
     
     return (
         <>

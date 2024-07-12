@@ -14,13 +14,13 @@ const DetailedMovieInList = ({movie, isFavoriteMode = false, isWatchlistMode = f
                      src={movie.poster_path ? `${import.meta.env.VITE_TMDB_BASE_IMAGE_URL}/w342${movie.poster_path}` : moviePhoto} />
                 <Box style={{overflow: 'hidden', width: '100%'}}>
                     <Grid container spacing={2} className='grid-container-custom'>
-                        <Grid className='grid-item-custom' xs={9} md={10} lg={11}>
+                        <Grid item className='grid-item-custom' xs={9} md={10} lg={11}>
                             <Typography onClick={() => navigate(`/movie/${movie.id}`)} variant="h6" 
                                         sx={{cursor: 'pointer', color: 'primary.contrastText', lineHeight: '0.9', marginBottom: '16px', '&:hover': { textDecoration: 'underline'}}}>
                                             {movie.title}
                             </Typography>
                         </Grid>
-                        <Grid className='grid-item-custom' xs={3} md={2} lg={1}>
+                        <Grid item className='grid-item-custom' xs={3} md={2} lg={1}>
                                 <AddToListButtons movie={movie} isFavoriteMode={isFavoriteMode} isWatchlistMode={isWatchlistMode}/>
                         </Grid>
                     </Grid>
