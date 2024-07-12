@@ -18,13 +18,11 @@ export const WatchRoomContextProvider = ({children}: {children: ReactNode}) => {
     const [socket, setSocket] = useState<Socket | null>(null)
 
     useEffect(() => {
-        console.log(code)
         const socket: Socket = io(`${wsBaseUrl}/watch-room?code=${code}`, { extraHeaders: { 'Authorization': `Bearer ${token}`  }});
         setSocket(socket)
         
         socket.on("connect", () => {
             console.log("Socket.IO connection established");
-            console.log(socket)
             socket.emit('events', {  type: 'sync-new-user-request', 
                                      newUserId: user?.userId, 
                                      timestamp: Date.now() 
@@ -38,10 +36,14 @@ export const WatchRoomContextProvider = ({children}: {children: ReactNode}) => {
                 if(eventJson.type === 'message') { return eventJson }
                 if(!oldLastEvent) { return eventJson }
                 if(oldLastEvent.type === 'message') { return eventJson }
-                if(oldLastEvent.timestamp < eventJson.timestamp) { return eventJson }
+                if(oldLastEvent.timestamp < eventJson.timestamp) { 
+                    return ({ ...eventJson, timeDifference: (eventJson.timestamp - oldLastEvent.timestamp) }) 
+                }
                 
                 return oldLastEvent
             })
+
+            // setLastEvent(eventJson)
         });
 
         socket.on("connect_error", (error) => {
