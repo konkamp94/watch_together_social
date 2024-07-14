@@ -14,6 +14,8 @@ const useApiErrorHandling = (): [{ message: string, status: number } | null, (er
             //TODO refresh token login
             logout()
             navigate('/login')
+        } else if (error?.response?.status === 403) {
+            setError({ message: 'You cannot access this route', status: error.response.status })
         } else if (error?.response?.status === 500) {
             setError({ message: 'Something went wrong, please try again later', status: error.response.status })
         } else {

@@ -89,5 +89,5 @@ export interface WatchRoomContextValue {
         trailer: any
     },
     isLoadingWatchRoomInfo: boolean,
-    error: string | undefined
+    error: { message: string; status: number; } | null
 }

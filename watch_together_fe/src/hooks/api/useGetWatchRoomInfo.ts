@@ -45,7 +45,7 @@ const useGetWatchRoomInfo = (code: string) => {
             }
         })
 
-    return { watchRoomInfo, isLoadingWatchRoomInfo, error: error?.message, getWatchRoomInfo }
+    return { watchRoomInfo, isLoadingWatchRoomInfo, error: error, getWatchRoomInfo }
 }
 
 export default useGetWatchRoomInfo

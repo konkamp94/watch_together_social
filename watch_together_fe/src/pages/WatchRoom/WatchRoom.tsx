@@ -126,8 +126,8 @@ const WatchRoom = () => {
     return (<>
             <ContentHeader text={`Room Code: ${code}`}></ContentHeader>
             <br/>
-            {/* <span>{lastEvent}</span> */}
-            {watchRoomInfo  ?
+            { error?.status === 403 ? <Typography variant="body1" sx={{color: 'primary.contrastText'}}> Sorry, You cannot participate to this room </Typography> : null}
+            {watchRoomInfo ?
                         (<>
                             <ReactPlayer
                                     ref={videoRef as React.RefObject<ReactPlayer>} 
@@ -165,7 +165,7 @@ const WatchRoom = () => {
                                     // }}
                             /> 
                         </>)
-                        : <Typography variant="body1" sx={{color: 'primary.contrastText'}}>Sorry, we didn't find any videos for this movie</Typography>
+                        ? !error : <Typography variant="body1" sx={{color: 'primary.contrastText'}}>Sorry, we didn't find any videos for this movie</Typography> : null
             }
             {watchRoomInfo && <Chat myUser={JSON.parse(user as string)} users={mapUsers(watchRoomInfo)} messages={messages} setMessages={setMessages} socket={socket}/>}
             
