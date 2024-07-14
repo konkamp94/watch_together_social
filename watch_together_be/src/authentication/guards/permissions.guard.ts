@@ -8,6 +8,7 @@ import { Permission } from './permission.interface';
 import { GeneralPermissionTitle, SocialPermissionTitle } from "./permission.enum";
 import { FriendshipStatus } from "src/social/social.enum";
 import { BlockedUser } from "src/user/entities/blocked-user.entity";
+import { WatchRoom } from "src/social/entities/watch-room.entity";
 
 export const PermissionsGuard = (permission: Permission): Type<CanActivate> => {
 
@@ -28,6 +29,7 @@ export const PermissionsGuard = (permission: Permission): Type<CanActivate> => {
                 [SocialPermissionTitle.CAN_UPDATE_FRIENDSHIP_STATUS]: (user: User, request: any) => this.canUpdateFriendshipStatus(user, request),
                 [SocialPermissionTitle.CAN_DELETE_FRIENDSHIP]: (user: User, request: any) => this.canDeleteFriendship(user, request),
                 [SocialPermissionTitle.CAN_BLOCK_USER]: (user: User, request: any) => this.canBlockUser(user, request),
+                [SocialPermissionTitle.IS_INVITED_OR_CREATOR_WATCH_ROOM]: (user: User, request: any) => this.isInvitedOrCreatorWatchRoom(user, request),
             }
         }
 
@@ -107,6 +109,20 @@ export const PermissionsGuard = (permission: Permission): Type<CanActivate> => {
         private async canBlockUser(user: User, request: any): Promise<boolean> {
             const blockerUserId = request.body.blockerUserId;
             return blockerUserId === user.id;
+        }
+
+        private async isInvitedOrCreatorWatchRoom(user: User, request: any): Promise<boolean> {
+            const code = request.params.code
+            const watchRoom = await this.dataSource.getRepository(WatchRoom).findOne({ where: { code }, relations: { invitedUsers: true } })
+            if (!watchRoom) {
+                throw new HttpException('Object not found', 404);
+            }
+
+            if (watchRoom.invitedUsers.map((invitedUser) => invitedUser.id).includes(user.id) || watchRoom.creatorUserId === user.id) {
+                return true
+            }
+
+            return false
         }
 
         // helper functions

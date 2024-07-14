@@ -7,6 +7,7 @@ export enum SocialPermissionTitle {
     CAN_UPDATE_FRIENDSHIP_STATUS = 'CAN_UPDATE_FRIENDSHIP_STATUS',
     CAN_DELETE_FRIENDSHIP = 'CAN_DELETE_FRIENDSHIP',
     CAN_BLOCK_USER = 'CAN_BLOCK_USER',
+    IS_INVITED_OR_CREATOR_WATCH_ROOM = 'IS_INVITED_OR_CREATOR_WATCH_ROOM'
 }
 
 export type PermissionTitle = GeneralPermissionTitle | SocialPermissionTitle;

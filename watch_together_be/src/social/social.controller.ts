@@ -77,7 +77,7 @@ export class SocialController {
         return { message: 'Latest Notifications marked as seen' }
     }
 
-    @UseGuards(AuthGuard)
+    @UseGuards(PermissionsGuard({ title: SocialPermissionTitle.IS_INVITED_OR_CREATOR_WATCH_ROOM }))
     @Get('/watch-room/:code')
     async getWatchRoom(@Param('code') code: string) {
         return await this.socialService.getWatchRoom(code)
