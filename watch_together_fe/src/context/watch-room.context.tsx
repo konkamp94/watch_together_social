@@ -32,7 +32,7 @@ export const WatchRoomContextProvider = ({children}: {children: ReactNode}) => {
         socket.on("events", (event: string) => {
             const eventJson = JSON.parse(event)
 
-            setLastEvent((oldLastEvent) => {
+            setLastEvent((oldLastEvent: any) => {
                 if(eventJson.type === 'message') { return eventJson }
                 if(!oldLastEvent) { return eventJson }
                 if(oldLastEvent.timestamp < eventJson.timestamp) { 

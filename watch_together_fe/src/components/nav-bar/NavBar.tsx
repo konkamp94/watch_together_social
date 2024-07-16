@@ -175,11 +175,6 @@ export default function NavBar({ activeButtonId, setActiveButtonId }: {activeBut
             </BottomNavigation>
           </Box>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={4} color="error">
-                <MailIcon />
-              </Badge>
-            </IconButton>
             <IconButton
               size="large"
               aria-label="show 17 new notifications"
@@ -196,7 +191,7 @@ export default function NavBar({ activeButtonId, setActiveButtonId }: {activeBut
               aria-label="account of current user"
               aria-controls={menuId}
               aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
+              // onClick={handleProfileMenuOpen}
               color="inherit"
             >
               <AccountCircle />

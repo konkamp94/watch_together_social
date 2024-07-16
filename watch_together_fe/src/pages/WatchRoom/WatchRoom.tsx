@@ -2,8 +2,7 @@ import { useBeforeUnload, useParams } from "react-router-dom";
 import { useWatchRoom } from "../../hooks/context/useWatchRoom";
 import { useCallback, useEffect, useRef, useState } from "react";
 import ReactPlayer from 'react-player/youtube'
-import { Typography } from "@mui/material";
-import _debounce from 'lodash/debounce';
+import { Box, Typography } from "@mui/material";
 import Chat from "../../components/watch-room/Chat";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import ContentHeader from "../../components/content-header/ContentHeader";
@@ -124,19 +123,25 @@ const WatchRoom = () => {
 
     
     return (<>
-            <ContentHeader text={`Room Code: ${code}`}></ContentHeader>
-            <br/>
-            { error?.status === 403 ? <Typography variant="body1" sx={{color: 'primary.contrastText'}}> Sorry, You cannot participate to this room </Typography> : null}
-            { !isLoadingWatchRoomInfo && !watchRoomInfo?.trailer && !error ? <Typography variant="body1" sx={{color: 'primary.contrastText'}}>Sorry, we didn't find any videos for this movie</Typography> : null}
-            {watchRoomInfo ?
-                        (<>
-                            <ReactPlayer
-                                    ref={videoRef as React.RefObject<ReactPlayer>} 
+                { error?.status === 403 ? <Typography variant="body1" sx={{color: 'primary.contrastText'}}> Sorry, You cannot participate to this room </Typography> : null}
+                { !isLoadingWatchRoomInfo && !watchRoomInfo?.trailer && !error ? <Typography variant="body1" sx={{color: 'primary.contrastText'}}>Sorry, we didn't find any videos for this movie</Typography> : null}
+                { watchRoomInfo && (
+                    <Box>
+                        <ContentHeader text={`Room Code: ${code}`}></ContentHeader>
+                        <br/>
+                        <Box sx={{ display: 'flex', height: '100%', flex:1 }}>
+                            <Box sx={{ flex: 4, position: 'relative', paddingTop: `80vh` }}>
+                                <ReactPlayer
+                                    ref={videoRef as React.RefObject<ReactPlayer>}
                                     muted={true}
                                     url={`https://www.youtube.com/watch?v=${watchRoomInfo.trailer?.key}`} 
                                     controls={true} 
                                     width={'100%'}
-                                    height={'50%'}
+                                    height={'100%'}
+                                    style={{   position: 'absolute',
+                                        top: 0,
+                                        left: 0
+                                    }}
                                     onReady={() => {
                                         const internalPlayer = videoRef.current?.getInternalPlayer()
                                         internalPlayer?.addEventListener("onStateChange", (event) => {
@@ -164,11 +169,18 @@ const WatchRoom = () => {
                                     //                     ignoreNextOnPauseEventRef.current = false
                                     //                 }       
                                     // }}
-                            /> 
-                        </>)
-                        : null
-            }
-            {watchRoomInfo && <Chat myUser={JSON.parse(user as string)} users={mapUsers(watchRoomInfo)} messages={messages} setMessages={setMessages} socket={socket}/>}
+                                    /> 
+                            </Box>
+                            <Box sx={{ display: 'flex', flex: 1, width: '100%' }}>
+                                <Chat myUser={JSON.parse(user as string)} 
+                                    users={mapUsers(watchRoomInfo)} 
+                                    messages={messages} 
+                                    setMessages={setMessages} 
+                                    socket={socket}/>
+                            </Box>
+                        </Box>
+                    </Box>
+                ) }
             
     </>)
 }

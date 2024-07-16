@@ -11,6 +11,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { Socket } from 'socket.io-client';
 import { useEffect, useRef, useState } from 'react';
 import { User } from '../../context/interfaces.context';
+import { Box } from '@mui/material';
 
 
 const Chat = ({ myUser, users, messages, setMessages, socket }: { 
@@ -48,48 +49,49 @@ const Chat = ({ myUser, users, messages, setMessages, socket }: {
   }
 
   return (
-      <Paper sx={{ marginTop: '16px', backgroundColor: 'primary.dark', padding: '8px', height: '50%'}} elevation={12}>
-        <Grid container>
-            <Grid item xs={3} >
-                <List sx={{marginRight: '8px'}}>
-                    {users.map((user) => {
-                        return (
-                            <ListItem key={user.id} sx={{backgroundColor: user.username === myUser.username ? 'primary.main' : 'primary.light', borderRadius: '16px', marginBottom: '8px'}}>
-                                <ListItemIcon>
-                                    <Avatar>{user.username.charAt(0).toUpperCase()}</Avatar>
-                                </ListItemIcon>
-                                <ListItemText>{user.username}</ListItemText>
-                            </ListItem>
-                        )
-                    })}
-                </List>
-            </Grid>
-            <Grid item xs={9}>
-                <List sx={{ height: '100%', maxHeight: '200px', minHeight:'200px',overflowY: 'auto'}} ref={inboxElement as React.RefObject<any>}>
-                    {messages.map((message, index) => (
-                        <Grid container sx={{marginBottom: '16px'}}>
-                            {myUser.username === message.senderUsername ? <Grid item xs={6}></Grid> : null}
-                            <Grid item xs={6}>
-                                <ListItem key={index} sx={{backgroundColor: myUser.username === message.senderUsername ? 
-                                                                'primary.main' : 'primary.light', borderRadius: '8px'}}>
-                                    <Grid container>
-                                        <Grid item xs={12}>
-                                            <ListItemText sx={{overflowWrap: 'break-word'}} primary={message.message}></ListItemText>
-                                        </Grid>
-                                        <Grid item xs={12}>
-                                            <ListItemText sx={{textAlign: 'right'}} secondary={message.senderUsername}></ListItemText>
-                                        </Grid>
+      <Paper sx={{ backgroundColor: 'primary.dark', 
+                   padding: '8px', 
+                   marginLeft: '16px', 
+                   width: '100%',
+                   height: '80vh', 
+                   display: 'flex', 
+                   flexDirection: 'column'}} 
+                   elevation={12}
+        >
+            <List sx={{overflowY: 'auto', marginRight: '8px', flex: '0 1 20%', maxHeight: '20%'}}>
+                {users.map((user) => {
+                    return (
+                        <ListItem key={user.id} sx={{backgroundColor: user.username === myUser.username ? 'primary.main' : 'primary.light', borderRadius: '16px', marginBottom: '8px'}}>
+                            <ListItemIcon>
+                                <Avatar>{user.username.charAt(0).toUpperCase()}</Avatar>
+                            </ListItemIcon>
+                            <ListItemText>{user.username}</ListItemText>
+                        </ListItem>
+                    )
+                })}
+            </List>
+            <List sx={{overflowY: 'auto',  flex: '0 1 70%', maxHeight: '70%'}} ref={inboxElement as React.RefObject<any>}>
+                {messages.map((message, index) => (
+                    <Grid container sx={{marginBottom: '16px'}}>
+                        {myUser.username === message.senderUsername ? <Grid item xs={6}></Grid> : null}
+                        <Grid item xs={6}>
+                            <ListItem key={index} sx={{backgroundColor: myUser.username === message.senderUsername ? 
+                                                            'primary.main' : 'primary.light', borderRadius: '8px'}}>
+                                <Grid container>
+                                    <Grid item xs={12}>
+                                        <ListItemText sx={{overflowWrap: 'break-word'}} primary={message.message}></ListItemText>
                                     </Grid>
-                                </ListItem>
-                            </Grid>
+                                    <Grid item xs={12}>
+                                        <ListItemText sx={{textAlign: 'right'}} secondary={message.senderUsername}></ListItemText>
+                                    </Grid>
+                                </Grid>
+                            </ListItem>
                         </Grid>
-                    ))}
-                </List>
-            </Grid>
-        </Grid>
+                    </Grid>
+                ))}
+            </List>
         <Grid container sx={{marginTop: '16px'}}>
-                    <Grid item xs={3} sx={{padding: 0}}> {/* Offset Column */} </Grid>
-                    <Grid item xs={8} sx={{padding: 0}}>
+                    <Grid item xs={7} md={9} lg={10} sx={{padding: 0}}>
                         <TextField
                             id="message-text"
                             label="Type Something"
@@ -104,7 +106,7 @@ const Chat = ({ myUser, users, messages, setMessages, socket }: {
                             }}
                         />
                     </Grid>
-                    <Grid item xs={1} textAlign="end">
+                    <Grid item xs={5} md={3} lg={2} textAlign="end">
                         <Fab color="primary" aria-label="add" onClick={() => sendMessage()}><SendIcon /></Fab>
                     </Grid>
                 </Grid>

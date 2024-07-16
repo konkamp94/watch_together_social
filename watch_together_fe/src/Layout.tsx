@@ -7,7 +7,7 @@ import { useEffect, useState } from "react"
 import useMetadata from './hooks/context/useMetadata'
 import { useNotifications } from "./hooks/context/useNotifcations"
 
-const Layout = () => {
+const Layout = ({ withLeftBar = true, withRightBar= true }: {withLeftBar?: boolean, withRightBar?: boolean}) => {
     const location = useLocation()
     const [activeButtonId, setActiveButtonId] = useState('home')
     const { genres } = useMetadata()
@@ -34,11 +34,11 @@ const Layout = () => {
             <Box sx={{ minHeight: '100vh', backgroundColor: 'primary.dark'}}>
                 <NavBar activeButtonId={activeButtonId} setActiveButtonId={setActiveButtonId}/>
                 <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
-                    <LeftBar activeButtonId={activeButtonId} setActiveButtonId={setActiveButtonId}/>
-                    <Box sx={{flex: 3, padding: '16px'}}>
+                    {withLeftBar && <LeftBar activeButtonId={activeButtonId} setActiveButtonId={setActiveButtonId}/>}
+                    <Box sx={{flex: !withLeftBar && !withRightBar ? 1 : 3, padding: '16px'}}>
                         <Outlet/>
                     </Box>
-                    <RightBar/>
+                    {withRightBar && <RightBar/>}
                 </Box>
             </Box> 
             : null
