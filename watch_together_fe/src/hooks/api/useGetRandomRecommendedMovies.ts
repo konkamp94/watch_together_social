@@ -8,7 +8,7 @@ import { TmdbProxyBody } from "../../services/api.interfaces";
 import { useEffect, useState } from 'react';
 import useLocalStorage from "../useLocalStorage";
 
-const useGetRandomRecommendedMovies = (recommendBy: string = 'popular', count: number = 4) => {
+const useGetRandomRecommendedMovies = (recommendBy: string = 'popular', count: number = 8) => {
     const [error, handleApiError] = useApiErrorHandling()
 
     const [storedRecommendedMovies, saveRecommendedMovies] = useLocalStorage('recommendedMovies')
@@ -20,12 +20,7 @@ const useGetRandomRecommendedMovies = (recommendBy: string = 'popular', count: n
         useState(storedRecommendedMoviesWithState ? JSON.parse(storedRecommendedMoviesWithState) : null)
 
     const [fetchingStage, setFetchingStage] = useState('recommended-movies')
-
-    // this runs on the component unmount. I want to enable the query for the movies's state update so I can
-    // invalidate query from other components when a movie is added to favorites or watchlist
-    useEffect(() => {
-        return setFetchingStage('recommended-movies-account-states')
-    }, [setFetchingStage])
+    const [accountStatesIsEnabled, setAccountStatesIsEnabled] = useState(false)
 
     const { isLoading: isLoadingRecommendedMovies, isFetching: isFetchingRecommendedMovies } = useQuery('recommended-movies',
         async () => {
@@ -45,17 +40,19 @@ const useGetRandomRecommendedMovies = (recommendBy: string = 'popular', count: n
             onError: (error: AxiosError) => { handleApiError(error) },
 
             staleTime: 1 * (60 * 1000), // 4 minutes
-            refetchOnWindowFocus: false
+            refetchOnWindowFocus: false,
         }
     )
 
     const getAccountStates = () => {
-        const movieIds = recommendedMovies?.map((movie: Movie) => movie.id)
-        const tmdbProxyBodies = movieIds.map((movieId: number) => ({ uri: `/movie/${movieId}/account_states`, method: 'get' }))
-        return Promise.all(tmdbProxyBodies.map((tmdbProxyBody: TmdbProxyBody) => tmdbProxyService.accessTmdbApi(tmdbProxyBody)))
+        if (recommendedMovies) {
+            const tmdbProxyBodies = recommendedMovies?.map((movie: Movie) => movie.id)
+                .map((movieId: number) => ({ uri: `/movie/${movieId}/account_states`, method: 'get' }))
+            return Promise.all(tmdbProxyBodies.map((tmdbProxyBody: TmdbProxyBody) => tmdbProxyService.accessTmdbApi(tmdbProxyBody)))
+        }
     }
 
-    const { isLoading: isLoadingAccountStates, isFetching: isFetchingAccountStates, isRefetching: isRefetchingAccountStates } = useQuery('recommended-movies-account-states',
+    const { isLoading: isLoadingAccountStates, isFetching: isFetchingAccountStates, isRefetching: isRefetchingAccountStates, refetch: getAccountStatesFetch } = useQuery('recommended-movies-account-states',
         getAccountStates,
         {
             onSuccess: ((recommendedMoviesStates) => {
@@ -74,9 +71,23 @@ const useGetRandomRecommendedMovies = (recommendBy: string = 'popular', count: n
                 saveRecommendedMoviesWithState(JSON.stringify(recommendedMoviesWithState))
             }),
             onError: (error: AxiosError) => { handleApiError(error) },
-            enabled: fetchingStage === 'recommended-movies-account-states',
+            enabled: accountStatesIsEnabled,
             refetchOnWindowFocus: false
         })
+
+    useEffect(() => {
+        console.log(fetchingStage)
+        if (recommendedMovies) {
+            console.log(recommendedMovies)
+            getAccountStatesFetch()
+        }
+    }, [recommendedMovies, getAccountStatesFetch])
+
+    // this runs on the component unmount. I want to enable the query for the movies's state update so I can
+    // invalidate query from other components when a movie is added to favorites or watchlist
+    useEffect(() => {
+        return setAccountStatesIsEnabled(true)
+    }, [setAccountStatesIsEnabled])
 
     const isLoading = isLoadingRecommendedMovies || isLoadingAccountStates
     const isFetching = isFetchingRecommendedMovies || isFetchingAccountStates
