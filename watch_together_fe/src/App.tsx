@@ -1,5 +1,5 @@
 import './App.css'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Login  from './pages/Login/Login'
 import ProtectedRoute from './components/ProtectedRoute'
 import Layout from './Layout'
@@ -44,6 +44,7 @@ function App() {
               </WatchRoomContextProvider>}>
             </Route>
           </Route>
+          <Route path="*" element={<Navigate to="/home"/>} />
         </Routes>
       </BrowserRouter>
     </>

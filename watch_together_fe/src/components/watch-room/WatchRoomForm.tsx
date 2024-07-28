@@ -15,7 +15,7 @@ const WatchRoomForm = () => {
         {stepLabel: 'Invite Friends', isCompleted: false},
         {stepLabel: 'Create Watch Room', isCompleted: false},
     ])
-    const {createWatchRoom, isLoading, error} = useCreateWatchRoom((code:string) => navigate(`/watch-room/${code}`))
+    const {createWatchRoom, error} = useCreateWatchRoom((code:string) => navigate(`/watch-room/${code}`))
     const [snackBar, setSnackBar] = useState<JSX.Element | null>(null)
 
     useEffect(() => {
@@ -38,7 +38,7 @@ const WatchRoomForm = () => {
         }
     }, [error])
 
-    const closeSnackBar = (event: React.SyntheticEvent | Event, reason?: string) => {
+    const closeSnackBar = (_event: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
             return;
         }

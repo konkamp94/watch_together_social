@@ -11,7 +11,7 @@ import ContentHeader from "../../components/content-header/ContentHeader";
 const WatchRoom = () => {
     const { code } = useParams();
     const { lastEvent, watchRoomInfo, isLoadingWatchRoomInfo, error, socket } = useWatchRoom()
-    const videoRef = useRef<ReactPlayer | null>()
+    const videoRef = useRef<any>()
     const [messages, setMessages] = useState<{senderUsername: string, message: string, timestamp: string}[]>([])
     const [user] = useLocalStorage("user");
     const [internalPlayer, setInternalPlayer] = useState<any>(null)
@@ -19,7 +19,7 @@ const WatchRoom = () => {
     const ignoreNextOnPlayEventRef = useRef(false)
     const ignoreNextOnPauseEventRef = useRef(false)
 
-    useBeforeUnload(useCallback((event) => { socket?.disconnect()}, [socket]))
+    useBeforeUnload(useCallback(() => { socket?.disconnect()}, [socket]))
 
     useEffect(() => {
         if(!lastEvent) {
@@ -80,7 +80,7 @@ const WatchRoom = () => {
         ]
     }, [])  
 
-    const handleStateChange = (event, timestamp) => {
+    const handleStateChange = (event) => {
         if(event.data !== 1 && event.data !== 2 && event.data !== 3) { return }
         console.log(event.data)
         if(event.data === 3) {
@@ -145,7 +145,7 @@ const WatchRoom = () => {
                                     onReady={() => {
                                         const internalPlayer = videoRef.current?.getInternalPlayer()
                                         internalPlayer?.addEventListener("onStateChange", (event) => {
-                                            handleStateChange(event, Date.now())
+                                            handleStateChange(event)
                                         })
                                         setInternalPlayer(videoRef.current?.getInternalPlayer())
                                     }}

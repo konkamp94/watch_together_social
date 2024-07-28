@@ -17,7 +17,7 @@ const WatchMovies = () => {
         setTabValue(tab === 'create-room' ? 0 : tab === 'join-room' ? 1 : 2 )
     }, [location, tab]);
 
-    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
       if(newValue === 0) {
         navigate(`/watch-movies/create-room`, { replace: true });
       } else if (newValue === 1) {

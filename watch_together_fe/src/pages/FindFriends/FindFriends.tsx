@@ -8,8 +8,7 @@ const FindFriends = () => {
     const { isDesktop, isTablet } = useScreenSize()
     const { otherUsers, 
             isLoadingOtherUsers, 
-            error, 
-            searchKeyword,
+            error,
             setSearchKeyword } = useSearchOtherUsersByUsernameOrName()
 
     const search = (searchKeyword: string) => {

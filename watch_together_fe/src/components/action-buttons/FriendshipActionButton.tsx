@@ -22,10 +22,10 @@ const FriendshipActionButton = ({ otherUserId, friendshipInfo }: {otherUserId: n
 
     const [friendshipInfoState, setFriendshipInfoState] = useState(friendshipInfo)
     const [actionButtonConfig, setActionButtonConfig] = useState<FriendshipActionButtonConfig | null>(null)
-    const { addFriend, errorAddFriend, isLoadingAddFriend, } = useAddFriend((friendshipInfo) => { 
+    const { addFriend, errorAddFriend } = useAddFriend((friendshipInfo) => { 
         setFriendshipInfoState(friendshipInfo)
     })
-    const { acceptOrRejectFriend, errorAcceptOrReject, isLoadingAcceptOrReject } 
+    const { acceptOrRejectFriend, errorAcceptOrReject } 
           = useAcceptOrRejectFriend((friendshipInfo) => setFriendshipInfoState(friendshipInfo))
     const [snackBar, setSnackBar] = useState<JSX.Element | null>(null)
 
@@ -83,7 +83,7 @@ const FriendshipActionButton = ({ otherUserId, friendshipInfo }: {otherUserId: n
     }, [errorAcceptOrReject])
 
     
-    const closeSnackBar = (event: React.SyntheticEvent | Event, reason?: string) => {
+    const closeSnackBar = (_event: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
             return;
         }

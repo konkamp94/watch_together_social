@@ -2,7 +2,7 @@ import { useQuery } from "react-query"
 import tmdbProxyService from "../../services/tmdb-proxy.service"
 import useApiErrorHandling from "../useApiErrorHandling"
 import { AxiosError } from "axios"
-import { Movie, MovieAccountState, TmdbProxyBody } from "../../services/api.interfaces"
+import { Movie, TmdbProxyBody } from "../../services/api.interfaces"
 
 const useGetSimilarMovies = (movieId: string) => {
     const [error, handleApiError] = useApiErrorHandling()

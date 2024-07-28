@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 
 export default function CustomPagination({ currentPage, count, onChangePage, sx }: {currentPage: number, count: number, onChangePage: (page: number) => void, sx:object}) {
     
-    const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    const handleChange = (_event: React.ChangeEvent<unknown>, value: number) => {
       onChangePage(value)
     };
   return (

@@ -1,6 +1,6 @@
 import { Button, Grid, TextField } from "@mui/material"
-import { useEffect, useRef, useState } from "react"
-import { useNavigate, useParams, useSearchParams } from "react-router-dom"
+import { useEffect, useState } from "react"
+import { useNavigate,useSearchParams } from "react-router-dom"
 
 const JoinRoom = () => {
     const [params] = useSearchParams()

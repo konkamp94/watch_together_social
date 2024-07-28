@@ -4,7 +4,7 @@ import useScreenSize from "../../../../hooks/useSreenSize"
 import OtherUserListInvitationForm from "../../../other-user/OtherUserListInvitationForm"
 
 const FriendInvitationStep = ({ invitedFriends, formAction }: { invitedFriends: number[] | undefined, formAction: (friendId: number) => void}) => {
-    const { friends , isLoadingFriends, error} = useGetFriends()
+    const { friends } = useGetFriends()
     const { isDesktop, isTablet } = useScreenSize()
     
     return (friends &&

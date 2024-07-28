@@ -11,7 +11,6 @@ import SendIcon from '@mui/icons-material/Send';
 import { Socket } from 'socket.io-client';
 import { useEffect, useRef, useState } from 'react';
 import { User } from '../../context/interfaces.context';
-import { Box } from '@mui/material';
 
 
 const Chat = ({ myUser, users, messages, setMessages, socket }: { 
