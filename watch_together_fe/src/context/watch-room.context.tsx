@@ -18,44 +18,46 @@ export const WatchRoomContextProvider = ({children}: {children: ReactNode}) => {
     const [socket, setSocket] = useState<Socket | null>(null)
 
     useEffect(() => {
-        const socket: Socket = io(`${wsBaseUrl}/watch-room?code=${code}`, { extraHeaders: { 'Authorization': `Bearer ${token}`  }});
-        setSocket(socket)
-        
-        socket.on("connect", () => {
-            console.log("Socket.IO connection established");
-            socket.emit('events', {  type: 'sync-new-user-request', 
-                                     newUserId: user?.userId, 
-                                     timestamp: Date.now() 
-                                    })
-        });
+        if(code) {
+            const socket: Socket = io(`${wsBaseUrl}/watch-room?code=${code}`, { extraHeaders: { 'Authorization': `Bearer ${token}`  }});
+            setSocket(socket)
+            
+            socket.on("connect", () => {
+                console.log("Socket.IO connection established");
+                socket.emit('events', {  type: 'sync-new-user-request', 
+                                        newUserId: user?.userId, 
+                                        timestamp: Date.now() 
+                                        })
+            });
 
-        socket.on("events", (event: string) => {
-            const eventJson = JSON.parse(event)
+            socket.on("events", (event: string) => {
+                const eventJson = JSON.parse(event)
 
-            setLastEvent((oldLastEvent: any) => {
-                if(eventJson.type === 'message') { return eventJson }
-                if(!oldLastEvent) { return eventJson }
-                if(oldLastEvent.timestamp < eventJson.timestamp) { 
-                    return ({ ...eventJson, timeDifference: (eventJson.timestamp - oldLastEvent.timestamp) }) 
-                }
-                
-                return oldLastEvent
-            })
+                setLastEvent((oldLastEvent: any) => {
+                    if(eventJson.type === 'message') { return eventJson }
+                    if(!oldLastEvent) { return eventJson }
+                    if(oldLastEvent.timestamp < eventJson.timestamp) { 
+                        return ({ ...eventJson, timeDifference: (eventJson.timestamp - oldLastEvent.timestamp) }) 
+                    }
+                    
+                    return oldLastEvent
+                })
 
-            // setLastEvent(eventJson)
-        });
+                // setLastEvent(eventJson)
+            });
 
-        socket.on("connect_error", (error) => {
-            console.error("Socket.IO connection error", error);
-        });
+            socket.on("connect_error", (error) => {
+                console.error("Socket.IO connection error", error);
+            });
 
-        socket.on("disconnect", () => {
-            console.log("Socket.IO connection disconnected");
-        });
+            socket.on("disconnect", () => {
+                console.log("Socket.IO connection disconnected");
+            });
 
-        return () => {
-            socket.disconnect();
-        };
+            return () => {
+                socket.disconnect();
+            };
+        }
     }, [code, token, setLastEvent, user])
 
     return (
