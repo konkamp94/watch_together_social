@@ -22,8 +22,6 @@ services:
 
   db:
     image: postgres:15-alpine # Use a specific version of Postgres
-    ports:
-      - "5432:5432" # Map port 5432 on the host to port 5432 in the container
     env_file: "postgres.env"
     # environment:
     #   - POSTGRES_USER=postgres
