@@ -36,14 +36,14 @@ const Chat = ({ myUser, users, messages, setMessages, socket }: {
   }, [messages])
 
   const sendMessage = () => {
-    const currentTimestamp = Date.now().toString()
+    const timestamp = Date.now().toString()
     socket?.emit('events', {
         type: 'message',
         message: textInputValue,
         senderUsername: myUser.username,
-        currentTimestamp: currentTimestamp,
+        timestamp,
     });
-    setMessages(oldMessages => [...oldMessages, { message: textInputValue, senderUsername: myUser.username, timestamp: currentTimestamp }])
+    setMessages(oldMessages => [...oldMessages, { message: textInputValue, senderUsername: myUser.username, timestamp }])
     setTextInputValue("")
   }
 

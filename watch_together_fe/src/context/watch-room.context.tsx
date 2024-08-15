@@ -43,11 +43,8 @@ export const WatchRoomContextProvider = ({children}: {children: ReactNode}) => {
                     if(oldLastEvent.timestamp < eventJson.timestamp) { 
                         return ({ ...eventJson, timeDifference: (eventJson.timestamp - oldLastEvent.timestamp) }) 
                     }
-                    
                     return oldLastEvent
                 })
-
-                // setLastEvent(eventJson)
             });
 
             socket.on("connect_error", (error) => {
