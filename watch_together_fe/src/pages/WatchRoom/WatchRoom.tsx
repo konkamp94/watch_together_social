@@ -35,7 +35,7 @@ const WatchRoom = () => {
             case('navigation'): 
                 if(lastEvent.action === 'play') {
                     console.log('new play event logic')
-                    videoRef.current?.seekTo(lastEvent.videoTime + (Math.floor((Date.now() - lastEvent.timestamp) / 1000)), 'seconds')
+                    videoRef.current?.seekTo(lastEvent.videoTime + ((Date.now() - lastEvent.timestamp) / 1000), 'seconds')
                     ignoreNextOnPlayEventRef.current = true
                     lastActionAndSource.current = { type: 'event', action: 'play'}
                     internalPlayer?.playVideo()
