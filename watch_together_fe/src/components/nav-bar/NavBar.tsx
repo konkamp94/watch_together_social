@@ -21,11 +21,13 @@ import './NavBar.css'
 import { useNavigate } from 'react-router-dom';
 import { useNotifications } from '../../hooks/context/useNotifcations';
 import NotificationSideBar from '../notifications/NotificationSideBar';
+import { useAuth } from '../../hooks/context/useAuth';
 
 
 export default function NavBar({ activeButtonId, setActiveButtonId }: {activeButtonId: string, setActiveButtonId: React.Dispatch<React.SetStateAction<string>> }) {
   const navigate = useNavigate();
   const { notifications, unseenNotificationsCount, onClickBellIcon } = useNotifications()
+  const { logout } = useAuth()
   const [openNotificationSideBar, setOpenNotificationSideBar] = React.useState<boolean>(false)
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
@@ -37,6 +39,11 @@ export default function NavBar({ activeButtonId, setActiveButtonId }: {activeBut
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
+  const onLogout = () => {
+    logout()
+    navigate('/login')
+  }
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
@@ -68,8 +75,10 @@ export default function NavBar({ activeButtonId, setActiveButtonId }: {activeBut
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={() => {
+        onLogout();
+        handleMenuClose();
+      }}>Logout</MenuItem>
     </Menu>
   );
 
@@ -191,7 +200,7 @@ export default function NavBar({ activeButtonId, setActiveButtonId }: {activeBut
               aria-label="account of current user"
               aria-controls={menuId}
               aria-haspopup="true"
-              // onClick={handleProfileMenuOpen}
+              onClick={handleProfileMenuOpen}
               color="inherit"
             >
               <AccountCircle />
