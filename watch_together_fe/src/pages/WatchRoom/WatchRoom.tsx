@@ -6,7 +6,7 @@ import { Box, Typography } from "@mui/material";
 import Chat from "../../components/watch-room/Chat";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import ContentHeader from "../../components/content-header/ContentHeader";
-
+import { axiosInstance, createAuthHeaders } from "../../services/axios.config";
 
 const WatchRoom = () => {
     const { code } = useParams();
@@ -29,16 +29,22 @@ const WatchRoom = () => {
             return;
         }
 
+
         console.log('NEW EVENT')
         console.log(lastEvent)
         switch(lastEvent.type) {
             case('navigation'): 
                 if(lastEvent.action === 'play') {
                     console.log('new play event logic')
-                    videoRef.current?.seekTo(lastEvent.videoTime + ((Date.now() - lastEvent.timestamp) / 1000), 'seconds')
-                    ignoreNextOnPlayEventRef.current = true
-                    lastActionAndSource.current = { type: 'event', action: 'play'}
-                    internalPlayer?.playVideo()
+                    console.log(lastEvent.videoTime)
+                    console.log(((Date.now() - lastEvent.timestamp) / 1000))
+                    axiosInstance.get('/server-time', { headers: createAuthHeaders() }).then(serverTime => {
+                        console.log(lastEvent.videoTime + ((Date.now() - lastEvent.timestamp) / 1000))
+                        videoRef.current?.seekTo(lastEvent.videoTime + ((serverTime.data.timestamp - lastEvent.timestamp) / 1000), 'seconds')
+                        ignoreNextOnPlayEventRef.current = true
+                        lastActionAndSource.current = { type: 'event', action: 'play'}
+                        internalPlayer?.playVideo()
+                    })
                 } else if (lastEvent.action === 'pause') {
                     console.log('new pause event logic')
                     videoRef.current?.seekTo(lastEvent.videoTime, 'seconds')
@@ -66,8 +72,10 @@ const WatchRoom = () => {
                 break;
             case('sync-new-user-response'):
                 if(lastEvent.isPlaying) {
-                    videoRef.current?.seekTo(lastEvent.videoTime + ((Date.now() - lastEvent.timestamp) / 1000), 'seconds')
-                    internalPlayer?.playVideo()
+                    axiosInstance.get('/server-time', { headers: createAuthHeaders() }).then(serverTime => {
+                        videoRef.current?.seekTo(lastEvent.videoTime + ((serverTime.data.timestamp - lastEvent.timestamp) / 1000), 'seconds')
+                        internalPlayer?.playVideo()
+                    })
                 }
                 break;
             }
@@ -80,7 +88,7 @@ const WatchRoom = () => {
         ]
     }, [])  
 
-    const handleStateChange = (event) => {
+    const handleStateChange = async (event) => {
         if(event.data !== 1 && event.data !== 2 && event.data !== 3) { return }
         console.log(event.data)
         if(event.data === 3) {
@@ -99,9 +107,10 @@ const WatchRoom = () => {
         //playing
         if(event.data === 1 && !ignoreNextOnPlayEventRef.current) {
             ignoreNextOnPauseEventRef.current = false
+            const serverTime = await axiosInstance.get('/server-time', { headers: createAuthHeaders() })
             console.log('play from action')
             lastActionAndSource.current = { type: 'user', action: 'play'}
-            socket?.emit('events', {type: 'navigation', action: 'play', videoTime: (videoRef.current?.getCurrentTime()), timestamp: Date.now()})
+            socket?.emit('events', {type: 'navigation', action: 'play', videoTime: (videoRef.current?.getCurrentTime()), timestamp: serverTime.data.timestamp})
         } else if(event.data === 1){
             console.log('play from event')
             ignoreNextOnPlayEventRef.current = false
@@ -110,9 +119,10 @@ const WatchRoom = () => {
         // paused
         if(event.data === 2 && !ignoreNextOnPauseEventRef.current) {
             ignoreNextOnPlayEventRef.current = false
+            const serverTime = await axiosInstance.get('/server-time', { headers: createAuthHeaders() })
             console.log('paused from action')
             lastActionAndSource.current = { type: 'user', action: 'pause'}
-            socket?.emit('events', {type: 'navigation', action: 'pause', videoTime: videoRef.current?.getCurrentTime(), timestamp: Date.now()})
+            socket?.emit('events', {type: 'navigation', action: 'pause', videoTime: videoRef.current?.getCurrentTime(), timestamp: serverTime.data.timestamp})
         } else if(event.data === 2){
             console.log('paused from event')
             ignoreNextOnPauseEventRef.current = false

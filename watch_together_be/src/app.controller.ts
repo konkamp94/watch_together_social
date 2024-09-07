@@ -19,4 +19,10 @@ export class AppController {
     return await this.sharedService.tmdbProxy(request.user, body);
   }
 
+  @UseGuards(AuthGuard)
+  @Get('server-time')
+  async getServerTime() {
+    return { timestamp: Date.now() }
+  }
+
 }
