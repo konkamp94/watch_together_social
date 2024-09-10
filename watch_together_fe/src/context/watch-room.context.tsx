@@ -4,6 +4,7 @@ import { useAuth } from "../hooks/context/useAuth"
 import { Socket, io } from "socket.io-client"
 import { useParams } from "react-router-dom"
 import useGetWatchRoomInfo from "../hooks/api/useGetWatchRoomInfo"
+import getEstimatedCurrentServerTime from "../utils/getEstimatedCurrentServerTime"
 
 const initialWatchRoomContextValue = {} as WatchRoomContextValue 
 export const WatchRoomContext = createContext<WatchRoomContextValue>(initialWatchRoomContextValue)
@@ -26,11 +27,12 @@ export const WatchRoomContextProvider = ({children}: {children: ReactNode}) => {
             });
             setSocket(socket)
             
-            socket.on("connect", () => {
+            socket.on("connect", async () => {
                 console.log("Socket.IO connection established");
+                const estimatedServerTime = await getEstimatedCurrentServerTime();
                 socket.emit('events', {  type: 'sync-new-user-request', 
                                         newUserId: user?.userId, 
-                                        timestamp: Date.now() 
+                                        timestamp: estimatedServerTime 
                                         })
             });
 
