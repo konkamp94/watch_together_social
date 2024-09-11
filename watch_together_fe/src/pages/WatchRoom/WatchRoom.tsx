@@ -57,7 +57,7 @@ const WatchRoom = () => {
                                     timestamp: lastEvent.timestamp}])
                     })
                     break;
-                case('sync-new-user-request'):
+                case('sync-new-user-request'): {
                     console.log('sync-new-user-request')
                     const estimatedServerTime = await getEstimatedCurrentServerTime();
                     socket?.emit('events', { type: 'sync-new-user-response', 
@@ -67,6 +67,7 @@ const WatchRoom = () => {
                                                 timestamp: estimatedServerTime 
                                 })
                     break;
+                }
                 case('sync-new-user-response'):
                     if(lastEvent.isPlaying) {            
                         const estimatedServerTime = await getEstimatedCurrentServerTime();

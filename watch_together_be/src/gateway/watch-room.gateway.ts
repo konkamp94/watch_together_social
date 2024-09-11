@@ -126,7 +126,6 @@ export class WatchRoomGateway implements OnGatewayConnection, OnGatewayDisconnec
                         // Logger.log('send request to another user')
                         // Logger.log('called user id', user.userId)
                         user.client.emit('events', JSON.stringify(body));
-                        break;
                     }
                 }
                 break;

@@ -5,7 +5,7 @@ const getEstimatedCurrentServerTime = async () => {
     const serverTime = await axiosInstance.get('/server-time', { headers: createAuthHeaders() })
     const localTimeServerTimeRes = Date.now()
     const delay = (localTimeServerTimeRes - localTimeServerTimeReq) / 2
-    return serverTime.data.timestamp - delay
+    return serverTime.data.timestamp + delay
 }
 
 export default getEstimatedCurrentServerTime
