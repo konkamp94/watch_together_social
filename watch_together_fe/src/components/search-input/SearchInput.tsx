@@ -44,18 +44,13 @@ const SearchInput = ({ placeholder, searchAction, backgroundColor = 'primary.mai
     const inputRef = useRef(null)
     const [storedLastSearchKeyword] = useLocalStorage(localStorageKey)
     const [value, setValue] = useState(storedLastSearchKeyword ? storedLastSearchKeyword : "")
-    const firstRender = useRef(true)
 
     useEffect(() => {
-      if(!firstRender.current) {
-        const delayDebounceFn = setTimeout(() => {
-            searchAction(value)
-        }, 500);
+      const delayDebounceFn = setTimeout(() => {
+          searchAction(value)
+      }, 500);
 
-        return () => clearTimeout(delayDebounceFn);
-      } else {
-        firstRender.current = false
-      }
+      return () => clearTimeout(delayDebounceFn);
 
     }, [value, searchAction])
     

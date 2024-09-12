@@ -2,7 +2,7 @@ import { Box, Chip } from "@mui/material"
 import SearchInput from "../../../search-input/SearchInput"
 import useSearchMovieByTitle from "../../../../hooks/api/useSearchMovieByTitle"
 import useMetadata from "../../../../hooks/context/useMetadata"
-import { useCallback, useEffect } from "react"
+import { useCallback, useEffect, useRef } from "react"
 import CustomPagination from "../../../pagination/CustomPagination"
 import MovieListSkeleton from "../../../movie/MovieListSkeleton"
 import MovieListForm from "./MovieListForm"
@@ -13,17 +13,24 @@ const MovieSelectionStep = ({ selectedMovieId, selectedMovieTitle, formAction }:
     const { movies, 
         IsLoadingSearchMovies, refetchSearchMovies, error, 
         currentPage, setCurrentPage, searchParams, setSearchParams } = useSearchMovieByTitle()
+    const firstRender = useRef(true)
 
     useEffect(() => {
-        refetchSearchMovies()
+        if(!firstRender.current) {
+            refetchSearchMovies()
+        } else {
+            firstRender.current = false
+        }
     }, [currentPage, refetchSearchMovies, searchParams])
     
     useEffect(() => window.scrollTo(0,0), [currentPage])
 
     const search = useCallback((searchKeyword: string) => {
         window.localStorage.setItem('lastSearchKeywordMovieSelection', searchKeyword)
-        setSearchParams((searchParams) => ( { ...searchParams, keyword: searchKeyword }))
-        setCurrentPage(1)
+        if(searchKeyword !== '') {
+            setSearchParams((searchParams) => ( { ...searchParams, keyword: searchKeyword }))
+            setCurrentPage(1)
+        }
     }, [setSearchParams, setCurrentPage])
 
     const changePage = (page: number) => {

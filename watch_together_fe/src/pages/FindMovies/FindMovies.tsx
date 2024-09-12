@@ -3,7 +3,7 @@ import useSearchMovieByTitle from "../../hooks/api/useSearchMovieByTitle"
 import SearchInput from "../../components/search-input/SearchInput"
 // import MultipleSelectDropdown from "../../components/multiple-select-dropdown/MultipleSelectDropdown"
 import useMetadata from "../../hooks/context/useMetadata"
-import { useCallback, useEffect } from "react"
+import { useCallback, useEffect, useRef } from "react"
 import useScreenSize from "../../hooks/useSreenSize"
 import DetailedMovieList from "../../components/movie/DetailedMovieList"
 import { mapMoviesWithGenres } from "../../utils/transform"
@@ -18,17 +18,24 @@ const FindMovies = () => {
     const { movies, 
         IsLoadingSearchMovies, refetchSearchMovies, error, 
         currentPage, setCurrentPage, searchParams, setSearchParams } = useSearchMovieByTitle()
+    const firstRender = useRef(true)
 
     useEffect(() => {
-        refetchSearchMovies()
+        if(!firstRender.current) {
+            refetchSearchMovies()
+        } else {
+            firstRender.current = false
+        }
     }, [currentPage, refetchSearchMovies, searchParams])
     
     useEffect(() => window.scrollTo(0,0), [currentPage])
 
     const search = useCallback((searchKeyword: string) => {
         window.localStorage.setItem('lastSearchKeywordFindMovies', searchKeyword)
-        setSearchParams((searchParams) => ( { ...searchParams, keyword: searchKeyword }))
-        setCurrentPage(1)
+        if(searchKeyword !== '') {
+            setSearchParams((searchParams) => ( { ...searchParams, keyword: searchKeyword }))
+            setCurrentPage(1)
+        }
     }, [setSearchParams, setCurrentPage])
 
     const changePage = (page: number) => {
