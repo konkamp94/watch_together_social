@@ -9,6 +9,7 @@ import { mapMoviesWithGenres } from "../../utils/transform"
 import DetailedMovieListSkeleton from "../../components/movie/DetailedMovieListSkeleton"
 import MovieListSkeleton from "../../components/movie/MovieListSkeleton"
 import { useEffect } from "react"
+import { Typography } from "@mui/material"
 
 const Favorites = () => {
     const { isDesktop, isTablet } = useScreenSize()
@@ -37,7 +38,8 @@ const Favorites = () => {
             {/* Mobile View */}
             {favoriteMovies && genres && (!isDesktop && !isTablet) 
                 && <MovieList movies={favoriteMovies?.data.results} isFavoriteMode={true}/>}
-            { favoriteMovies && genres
+            {!isLoadingFavorites && favoriteMovies?.data.results.length === 0 && <Typography sx={{ color: 'primary.contrastText', mt: 4, fontSize: 'larger' }}>There is no favorites movies yet! Search and mark movies as favorites to save them here!</Typography>}
+            { favoriteMovies && genres && favoriteMovies?.data.results.length !== 0
                 && <CustomPagination currentPage={currentPage} count={favoriteMovies?.data.total_pages} onChangePage={changePage} sx={{ margin: '16px auto 0' }} />
             }
         </>

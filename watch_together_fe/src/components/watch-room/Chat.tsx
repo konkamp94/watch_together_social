@@ -11,6 +11,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { Socket } from 'socket.io-client';
 import { useEffect, useRef, useState } from 'react';
 import { User } from '../../context/interfaces.context';
+import { Typography } from '@mui/material';
 
 
 const Chat = ({ myUser, users, messages, setMessages, socket }: { 
@@ -36,19 +37,21 @@ const Chat = ({ myUser, users, messages, setMessages, socket }: {
   }, [messages])
 
   const sendMessage = () => {
-    const timestamp = Date.now().toString()
-    socket?.emit('events', {
-        type: 'message',
-        message: textInputValue,
-        senderUsername: myUser.username,
-        timestamp,
-    });
-    setMessages(oldMessages => [...oldMessages, { message: textInputValue, senderUsername: myUser.username, timestamp }])
-    setTextInputValue("")
+    if(textInputValue !== '') {
+        const timestamp = Date.now().toString()
+        socket?.emit('events', {
+            type: 'message',
+            message: textInputValue,
+            senderUsername: myUser.username,
+            timestamp,
+        });
+        setMessages(oldMessages => [...oldMessages, { message: textInputValue, senderUsername: myUser.username, timestamp }])
+        setTextInputValue("")
+    }
   }
 
   return (
-      <Paper sx={{ backgroundColor: 'primary.dark', 
+      <Paper sx={{ backgroundColor: 'primary.main', 
                    padding: '8px', 
                    marginLeft: '16px', 
                    width: '100%',
@@ -60,11 +63,11 @@ const Chat = ({ myUser, users, messages, setMessages, socket }: {
             <List sx={{overflowY: 'auto', marginRight: '8px', flex: '0 1 20%', maxHeight: '20%'}}>
                 {users.map((user) => {
                     return (
-                        <ListItem key={user.id} sx={{backgroundColor: user.username === myUser.username ? 'primary.main' : 'primary.light', borderRadius: '16px', marginBottom: '8px'}}>
+                        <ListItem key={user.id} sx={{backgroundColor: user.username === myUser.username ? 'primary.dark' : 'primary.light', borderRadius: '16px', marginBottom: '8px'}}>
                             <ListItemIcon>
                                 <Avatar>{user.username.charAt(0).toUpperCase()}</Avatar>
                             </ListItemIcon>
-                            <ListItemText>{user.username}</ListItemText>
+                            <ListItemText sx={{ color: 'primary.contrastText'}}>{user.username}</ListItemText>
                         </ListItem>
                     )
                 })}
@@ -75,13 +78,13 @@ const Chat = ({ myUser, users, messages, setMessages, socket }: {
                         {myUser.username === message.senderUsername ? <Grid item xs={6}></Grid> : null}
                         <Grid item xs={6}>
                             <ListItem key={index} sx={{backgroundColor: myUser.username === message.senderUsername ? 
-                                                            'primary.main' : 'primary.light', borderRadius: '8px'}}>
+                                                            'primary.dark' : 'primary.light', borderRadius: '8px'}}>
                                 <Grid container>
                                     <Grid item xs={12}>
-                                        <ListItemText sx={{overflowWrap: 'break-word'}} primary={message.message}></ListItemText>
+                                        <ListItemText sx={{overflowWrap: 'break-word', color: 'primary.contrastText'}} primary={message.message}></ListItemText>
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <ListItemText sx={{textAlign: 'right'}} secondary={message.senderUsername}></ListItemText>
+                                        <ListItemText sx={{textAlign: 'right', color: 'red', overflowWrap: 'break-word'}} secondary={<Typography variant='body2' sx={{color: 'primary.contrastText'}}>{message.senderUsername}</Typography>}></ListItemText>
                                     </Grid>
                                 </Grid>
                             </ListItem>
@@ -101,6 +104,15 @@ const Chat = ({ myUser, users, messages, setMessages, socket }: {
                             onKeyUp={(event) => {
                                 if (event.code === 'Enter') {
                                     sendMessage()
+                                }
+                            }}
+                            variant='standard'
+                            sx={{ input: { color: 'primary.contrastText'},
+                                "& .MuiInput-underline:after": {
+                                    borderBottomColor: 'primary.contrastText'
+                                },
+                                '& .Mui-focused': {
+                                    color: 'primary.contrastText'
                                 }
                             }}
                         />

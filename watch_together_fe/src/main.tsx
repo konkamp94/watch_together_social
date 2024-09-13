@@ -13,20 +13,50 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { AuthProvider } from './context/auth.context.tsx'
 import { ReactQueryDevtools } from 'react-query/devtools'
 
+// Initial colors
+// const theme = createTheme({
+//   palette: {
+//     primary: {
+//       main: '#74709c',
+//       light: '#a39ecd',
+//       dark: '#47456e',
+//       contrastText: '#00000099'
+//     },
+//     secondary: {
+//       main: '#9a9b9e',
+//       light: '#cbcccf',
+//       dark: '#6c6d70',
+//       contrastText: '#000'
+//     }
+//   }
+// });
+
 const theme = createTheme({
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          "&.Mui-disabled": {
+            background: "#333334",
+            color: "#5b5b5c"
+          }
+        }
+      }
+    }
+  },
   palette: {
     primary: {
-      main: '#74709c',
-      light: '#a39ecd',
-      dark: '#47456e',
-      contrastText: '#00000099'
+      main: '#333334',
+      light: '#5b5b5c',
+      dark: '#232324',
+      contrastText: '#e2e5e9'
     },
     secondary: {
-      main: '#9a9b9e',
-      light: '#cbcccf',
-      dark: '#6c6d70',
-      contrastText: '#000'
-    }
+      main: '#e2e5e9',
+      light: '#e2e5e9',
+      dark: '#e2e5e9',
+      contrastText: '#ffffff',
+    },
   }
 });
 

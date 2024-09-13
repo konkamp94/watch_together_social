@@ -15,9 +15,13 @@ body,html {
 }
 
 .active-button {
-    background-color: #a39ecd!important;
-    color: white !important;
+    background-color: #e2e5e9!important;
+    color: #232324 !important;
     border-radius: 12px !important;
+}
+
+.link-hover {
+   color: #e2e5e9 !important;
 }
 
 .link-hover:hover {

@@ -31,7 +31,7 @@ const DetailedMovieInList = ({movie, isFavoriteMode = false, isWatchlistMode = f
                     <Typography variant="body2" color="primary.contrastText" style={{marginBottom: '16px'}}>
                         <Stack direction="row" spacing={1}>
                             {movie.genres.map(genre => (
-                                    <Chip key={genre.id} label={genre.name} sx={{color: 'primary.dark'}} />
+                                    <Chip key={genre.id} label={genre.name} sx={{backgroundColor: 'primary.dark', color: 'primary.contrastText'}} />
                             ))}
                         </Stack>
                     </Typography>

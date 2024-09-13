@@ -18,7 +18,7 @@ const OtherUserInList = ({ otherUser }: { otherUser: OtherUser }) => {
                     <button>Add friend</button>
                 </Grid>
             </Grid> */}
-            <Box display="flex" sx={{backgroundColor: 'primary.main', borderRadius: '8px', padding: '16px', marginBottom: '8px', color: 'primary.contrastText'}}>
+            <Box display="flex" sx={{backgroundColor: 'primary.light', borderRadius: '8px', padding: '16px', marginBottom: '8px', color: 'primary.contrastText'}}>
                 <Box flex={0.5}>
                     <Avatar>{otherUser.username.charAt(0).toUpperCase()}</Avatar>
                 </Box>

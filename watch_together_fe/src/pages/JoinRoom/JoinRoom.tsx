@@ -16,13 +16,23 @@ const JoinRoom = () => {
               justifyContent={'center'} 
               sx={{backgroundColor: 'primary.main', padding: '16px', borderRadius: '8px', marginTop: '16px'}}>
             <Grid item xs={6}>
-                <TextField id="room-code-input" value={codeInputValue} onChange={(event) => setCodeInputValue(event.target.value)} fullWidth label="Enter your Room Code" variant="standard" />
+                <TextField sx={{ input: { color: 'primary.contrastText'},
+                                "& .MuiInput-underline:after": {
+                                    borderBottomColor: 'primary.contrastText'
+                                },
+                                '& .Mui-focused': {
+                                    color: 'primary.contrastText'
+                                }
+                                }}
+                id="room-code-input" value={codeInputValue} onChange={(event) => setCodeInputValue(event.target.value)} fullWidth label="Enter your Room Code" variant="standard" />
             </Grid>
             <Grid item xs={6}>
                 <Button sx={{height: '100%', 
                             width:'100%', 
-                            backgroundColor: 'primary.dark', 
-                            '&:hover': {backgroundColor: 'primary.light'}}}
+                            backgroundColor: 'primary.dark',
+                            color: 'primary.contrastText',
+                            '&:hover': { backgroundColor: 'primary.light' }
+                        }}
                         onClick={() => navigate(`/watch-room/${codeInputValue}`)}
                 >
                     Join Room

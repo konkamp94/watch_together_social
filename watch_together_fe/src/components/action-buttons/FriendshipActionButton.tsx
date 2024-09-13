@@ -94,7 +94,7 @@ const FriendshipActionButton = ({ otherUserId, friendshipInfo }: {otherUserId: n
                 {actionButtonConfig && !actionButtonConfig.isAcceptRejectCase ? 
                     <Button 
                         variant="contained" 
-                        sx={{width:'100%', backgroundColor: 'primary.dark', '&:hover': {backgroundColor: 'primary.light'}}}
+                        sx={{width:'100%', backgroundColor: 'primary.main', '&:hover': {backgroundColor: 'primary.dark'}}}
                         disabled={(friendshipInfoState?.status === 'PENDING' && friendshipInfoState?.isRequesterUser) 
                                     || friendshipInfoState?.status === 'ACCEPTED'}
                         onClick={actionButtonConfig.button1Action}
@@ -105,14 +105,14 @@ const FriendshipActionButton = ({ otherUserId, friendshipInfo }: {otherUserId: n
                     <>
                         <Button 
                             variant="contained" 
-                            sx={{width:'100%', backgroundColor: 'primary.dark', '&:hover': {backgroundColor: 'primary.light'}}}
+                            sx={{width:'100%', backgroundColor: 'primary.main', '&:hover': {backgroundColor: 'primary.dark'}}}
                             onClick={actionButtonConfig.button1Action}
                         >   
                             {actionButtonConfig.button1Label}
                         </Button>
                         <Button 
                         variant="contained" 
-                        sx={{width:'100%', backgroundColor: 'primary.dark', '&:hover': {backgroundColor: 'primary.light'}}}
+                        sx={{width:'100%', backgroundColor: 'primary.main', '&:hover': {backgroundColor: 'primary.dark'}}}
                         onClick={actionButtonConfig.button2Action}
                         >   
                             {actionButtonConfig.button2Label}

@@ -23,13 +23,13 @@ const NotificationInList = ({ notification, setOpen }: {notification: Notificati
                                 }</Avatar>
                             </ListItemAvatar>
                             <ListItemText
-                            primary="Friend Request"
+                            primary={<Typography color="primary.contrastText">Friend Request</Typography>}
                             secondary={
                                     <Typography
                                         sx={{ display: 'inline' }}
                                         component="span"
                                         variant="body2"
-                                        color="text.primary"
+                                        color="primary.contrastText"
                                     >
                                         {`User ${friendRequestNotification.friendRequest.requesterUser.username} has just sent you a friend request`}
                                     </Typography>
@@ -56,13 +56,13 @@ const NotificationInList = ({ notification, setOpen }: {notification: Notificati
                             }</Avatar>
                         </ListItemAvatar>
                         <ListItemText
-                            primary="Watch Movie Invitation"
+                            primary={<Typography color='primary.contrastText'> Watch Movie Invitation</Typography>}
                             secondary={(<>
                                         <Typography
                                             sx={{ display: 'inline' }}
                                             component="span"
                                             variant="body2"
-                                            color="text.primary"
+                                            color="primary.contrastText"
                                         >
                                             {`User ${watchRoomNotification.watchRoom.creatorUser.username} 
                                             has invited to watch together the movie with title ${watchRoomNotification.watchRoom.movieTitle}`}
@@ -73,7 +73,7 @@ const NotificationInList = ({ notification, setOpen }: {notification: Notificati
                                             sx={{ display: 'inline' }}
                                             component="span"
                                             variant="body2"
-                                            color="text.primary"
+                                            color="primary.contrastText"
                                         >
                                             {`The code for joining the room is ${watchRoomNotification.watchRoom.code}`}
                                         </Typography>

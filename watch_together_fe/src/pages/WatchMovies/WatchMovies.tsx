@@ -27,7 +27,19 @@ const WatchMovies = () => {
 
     return (<>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs value={tabValue} onChange={handleChange} aria-label="basic tabs example">
+            <Tabs value={tabValue} onChange={handleChange} aria-label="basic tabs example" 
+            sx={{  
+                    "& .MuiTab-root": {
+                        color: 'primary.light',
+                    },
+                    "& .MuiTabs-indicator": {
+                        backgroundColor: 'primary.contrastText',
+                    },
+                    "& .MuiTab-root.Mui-selected": {
+                        color: 'primary.contrastText',
+                    }
+            }}
+            >
                 <Tab label="Create Watch Room" id={`tab-0`} aria-controls={`tabpanel-0`} />
                 <Tab label="Join Watch Room" id={`tab-1`} aria-controls={`tabpanel-1`}/>
             </Tabs>

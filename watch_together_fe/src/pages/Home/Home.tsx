@@ -9,7 +9,7 @@ const Home = () => {
 
     return (
         <>
-            <ContentHeader text='Recommended Movies'/>
+            <ContentHeader text='Popular Movies'/>
             {isLoading || (isFetching && !isRefetchingAccountStates)? <MovieListSkeleton mockMovieCount={4}/>
                 : error && <p>{error.message}</p>}
             {recommendedMoviesWithState && !isLoading && (!isFetching || isRefetchingAccountStates) &&

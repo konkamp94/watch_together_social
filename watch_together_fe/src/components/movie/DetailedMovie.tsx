@@ -49,7 +49,7 @@ const DetailedMovie = ({movieDetails}) => {
                             <Typography variant="body2" color="primary.contrastText" style={{marginBottom: '16px'}}>
                                 <Stack direction="row" spacing={1}>
                                     {movieDetails.genres.map((genre: {id:number, name: string}) => (
-                                            <Chip key={genre.id} label={genre.name} sx={{color: 'primary.dark'}} />
+                                            <Chip key={genre.id} label={genre.name} sx={{backgroundColor: 'primary.dark', color: 'primary.contrastText'}} />
                                     ))}
                                 </Stack>
                             </Typography>

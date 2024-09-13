@@ -9,6 +9,7 @@ import { mapMoviesWithGenres } from "../../utils/transform"
 import DetailedMovieListSkeleton from "../../components/movie/DetailedMovieListSkeleton"
 import MovieListSkeleton from "../../components/movie/MovieListSkeleton"
 import { useEffect } from "react"
+import { Typography } from "@mui/material"
 
 const Watchlist = () => {
     const { isDesktop, isTablet } = useScreenSize()
@@ -37,7 +38,8 @@ const Watchlist = () => {
             {/* Mobile View */}
             {watchlistMovies && genres && (!isDesktop && !isTablet) 
                 && <MovieList movies={watchlistMovies?.data.results} isWatchlistMode={true}/>}
-            {watchlistMovies && genres 
+             {!isLoadingWatchlist && watchlistMovies?.data.results.length === 0 && <Typography sx={{ color: 'primary.contrastText', mt: 2, fontSize: 'larger' }}>There is no movies in the watchlist yet! Search and save movies to watchlist to watch them later!</Typography>}
+            {watchlistMovies && watchlistMovies?.data.results.length !== 0 && genres 
                 && <CustomPagination currentPage={currentPage} count={watchlistMovies?.data.total_pages} onChangePage={changePage} sx={{ margin: '16px auto 0' }}/>
             }
         </>

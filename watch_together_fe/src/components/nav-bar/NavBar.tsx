@@ -8,7 +8,6 @@ import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import BottomNavigation from '@mui/material/BottomNavigation';
@@ -27,7 +26,7 @@ import { useAuth } from '../../hooks/context/useAuth';
 export default function NavBar({ activeButtonId, setActiveButtonId }: {activeButtonId: string, setActiveButtonId: React.Dispatch<React.SetStateAction<string>> }) {
   const navigate = useNavigate();
   const { notifications, unseenNotificationsCount, onClickBellIcon } = useNotifications()
-  const { logout } = useAuth()
+  const { user, logout } = useAuth()
   const [openNotificationSideBar, setOpenNotificationSideBar] = React.useState<boolean>(false)
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
@@ -63,14 +62,14 @@ export default function NavBar({ activeButtonId, setActiveButtonId }: {activeBut
     <Menu
       anchorEl={anchorEl}
       anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: 'bottom',
+        horizontal: 'left',
       }}
+      sx={{ mt: 1 }}
       id={menuId}
       keepMounted
       transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: -4, horizontal: -100
       }}
       open={isMenuOpen}
       onClose={handleMenuClose}
@@ -99,21 +98,20 @@ export default function NavBar({ activeButtonId, setActiveButtonId }: {activeBut
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
       <MenuItem onClick={() => { onClickBellIcon(), setOpenNotificationSideBar(!openNotificationSideBar) }}>
         <IconButton
           size="large"
-          aria-label="show 17 new notifications"
+          aria-label="show new notifications"
           color="inherit"
         >
-          <Badge badgeContent={unseenNotificationsCount} color="secondary">
+          <Badge badgeContent={unseenNotificationsCount}                      
+                 sx={{
+                    "& .MuiBadge-badge": {
+                      color: "#ffffff",
+                      // dark red
+                      backgroundColor: "#b71c1c"
+                    }
+                  }}>
             <NotificationsIcon />
           </Badge>
         </IconButton>
@@ -129,7 +127,7 @@ export default function NavBar({ activeButtonId, setActiveButtonId }: {activeBut
         >
           <AccountCircle />
         </IconButton>
-        <p>Profile</p>
+        <Typography sx={{ color: 'primary.main'}}>{user.username}</Typography>
       </MenuItem>
     </Menu>
   );
@@ -157,12 +155,14 @@ export default function NavBar({ activeButtonId, setActiveButtonId }: {activeBut
               <BottomNavigationAction 
                 id="home" 
                 className={activeButtonId === 'home' ? 'active-button' : ''} 
+                sx={{color: 'primary.contrastText'}}
                 label="Home" 
                 icon={<HomeIcon />} 
                 onClick={() => navigate('/home')}/> 
               <BottomNavigationAction 
                 id="watch-movies" 
                 className={activeButtonId === 'watch-movies' ? 'active-button' : ''}
+                sx={{color: 'primary.contrastText'}}
                 label="Watch Movies" 
                 icon={<WeekendIcon />}
                 onClick={() => navigate('/watch-movies/create-room')} 
@@ -170,6 +170,7 @@ export default function NavBar({ activeButtonId, setActiveButtonId }: {activeBut
               <BottomNavigationAction 
                 id="favorite" 
                 className={activeButtonId === 'favorite' ? 'active-button' : ''} 
+                sx={{color: 'primary.contrastText'}}
                 label="Favorites" 
                 icon={<FavoriteIcon />}
                 onClick={() => navigate('/favorites')}
@@ -177,6 +178,7 @@ export default function NavBar({ activeButtonId, setActiveButtonId }: {activeBut
               <BottomNavigationAction 
                 id="watchlist" 
                 className={activeButtonId === 'watchlist' ? 'active-button' : ''} 
+                sx={{color: 'primary.contrastText'}}
                 label="Watchlist" 
                 icon={<MovieIcon />} 
                 onClick={() => navigate('/watchlist')}
@@ -186,11 +188,19 @@ export default function NavBar({ activeButtonId, setActiveButtonId }: {activeBut
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton
               size="large"
-              aria-label="show 17 new notifications"
+              aria-label="show notifications"
               color="inherit"
               onClick={() => { onClickBellIcon(), setOpenNotificationSideBar(!openNotificationSideBar)}}
             >
-              <Badge badgeContent={unseenNotificationsCount} color="error">
+              <Badge badgeContent={unseenNotificationsCount}   
+                     sx={{
+                        "& .MuiBadge-badge": {
+                          color: "#ffffff",
+                          // dark red
+                          backgroundColor: "#b71c1c"
+                        }}
+              }
+  >
                 <NotificationsIcon/>
               </Badge>
             </IconButton>
@@ -203,7 +213,7 @@ export default function NavBar({ activeButtonId, setActiveButtonId }: {activeBut
               onClick={handleProfileMenuOpen}
               color="inherit"
             >
-              <AccountCircle />
+              <AccountCircle /> <span style={{fontSize: '1.2rem'}}>{user.username}</span>
             </IconButton>
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>

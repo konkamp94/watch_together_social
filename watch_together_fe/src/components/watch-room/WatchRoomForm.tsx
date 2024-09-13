@@ -66,7 +66,7 @@ const WatchRoomForm = () => {
                 })
             }
             />,
-            <Typography variant="body2" sx={{color: 'primary.contrastText'}}>Click finish when you are ready!</Typography>
+            <Typography variant="body1" sx={{color: 'primary.contrastText'}}>Click finish when you are ready!</Typography>
     ]
 
     return (<Box sx={{ backgroundColor: 'primary.main', padding: 3, marginTop: '16px'}}>

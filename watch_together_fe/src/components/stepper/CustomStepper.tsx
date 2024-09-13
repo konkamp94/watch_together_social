@@ -4,6 +4,7 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
+import { Typography } from '@mui/material';
 
 
 export default function CustomStepper({ steps, stepComponents, formAction }: { steps: {stepLabel: string, isCompleted: boolean}[], stepComponents: React.ReactNode[], formAction: () => void}) {
@@ -29,6 +30,7 @@ export default function CustomStepper({ steps, stepComponents, formAction }: { s
           return (
             <Step key={stepInfo.stepLabel} {...stepProps}>
               <StepLabel sx={{
+                      color: 'primary.contrastText',
                       '& .MuiStepIcon-root': {
                         color: 'primary.dark', // circle color ()
                       },
@@ -38,9 +40,13 @@ export default function CustomStepper({ steps, stepComponents, formAction }: { s
                         },
                       '& .MuiStepIcon-root.Mui-completed': {
                         color: 'primary.dark', // circle color (COMPLETED)
-                      }
+                      },
+                      '& .MuiStepIcon-root.Mui-completed.Mui-active': {
+                        color: 'primary.light', // circle color (COMPLETED and ACTIVE)
+                      },
+
                   }}
-                      {...labelProps}>{stepInfo.stepLabel}</StepLabel>
+                      {...labelProps}><Typography sx={{ color: 'primary.contrastText' }}>{stepInfo.stepLabel}</Typography></StepLabel>
             </Step>
           );
         })}
@@ -49,10 +55,15 @@ export default function CustomStepper({ steps, stepComponents, formAction }: { s
           {/* <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography> */}
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Button
-              color="inherit"
+              sx={{ 
+                backgroundColor: 'primary.dark', 
+                color: 'primary.contrastText', 
+                '&:Mui-disabled': { color: 'primary.light',},
+                '&:hover': { backgroundColor: 'primary.light'}, 
+                mr: 1
+              }}
               disabled={activeStep === 0}
               onClick={handleBack}
-              sx={{ mr: 1 }}
             >
               Back
             </Button>
@@ -63,11 +74,23 @@ export default function CustomStepper({ steps, stepComponents, formAction }: { s
               //         : activeStep === 1 ? 'Invite Friends to continue to the nest step': null} 
               //   arrow
               // >
-                <Button disabled={true} sx={{backgroundColor: 'primary.dark', '&:hover': { backgroundColor: 'primary.light'}}}>
+                <Button disabled={true}                         
+                        sx={{                
+                          backgroundColor: 'primary.dark', 
+                          color: 'primary.light',
+                        }}
+                >
                   {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                 </Button> 
               // </Tooltip>
-              : <Button onClick={activeStep === steps.length - 1 ? () => formAction() : handleNext} sx={{backgroundColor: 'primary.dark', '&:hover': { backgroundColor: 'primary.light'}}}>
+              : <Button onClick={activeStep === steps.length - 1 ? () => formAction() : handleNext} 
+                        sx={{                
+                          backgroundColor: 'primary.dark', 
+                          color: 'primary.contrastText', 
+                          '&:Mui-disabled': { color: 'primary.light',},
+                          '&:hover': { backgroundColor: 'primary.light'}, 
+                        }}
+                >
                   {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                 </Button> 
               }
