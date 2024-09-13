@@ -8,9 +8,10 @@ import { MovieCreation } from "@mui/icons-material";
 const AddToListButtons = ({ movie, isFavoriteMode = false, isWatchlistMode = false }) => {
     const [isFavorite, setIsFavorite] = useState(() => {
         if(isFavoriteMode) { return true }
-        if('state' in movie) { 
-          return movie.state.favorite 
-        }
+        // if('state' in movie) { 
+        //   return movie.state.favorite 
+        // }
+        return movie?.state?.favorite ?? false;
       });
     const { addOrRemoveFavorite, isLoading: isLoadingFavorite } = useAddOrRemoveFavorite(() =>  { 
         setIsFavorite(!isFavorite) 
@@ -18,9 +19,10 @@ const AddToListButtons = ({ movie, isFavoriteMode = false, isWatchlistMode = fal
 
     const [isWatchlist, setIsWatchlist] = useState(() => {
         if(isWatchlistMode) { return true }
-        if('state' in movie) { 
-            return movie.state.watchlist 
-        }
+        // if('state' in movie) { 
+        //     return movie.state.watchlist 
+        // }
+        return movie?.state?.wathlist ?? false;
     });
     
     const { addOrRemoveWatchlist, isLoading: isLoadingWatchlist } = useAddOrRemoveWatchlist(() =>  { 
@@ -30,15 +32,11 @@ const AddToListButtons = ({ movie, isFavoriteMode = false, isWatchlistMode = fal
     useEffect(() => {
         setIsFavorite(() => {
           if(isFavoriteMode) { return true }
-          if('state' in movie) { 
-            return movie.state.favorite 
-          }
+          return movie?.state?.favorite ?? false;
         })
         setIsWatchlist(() => {
           if(isWatchlistMode) { return true }
-          if('state' in movie) { 
-            return movie.state.watchlist 
-          }
+          return movie?.state?.wathlist ?? false;
         })
       }, [movie, isFavoriteMode, isWatchlistMode])
 
@@ -49,7 +47,7 @@ const AddToListButtons = ({ movie, isFavoriteMode = false, isWatchlistMode = fal
                     onClick={() => { addOrRemoveFavorite({movieId: movie.id, isFavorite: !isFavorite}) }}>
                     {!isLoadingFavorite ?
                         <FavoriteIcon 
-                        sx={isFavorite ? {color: 'secondary.light' } : null}/> :
+                        sx={isFavorite ? {color: 'primary.contrastText' } : null}/> :
                         <CircularProgress size={30}/>
                     }
                 </IconButton>
@@ -60,7 +58,7 @@ const AddToListButtons = ({ movie, isFavoriteMode = false, isWatchlistMode = fal
                     onClick={() => { addOrRemoveWatchlist({movieId: movie.id, isWatchlist: !isWatchlist}) }}>
                     {!isLoadingWatchlist ?
                         <MovieCreation 
-                        sx={isWatchlist ? {color: 'secondary.light' } : null}/> :
+                        sx={isWatchlist ? {color: 'primary.contrastText' } : null}/> :
                         <CircularProgress size={30}/>
                     }
                 </IconButton>
