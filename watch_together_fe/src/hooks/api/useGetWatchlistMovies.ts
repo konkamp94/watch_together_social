@@ -16,7 +16,7 @@ const useGetWatchlistMovies = (page: number = 1) => {
 
     const { data: watchlistMovies, isLoading: isLoadingWatchlist, refetch: getWatchlist } = useQuery(['watchlist-movies', currentPage], () => {
         const tmdbProxyBody = {
-            uri: `/account/${user.tmdbId}/watchlist/movies?page=${currentPage}`,
+            uri: `/account/${user.tmdbId}/watchlist/movies?page=${currentPage}&sort_by=created_at.desc`,
             method: 'get',
         }
         return tmdbProxyService.accessTmdbApi(tmdbProxyBody)

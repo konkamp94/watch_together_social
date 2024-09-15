@@ -16,7 +16,7 @@ const useGetFavoriteMovies = (page: number = 1) => {
 
     const { data: favoriteMovies, isLoading: isLoadingFavorites, refetch: getFavorites } = useQuery(['favorite-movies', currentPage], () => {
         const tmdbProxyBody = {
-            uri: `/account/${user.tmdbId}/favorite/movies?page=${currentPage}`,
+            uri: `/account/${user.tmdbId}/favorite/movies?page=${currentPage}&sort_by=created_at.desc`,
             method: 'get',
         }
         return tmdbProxyService.accessTmdbApi(tmdbProxyBody)
