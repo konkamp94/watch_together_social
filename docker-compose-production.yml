@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: ./watch_together_fe
+    env_file: "./watch_together_fe/.env"
+    expose:
+      - "4173"
+
+  backend:
+    build:
+      context: ./watch_together_be
+    expose:
+      - "3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15-alpine
+    env_file: "postgres.production.env"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /home/docker-nginx-ssl-certs/watch-together-thesis-org.crt:/etc/nginx/ssl/watch-together-thesis-org.crt:ro
+      - /home/docker-nginx-ssl-certs/watch-together-thesis-org.key:/etc/nginx/ssl/watch-together-thesis-org.key:ro
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  postgres_data:
