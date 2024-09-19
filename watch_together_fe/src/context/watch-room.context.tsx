@@ -21,8 +21,8 @@ export const WatchRoomContextProvider = ({children}: {children: ReactNode}) => {
     useEffect(() => {
         if(code) {
             const socket: Socket = io(`${wsBaseUrl}/watch-room`, { 
-                        query: { code }, 
-                        extraHeaders: { 'Authorization': `Bearer ${token}`  }, 
+                        transports: ['websocket', 'polling'],
+                        query: { code, token }, 
                         forceNew: true
             });
             setSocket(socket)

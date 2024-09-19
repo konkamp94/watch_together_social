@@ -6,7 +6,7 @@ import { Server, Socket } from 'socket.io'
 import { Notification } from "src/social/entities/notification.entity";
 
 @WebSocketGateway({
-    namespace: 'notifications',
+    namespace: 'socket.io/notifications',
     cors: { origin: '*' }
 })
 export class NotificationGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -23,9 +23,8 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
     }
 
     async handleConnection(client: Socket) {
-        const { authorization } = client.handshake.headers
-        const [type, token] = authorization?.split(' ') ?? [];
-        const authToken = type === 'Bearer' ? token : undefined;
+        const token = client.handshake.query['token'] as string
+        const authToken = token ?? undefined;
 
         try {
             const payload = await this.jwtService.verifyAsync(
@@ -37,7 +36,7 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
             this.clients[payload.userId.toString()] = client
             this.mapClientIdToUserId[client.id] = payload.userId.toString()
         } catch (error) {
-            Logger.warn(this.jwtService.verifyAsync(authToken, { secret: this.configService.get<string>('JWT_SECRET') }))
+            // Logger.warn(this.jwtService.verifyAsync(authToken, { secret: this.configService.get<string>('JWT_SECRET') }))
             Logger.error(error, 'AuthGuard');
             client.disconnect()
         }

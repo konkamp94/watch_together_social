@@ -30,7 +30,7 @@ export const NotificationsProvider = ({ children}: { children: ReactNode}) => {
     
     useEffect(() => {
         if(!isLoadingNotifications) {
-            const socket: Socket = io(`${wsBaseUrl}/notifications`, { extraHeaders: { 'Authorization': `Bearer ${token}`  }});
+            const socket: Socket = io(`${wsBaseUrl}/notifications`, { transports: ['websocket', 'polling'],  query: { token } });
 
             socket.on("connect", () => {
                 console.log("Socket.IO connection established");

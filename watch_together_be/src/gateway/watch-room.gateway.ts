@@ -8,7 +8,7 @@ import { Repository } from "typeorm";
 import { WatchRoom } from "src/social/entities/watch-room.entity";
 
 @WebSocketGateway({
-    namespace: 'watch-room',
+    namespace: 'socket.io/watch-room',
     cors: { origin: '*' }
 })
 export class WatchRoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -31,11 +31,10 @@ export class WatchRoomGateway implements OnGatewayConnection, OnGatewayDisconnec
     }
 
     async handleConnection(client: Socket) {
-        const { authorization } = client.handshake.headers
+        const token = client.handshake.query['token'] as string
         const roomCode = client.handshake.query['code'] as string
 
-        const [type, token] = authorization?.split(' ') ?? [];
-        const authToken = type === 'Bearer' ? token : undefined;
+        const authToken = token ?? undefined;
         let payload: any
 
         try {
@@ -48,7 +47,7 @@ export class WatchRoomGateway implements OnGatewayConnection, OnGatewayDisconnec
             this.clients[payload.userId] = client
             this.mapClientIdToUserId[client.id] = payload.userId.toString()
         } catch (error) {
-            Logger.warn(this.jwtService.verifyAsync(authToken, { secret: this.configService.get<string>('JWT_SECRET') }))
+            // Logger.warn(this.jwtService.verifyAsync(authToken, { secret: this.configService.get<string>('JWT_SECRET') }))
             Logger.error(error, 'AuthGuard');
             client.disconnect()
             return;
