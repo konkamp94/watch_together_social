@@ -22,7 +22,7 @@ const AddToListButtons = ({ movie, isFavoriteMode = false, isWatchlistMode = fal
         // if('state' in movie) { 
         //     return movie.state.watchlist 
         // }
-        return movie?.state?.wathlist ?? false;
+        return movie?.state?.watchlist ?? false;
     });
     
     const { addOrRemoveWatchlist, isLoading: isLoadingWatchlist } = useAddOrRemoveWatchlist(() =>  { 
@@ -36,7 +36,7 @@ const AddToListButtons = ({ movie, isFavoriteMode = false, isWatchlistMode = fal
         })
         setIsWatchlist(() => {
           if(isWatchlistMode) { return true }
-          return movie?.state?.wathlist ?? false;
+          return movie?.state?.watchlist ?? false;
         })
       }, [movie, isFavoriteMode, isWatchlistMode])
 
