@@ -13,6 +13,12 @@ export class AppController {
     return this.appService.getHello();
   }
 
+  @Get('tmdb-proxy-mock/:tmdbPath')
+  async tmdbProxyMock() {
+    await this.sharedService.randomDelay(500, 1500)
+    return {}
+  }
+
   @UseGuards(AuthGuard)
   @Post('tmdb-proxy')
   async tmdbProxy(@Req() request: RequestWithUser, @Body() body: TmdbProxyDto) {

@@ -36,7 +36,7 @@ export class SharedService {
     }
 
     // it returns a random page number from the total pages of a tmdb response
-    async getRandomPageFromTmdbResponse(tmdbResponse) {
+    getRandomPageFromTmdbResponse(tmdbResponse) {
         let totalPages = tmdbResponse.total_pages;
 
         // api support paging up to 500 pages
@@ -47,7 +47,7 @@ export class SharedService {
         return randomPage;
     }
 
-    async getRandomIndexFromTmdbResponse(tmdbResponse) {
+    getRandomIndexFromTmdbResponse(tmdbResponse) {
         const randomIndex = Math.floor(Math.random() * tmdbResponse.results.length);
         return randomIndex;
     }
@@ -63,5 +63,11 @@ export class SharedService {
         }
 
         return result;
+    }
+
+    // helper function for mock endpoints
+    async randomDelay(min, max) {
+        const delay = Math.floor(Math.random() * (max - min + 1) + min);
+        return new Promise(resolve => setTimeout(resolve, delay));
     }
 }

@@ -21,10 +21,10 @@ export class MovieController {
         }
 
         const tmdbResponse = await this.sharedService.tmdbProxy(user, tmdbProxyBody);
-        const randomPage = await this.sharedService.getRandomPageFromTmdbResponse(tmdbResponse);
+        const randomPage = this.sharedService.getRandomPageFromTmdbResponse(tmdbResponse);
         tmdbProxyBody.uri = `${tmdbProxyBody.uri}?page=${randomPage}`;
         const tmdbResponsePage = await this.sharedService.tmdbProxy(user, tmdbProxyBody);
-        const randomIndex = await this.sharedService.getRandomIndexFromTmdbResponse(tmdbResponsePage);
+        const randomIndex = this.sharedService.getRandomIndexFromTmdbResponse(tmdbResponsePage);
         if (tmdbResponsePage.results.length === 0) {
             throw new HttpException(`No movies found ${"in" + randomMovieFrom}`, 404);
         }
