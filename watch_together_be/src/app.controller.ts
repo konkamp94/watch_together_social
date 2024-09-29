@@ -13,9 +13,9 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('tmdb-proxy-mock/:tmdbPath')
-  async tmdbProxyMock() {
-    await this.sharedService.randomDelay(500, 1500)
+  @Post('tmdb-proxy-mock/:tmdbPath')
+  async tmdbProxyMock(@Body() delay: { minDelay: number, maxDelay: number }) {
+    await this.sharedService.randomDelay(delay.minDelay, delay.maxDelay)
     return {}
   }
 
